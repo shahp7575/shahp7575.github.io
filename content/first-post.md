@@ -1,8 +1,7 @@
 title: Anscombe's Quartet
 date: 09/19/2018
 author: Parth Shah
-
-# Anscombe's Quartet
+tags: blog
 
 I always believed in “numerical calculations are exact, but graphs are rough”. Coming from a person who has just started learning Data Analytics, it was hard for me to understand the importance of Data Visualization along with summary statistics. But it all changed after attending this Data Visualization Meetup, which is when I was introduced to the **Anscombe’s Quartet**.
 
@@ -19,7 +18,7 @@ The summary statistics show that the means and the variances were identical for 
 
 When we plot these four datasets on an x/y coordinate plane, we can observe that they show the same regression lines as well but each dataset is telling a different story :
 
-![image](images/anscombe-plots.png)
+![image](images/anscombe-plot.png)
 
 - Dataset I appears to have clean and well-fitting linear models.
 - Dataset II is not distributed normally.
