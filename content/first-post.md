@@ -18,7 +18,7 @@ The summary statistics show that the means and the variances were identical for 
 
 When we plot these four datasets on an x/y coordinate plane, we can observe that they show the same regression lines as well but each dataset is telling a different story :
 
-![image](images/anscombe-plot.png)
+![image](images/ancombe-plot.png)
 
 - Dataset I appears to have clean and well-fitting linear models.
 - Dataset II is not distributed normally.
