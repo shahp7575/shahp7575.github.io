@@ -1,25 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Parth's Blog</title><link href="/" rel="alternate"></link><link href="/feeds/all.atom.xml" rel="self"></link><id>/</id><updated>2018-09-19T00:00:00-04:00</updated><entry><title>Anscombe's Quartet</title><link href="/anscombes-quartet.html" rel="alternate"></link><published>2018-09-19T00:00:00-04:00</published><updated>2018-09-19T00:00:00-04:00</updated><author><name>Parth Shah</name></author><id>tag:None,2018-09-19:/anscombes-quartet.html</id><summary type="html">&lt;p&gt;I always believed in “numerical calculations are exact, but graphs are rough”. Coming from a person who has just started learning Data Analytics, it was hard for me to understand the importance of Data Visualization along with summary statistics. But it all changed after attending this Data Visualization Meetup, which …&lt;/p&gt;</summary><content type="html">&lt;p&gt;I always believed in “numerical calculations are exact, but graphs are rough”. Coming from a person who has just started learning Data Analytics, it was hard for me to understand the importance of Data Visualization along with summary statistics. But it all changed after attending this Data Visualization Meetup, which is when I was introduced to the &lt;em&gt;Anscombe’s Quartet&lt;/em&gt;.&lt;/p&gt;
-&lt;p&gt;Anscombe’s Quartet was developed by statistician Francis Anscombe. It comprises four datasets, each containing eleven (x,y) pairs. The essential thing to note about these datasets is that they share the same descriptive statistics. But things change completely, and I must emphasize &lt;strong&gt;COMPLETELY&lt;/strong&gt;, when they are graphed. Each graph tells a different story irrespective of their similar summary statistics.&lt;/p&gt;
-&lt;p&gt;&lt;img alt="image" src="images/summ-stats.png"&gt;&lt;/p&gt;
-&lt;p&gt;The summary statistics show that the means and the variances were identical for x and y across the groups :&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;Mean of x is 9 and mean of y is 7.50 for each dataset.&lt;/li&gt;
-&lt;li&gt;Similarly, the variance of x is 11 and variance of y is 4.13 for each dataset&lt;/li&gt;
-&lt;li&gt;The correlation coefficient (how strong a relationship is between two variables) between x and y is 0.816 for each dataset&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;When we plot these four datasets on an x/y coordinate plane, we can observe that they show the same regression lines as well but each dataset is telling a different story :&lt;/p&gt;
-&lt;p&gt;&lt;img alt="image" src="images/ancombe-plot.png"&gt;&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;Dataset I appears to have clean and well-fitting linear models.&lt;/li&gt;
-&lt;li&gt;Dataset II is not distributed normally.&lt;/li&gt;
-&lt;li&gt;In Dataset III the distribution is linear, but the calculated regression is thrown off by an outlier.&lt;/li&gt;
-&lt;li&gt;Dataset IV shows that one outlier is enough to produce a high correlation coefficient.&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;This quartet emphasizes the importance of visualization in Data Analysis. Looking at the data reveals a lot of the structure and a clear picture of the dataset.&lt;/p&gt;
-&lt;blockquote&gt;
-&lt;p&gt;A computer should make both calculations and graph. Both sorts of output should be studied; each will contribute to understanding.&lt;/p&gt;
-&lt;/blockquote&gt;</content></entry><entry><title>Data Preprocessing</title><link href="/data-preprocessing.html" rel="alternate"></link><published>2018-09-14T00:00:00-04:00</published><updated>2018-09-14T00:00:00-04:00</updated><author><name>Parth Shah</name></author><id>tag:None,2018-09-14:/data-preprocessing.html</id><summary type="html">&lt;p&gt;&lt;img alt="image" src="images/ml.png"&gt;&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Parth's Blog</title><link href="/" rel="alternate"></link><link href="/feeds/all.atom.xml" rel="self"></link><id>/</id><updated>2018-11-14T00:00:00-05:00</updated><entry><title>Data Preprocessing</title><link href="/data-preprocessing.html" rel="alternate"></link><published>2018-11-14T00:00:00-05:00</published><updated>2018-11-14T00:00:00-05:00</updated><author><name>Parth Shah</name></author><id>tag:None,2018-11-14:/data-preprocessing.html</id><summary type="html">&lt;p&gt;&lt;img alt="image" src="images/ml.png"&gt;&lt;/p&gt;
 &lt;p&gt;It was 6 pm on October 17th, 2018, when the wind came crashing at my window. I woke up from my little nap and as usual — I picked up my phone and went to YouTube. Well thanks to YouTube for recommending me this Siraj Raval’s video, where he simply …&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;img alt="image" src="images/ml.png"&gt;&lt;/p&gt;
 &lt;p&gt;It was 6 pm on October 17th, 2018, when the wind came crashing at my window. I woke up from my little nap and as usual — I picked up my phone and went to YouTube. Well thanks to YouTube for recommending me this Siraj Raval’s video, where he simply asks each and every Machine Learning enthusiasts to just dedicate at least one hour of everyday towards studying or coding Machine Learning. I found that motivating as I would have a goal to accomplish every day, rather than having one life-long goal that will take all of my time and effort to reach.&lt;/p&gt;
 &lt;p&gt;From the very next moment, I was absolutely devoted to embarking in this one-hour-a-day-ship of Machine Learning. So far my journey has been smooth and I can say with certainty that anyone boarding this ship will definitely reach their destination.&lt;/p&gt;
@@ -181,7 +161,7 @@
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;&lt;img alt="image" src="preprocess/ordencoded.png"&gt;
+&lt;p&gt;&lt;img alt="image" src="images/preprocess-ordencoded.png"&gt;
 Awesome!&lt;/p&gt;
 &lt;h1&gt;Step VI: Feature Scaling&lt;/h1&gt;
 &lt;ul&gt;
@@ -262,4 +242,24 @@ Awesome!&lt;/p&gt;
 
 
 &lt;h1&gt;Conclusion&lt;/h1&gt;
-&lt;p&gt;Now we can say that our data is ready for training our model on! In real life however, datasets are HUGE but I believe this can be a good starting point to practice and learn and implement the same strategy on large datasets.&lt;/p&gt;</content></entry></feed>
+&lt;p&gt;Now we can say that our data is ready for training our model on! In real life however, datasets are HUGE but I believe this can be a good starting point to practice and learn and implement the same strategy on large datasets.&lt;/p&gt;</content></entry><entry><title>Anscombe's Quartet</title><link href="/anscombes-quartet.html" rel="alternate"></link><published>2018-09-19T00:00:00-04:00</published><updated>2018-09-19T00:00:00-04:00</updated><author><name>Parth Shah</name></author><id>tag:None,2018-09-19:/anscombes-quartet.html</id><summary type="html">&lt;p&gt;I always believed in “numerical calculations are exact, but graphs are rough”. Coming from a person who has just started learning Data Analytics, it was hard for me to understand the importance of Data Visualization along with summary statistics. But it all changed after attending this Data Visualization Meetup, which …&lt;/p&gt;</summary><content type="html">&lt;p&gt;I always believed in “numerical calculations are exact, but graphs are rough”. Coming from a person who has just started learning Data Analytics, it was hard for me to understand the importance of Data Visualization along with summary statistics. But it all changed after attending this Data Visualization Meetup, which is when I was introduced to the &lt;em&gt;Anscombe’s Quartet&lt;/em&gt;.&lt;/p&gt;
+&lt;p&gt;Anscombe’s Quartet was developed by statistician Francis Anscombe. It comprises four datasets, each containing eleven (x,y) pairs. The essential thing to note about these datasets is that they share the same descriptive statistics. But things change completely, and I must emphasize &lt;strong&gt;COMPLETELY&lt;/strong&gt;, when they are graphed. Each graph tells a different story irrespective of their similar summary statistics.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="image" src="images/summ-stats.png"&gt;&lt;/p&gt;
+&lt;p&gt;The summary statistics show that the means and the variances were identical for x and y across the groups :&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Mean of x is 9 and mean of y is 7.50 for each dataset.&lt;/li&gt;
+&lt;li&gt;Similarly, the variance of x is 11 and variance of y is 4.13 for each dataset&lt;/li&gt;
+&lt;li&gt;The correlation coefficient (how strong a relationship is between two variables) between x and y is 0.816 for each dataset&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;When we plot these four datasets on an x/y coordinate plane, we can observe that they show the same regression lines as well but each dataset is telling a different story :&lt;/p&gt;
+&lt;p&gt;&lt;img alt="image" src="images/ancombe-plot.png"&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Dataset I appears to have clean and well-fitting linear models.&lt;/li&gt;
+&lt;li&gt;Dataset II is not distributed normally.&lt;/li&gt;
+&lt;li&gt;In Dataset III the distribution is linear, but the calculated regression is thrown off by an outlier.&lt;/li&gt;
+&lt;li&gt;Dataset IV shows that one outlier is enough to produce a high correlation coefficient.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;This quartet emphasizes the importance of visualization in Data Analysis. Looking at the data reveals a lot of the structure and a clear picture of the dataset.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;A computer should make both calculations and graph. Both sorts of output should be studied; each will contribute to understanding.&lt;/p&gt;
+&lt;/blockquote&gt;</content></entry></feed>
