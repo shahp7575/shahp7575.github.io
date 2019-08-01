@@ -9,7 +9,7 @@
 &lt;li&gt;The correlation coefficient (how strong a relationship is between two variables) between x and y is 0.816 for each dataset&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;When we plot these four datasets on an x/y coordinate plane, we can observe that they show the same regression lines as well but each dataset is telling a different story :&lt;/p&gt;
-&lt;p&gt;&lt;img alt="image" src="images/anscombe-plot.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="image" src="images/ancombe-plot.png"&gt;&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;Dataset I appears to have clean and well-fitting linear models.&lt;/li&gt;
 &lt;li&gt;Dataset II is not distributed normally.&lt;/li&gt;
