@@ -1,9 +1,3 @@
 title: About Me
-date: 03/31/2019
-author: Your Name Here
 
-# I am On My Way To Internet Fame and Fortune!
-
-This is my first post on my new blog. While not super informative it
-should convey my sense of excitement and eagerness to engage with you,
-the reader!
+Parth is a graduate student in Data Science at Rutgers University. He is passionate about data visualization, machine learning and digging the story behind the data. He is; a forever student, an avid reader, a musicophile, Netflix binger, and loves his purr-fect snuggle buddy!
