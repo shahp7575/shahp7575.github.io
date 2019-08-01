@@ -1,4 +1,4 @@
-title: First Post on My Sweet New Blog
+title: About Me
 date: 03/31/2019
 author: Your Name Here
 
