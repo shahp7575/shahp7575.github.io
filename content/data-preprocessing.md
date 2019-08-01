@@ -1,5 +1,5 @@
 title: Data Preprocessing
-date: 09/14/2018
+date: 11/14/2018
 author: Parth Shah
 
 ![image](images/ml.png)
@@ -129,7 +129,7 @@ from sklearn.preprocessing import OrdinalEncoder
 ordencoder = OrdinalEncoder()  
 dataset_labels = ordencoder.fit_transform(dataset_labels.reshape(-1,1))
 ```
-![image](preprocess/ordencoded.png)
+![image](images/preprocess-ordencoded.png)
 Awesome!
 
 # Step VI: Feature Scaling
