@@ -17,5 +17,7 @@ Projects I am working on:
 When I am not working you will probably find me making music or watching soccer. I am; a forever student, an avid reader, a musicophile,  diehard FCB fan (*Visca Barca*), and a Netflix binger. I live in East Windsor, New Jersey with my purr-fect snuggle buddy. For more see:
 
 GitHub: [https://github.com/shahp7575](https://github.com/shahp7575)
+
 Twitter: [https://twitter.com/shahp7575](https://twitter.com/shahp7575)
+
 LinkedIn: [https://www.linkedin.com/in/shahp7575/](https://www.linkedin.com/in/shahp7575/)
