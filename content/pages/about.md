@@ -3,7 +3,8 @@ title: About Me
 I am Parth and I am a graduate student in Data Science at Rutgers University. In the past I have worked as a Software Developer as well as a Support Engineer. I am passionate about data visualization, machine learning and digging the story behind the data. My long-term goal is to be the go-to person whenever data holds the key to solving a problem.
 
 I enjoy working with Python, Tableau and Minitab.
-Few of my projects include: 
+Few of my projects include:
+
 - Text mining project to classify disaster related tweets
 - Classifying quality of red wines based on their physicochemical features
 - An academic project to classify spam/non-spam emails.
