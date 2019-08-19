@@ -379,5 +379,5 @@ cols = ['match_day', 'match_date', 'home_team', 'away_team', 'home_team_score', 
 df = pd.DataFrame(all_matches, columns=cols)
 ```
 
-![image](images/laliga-df.JPG)
+![image](images/ancombe-plot.png)
 
