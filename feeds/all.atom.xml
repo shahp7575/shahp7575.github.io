@@ -121,8 +121,8 @@
   ...
  ]&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;Now I don't only want the scores, I want the detailed statistics for each and every match such as team's posession, offsides, fouls, etc. This can be obtained by following the same scraping process we did above, but now for each &lt;em&gt;data_link&lt;/em&gt; that we obtain from each match.&lt;/p&gt;
-&lt;p&gt;&lt;img alt="image" src="images/laliga-stats.jpg"&gt;
-&lt;strong&gt;Note&lt;/strong&gt;: This image is from the 2019/20 season as msn have updated it to the current season.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="image" src="images/laliga-stats.jpg"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Note&lt;/strong&gt;: This image is from the 2019/20 season as msn have updated it to the current season.&lt;/p&gt;
 &lt;p&gt;The following is the page source for one of the matches:&lt;/p&gt;
 &lt;p&gt;&lt;img alt="image" src="images/laliga-statsdetail.jpg"&gt;&lt;/p&gt;
 &lt;p&gt;The information of detailed stats is in the &lt;em&gt;div&lt;/em&gt; container with id &lt;em&gt;matchupgamestatsmodule&lt;/em&gt;. And all the individual statistics is present in the &lt;em&gt;div&lt;/em&gt; container with class &lt;em&gt;statsitem&lt;/em&gt;.&lt;/p&gt;
