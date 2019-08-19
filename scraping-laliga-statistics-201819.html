@@ -145,10 +145,10 @@
   ...
  ]</code></p>
 <p>Now I don't only want the scores, I want the detailed statistics for each and every match such as team's posession, offsides, fouls, etc. This can be obtained by following the same scraping process we did above, but now for each <em>data_link</em> that we obtain from each match.</p>
-<p><img alt="image" src="images/laliga-stats.jpg">
+<p><img alt="image" src="images/laliga-stats.JPG">
 <strong>Note</strong>: This image is from the 2019/20 season as msn have updated it to the current season.</p>
 <p>The following is the page source for one of the matches:</p>
-<p><img alt="image" src="images/laliga-statsdetails.jpg"></p>
+<p><img alt="image" src="images/laliga-statsdetail.jpg"></p>
 <p>The information of detailed stats is in the <em>div</em> container with id <em>matchupgamestatsmodule</em>. And all the individual statistics is present in the <em>div</em> container with class <em>statsitem</em>.</p>
 <div class="highlight"><pre><span></span><span class="n">html_link</span> <span class="o">=</span> <span class="n">urllib</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="n">data_link</span><span class="p">)</span>
 <span class="n">raw_link</span> <span class="o">=</span> <span class="n">bs4</span><span class="o">.</span><span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">html_link</span><span class="p">,</span> <span class="s1">&#39;lxml&#39;</span><span class="p">)</span>
