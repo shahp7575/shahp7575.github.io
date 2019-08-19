@@ -66,7 +66,80 @@
 <p><code>['https://www.msn.com/en-us/sports/soccer/la-liga/scores/',
  'https://www.msn.com/en-us/sports/soccer/la-liga/scores/sp-d-20190428',
  'https://www.msn.com/en-us/sports/soccer/la-liga/scores/sp-d-20190428-d-20190331',
- 'https://www.msn.com/en-us/sports/soccer/la-liga/scores/sp-d-20190428-d-20190331-d-20190303']</code></p>                </article>
+ 'https://www.msn.com/en-us/sports/soccer/la-liga/scores/sp-d-20190428-d-20190331-d-20190303'...]</code></p>
+<p>Once we have the links, all we have to do is create a script that runs through all the links and gives us the desired output. The page source of the web page looks like this:</p>
+<p><img alt="image" src="images/laliga-pagesource.png"></p>
+<p>Our scores are listed in the <em>sectionsgroup</em> container. Each team scores are in a <em>tbody</em> tag distributed by <em>even rowlink</em> and <em>odd rownlink</em> classes. Now we can use the power of BeautifulSoup to scrape the contents with just two functions:</p>
+<ul>
+<li><em>find</em>: This function takes the name of the tag as string input and returns the first found match from the webpage. <ul>
+<li>Here we will find the <em>div</em> container with class <em>sectionsgroup</em> that contains all the score results.</li>
+</ul>
+</li>
+<li><em>findAll</em>: to extract all the occurrences of a particular tag from the page.<ul>
+<li>Here we will <em>findAll</em> the <em>tbody</em> tags with classes <em>even rowlink</em> &amp; <em>odd rowlink</em> and then loop through each of them to get the contents.</li>
+</ul>
+</li>
+</ul>
+<p>The following is the code to scrape just one webpage:</p>
+<div class="highlight"><pre><span></span><span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;https://www.msn.com/en-us/sports/soccer/la-liga/scores/&#39;</span>
+<span class="n">html</span> <span class="o">=</span> <span class="n">urllib</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="n">url</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+<span class="n">raw</span> <span class="o">=</span> <span class="n">bs4</span><span class="o">.</span><span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">html</span><span class="p">,</span> <span class="s1">&#39;lxml&#39;</span><span class="p">)</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">raw</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;div&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;class&#39;</span><span class="p">:</span> <span class="s1">&#39;sectionsgroup&#39;</span><span class="p">})</span><span class="o">.</span><span class="n">findAll</span><span class="p">(</span><span class="s1">&#39;tbody&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;class&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;even rowlink&#39;</span><span class="p">,</span> <span class="s1">&#39;odd rowlink&#39;</span><span class="p">]})</span>
+<span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
+    <span class="n">home_team</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;td&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;class&#39;</span><span class="p">:</span> <span class="s1">&#39;teamname teaminline alignright size23&#39;</span><span class="p">})</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    <span class="n">away_team</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;td&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;class&#39;</span><span class="p">:</span> <span class="s1">&#39;teamname size23&#39;</span><span class="p">})</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    <span class="n">match_date</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;td&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;class&#39;</span><span class="p">:</span> <span class="s1">&#39;groupingcolumn paddingleft&#39;</span><span class="p">})</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;div&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;class&#39;</span><span class="p">:</span> <span class="s1">&#39;matchdate&#39;</span><span class="p">})</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    <span class="n">scores</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">findAll</span><span class="p">(</span><span class="s1">&#39;td&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;class&#39;</span><span class="p">:</span> <span class="s1">&#39;teamscore&#39;</span><span class="p">})</span>
+
+    <span class="n">home_team_score</span> <span class="o">=</span> <span class="n">scores</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    <span class="n">away_team_score</span> <span class="o">=</span> <span class="n">scores</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+
+    <span class="n">data_link</span> <span class="o">=</span> <span class="s1">&#39;https://www.msn.com&#39;</span> <span class="o">+</span> <span class="n">r</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;href&#39;</span><span class="p">)</span>
+</pre></div>
+
+
+<p>This gives us the team names, match date, their scores and the <em>data_link</em>(link that takes us to a separate page for detailed statistics of each match) using just <em>find</em> and <em>findAll</em> tags. Now to run through all pages we just have to run this for each and every link and append the results to a list.</p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">get_html</span><span class="p">(</span><span class="n">urls</span><span class="p">):</span>
+    <span class="n">teams</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">url</span> <span class="ow">in</span> <span class="n">urls</span><span class="p">:</span>
+        <span class="n">html</span> <span class="o">=</span> <span class="n">urllib</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="n">url</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="n">raw</span> <span class="o">=</span> <span class="n">bs4</span><span class="o">.</span><span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">html</span><span class="p">,</span> <span class="s1">&#39;lxml&#39;</span><span class="p">)</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="n">raw</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;div&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;class&#39;</span><span class="p">:</span> <span class="s1">&#39;sectionsgroup&#39;</span><span class="p">})</span><span class="o">.</span><span class="n">findAll</span><span class="p">(</span><span class="s1">&#39;tbody&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;class&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;even rowlink&#39;</span><span class="p">,</span> <span class="s1">&#39;odd rowlink&#39;</span><span class="p">]})</span>
+        <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
+            <span class="n">home_team</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;td&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;class&#39;</span><span class="p">:</span> <span class="s1">&#39;teamname teaminline alignright size23&#39;</span><span class="p">})</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="n">away_team</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;td&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;class&#39;</span><span class="p">:</span> <span class="s1">&#39;teamname size23&#39;</span><span class="p">})</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="n">match_date</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;td&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;class&#39;</span><span class="p">:</span> <span class="s1">&#39;groupingcolumn paddingleft&#39;</span><span class="p">})</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;div&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;class&#39;</span><span class="p">:</span> <span class="s1">&#39;matchdate&#39;</span><span class="p">})</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="n">scores</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">findAll</span><span class="p">(</span><span class="s1">&#39;td&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;class&#39;</span><span class="p">:</span> <span class="s1">&#39;teamscore&#39;</span><span class="p">})</span>
+
+            <span class="n">home_team_score</span> <span class="o">=</span> <span class="n">scores</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="n">away_team_score</span> <span class="o">=</span> <span class="n">scores</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+
+            <span class="n">data_link</span> <span class="o">=</span> <span class="s1">&#39;https://www.msn.com&#39;</span> <span class="o">+</span> <span class="n">r</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;href&#39;</span><span class="p">)</span>
+
+            <span class="n">teams</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">match_date</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span> <span class="n">match_date</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">:],</span> <span class="n">home_team</span><span class="p">,</span> <span class="n">away_team</span><span class="p">,</span>
+                          <span class="n">home_team_score</span><span class="p">,</span> <span class="n">away_team_score</span><span class="p">,</span> <span class="n">data_link</span><span class="p">])</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">teams</span>
+</pre></div>
+
+
+<p>This gives us results for each match in a list that can be easily converted into a dataframe. </p>
+<p><code>[['Sun',
+  'May 19',
+  'Eibar',
+  'Barça',
+  '2',
+  '2',
+  'https://www.msn.com/en-us/sports/soccer/la-liga/eibar-v-barcelona/game-center/sp-id-80402000001009693'],
+ ['Sun',
+  'May 19',
+  'Real Madrid',
+  'Betis',
+  '0',
+  '2',
+  'https://www.msn.com/en-us/sports/soccer/la-liga/real-madrid-v-real-betis/game-center/sp-id-80402000001009694'],
+  ...
+ ]</code></p>                </article>
             </aside><!-- /#featured -->
                 <section id="content" class="body">
                     <h1>Other articles</h1>
