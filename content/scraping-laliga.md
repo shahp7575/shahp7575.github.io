@@ -12,7 +12,7 @@ I have used Python 3.6 for this tutorial. The required libraries are as follows:
 - urllib (Module for working with URLs)
 
 ## Web Scraping from msn.com
-![image](images/laliga-home.png)
+![image](images/laliga-home.PNG)
 The website lists the scores for each month on a separate page and it follows this pattern: 
 *https://www.msn.com/en-us/sports/soccer/la-liga/scores/*
 *https://www.msn.com/en-us/sports/soccer/la-liga/scores/sp-d-20190428*
