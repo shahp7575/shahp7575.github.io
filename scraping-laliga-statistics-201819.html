@@ -34,8 +34,7 @@
         </address>
 <p>In <a href="/category/misc.html">misc</a>.</p>
 
-</footer><!-- /.post-info -->      <h1>Scraping Laliga Statistics with Python</h1>
-<h2>Environment Setup</h2>
+</footer><!-- /.post-info -->      <h2>Environment Setup</h2>
 <p>I have used Python 3.6 for this tutorial. The required libraries are as follows:</p>
 <ul>
 <li>numpy</li>
@@ -50,7 +49,7 @@
 <p><em>https://www.msn.com/en-us/sports/soccer/la-liga/scores/sp-d-20190428</em></p>
 <p><em>https://www.msn.com/en-us/sports/soccer/la-liga/scores/sp-d-20190428-d-20190331</em></p>
 <p><em>https://www.msn.com/en-us/sports/soccer/la-liga/scores/sp-d-20190428-d-20190331-d-20190303</em></p>
-<p>As we can see notice the pattern here:</p>
+<p>As we can see notice the pattern here:(<em>I</em>)</p>
 <p>http://............./sp-d-(<em>new-match-date</em>)-d-(<em>past-date</em>)-d-(<em>past-date</em>).</p>
 <p>I recorded those dates in a list and created a function that gives me all the links.</p>
 <div class="highlight"><pre><span></span><span class="n">links</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;20190428&#39;</span><span class="p">,</span> <span class="s1">&#39;20190331&#39;</span><span class="p">,</span> <span class="s1">&#39;20190303&#39;</span><span class="p">,</span> <span class="s1">&#39;20190203&#39;</span><span class="p">,</span> <span class="s1">&#39;20190106&#39;</span><span class="p">,</span> <span class="s1">&#39;20181209&#39;</span><span class="p">,</span> <span class="s1">&#39;20181111&#39;</span><span class="p">,</span> <span class="s1">&#39;20181014&#39;</span><span class="p">,</span> <span class="s1">&#39;20180916&#39;</span><span class="p">,</span> <span class="s1">&#39;20180819&#39;</span><span class="p">]</span>
@@ -67,6 +66,12 @@
 
 <span class="n">urls</span> <span class="o">=</span> <span class="n">fetch_website</span><span class="p">(</span><span class="n">links</span><span class="p">)</span>
 </pre></div>
+
+
+<p><code>['https://www.msn.com/en-us/sports/soccer/la-liga/scores/',
+ 'https://www.msn.com/en-us/sports/soccer/la-liga/scores/sp-d-20190428',
+ 'https://www.msn.com/en-us/sports/soccer/la-liga/scores/sp-d-20190428-d-20190331',
+ 'https://www.msn.com/en-us/sports/soccer/la-liga/scores/sp-d-20190428-d-20190331-d-20190303']</code></p>
     </div><!-- /.entry-content -->
 
   </article>
