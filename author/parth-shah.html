@@ -29,7 +29,9 @@
         </address>
 <p>In <a href="/category/misc.html">misc</a>.</p>
 
-</footer><!-- /.post-info --><h2>Environment Setup</h2>
+</footer><!-- /.post-info --><p>If there's something I do besides data science then it's watching soccer, especially LaLiga. You might hear me scream for a goal if you pass by my house on a weekend. But lately I realized that watching just LaLiga wasn't enough for me. I wanted to explore how each and every team is performing with time as well as against other teams. Which team plays aggressively? Which team dominates the posession?</p>
+<p>After a lot of research I didn't find the data I was looking for. So I decided to scrape it by myself. In this article I will show how with the help of Python I scraped the match results along with game statistics for each team in LaLiga 2018/19 season. </p>
+<h2>Environment Setup</h2>
 <p>I have used Python 3.6 for this tutorial. The required libraries are as follows:</p>
 <ul>
 <li>numpy</li>
@@ -37,14 +39,14 @@
 <li>bs4 (BeautifulSoup)</li>
 <li>urllib (Module for working with URLs)</li>
 </ul>
-<h2>Web Scraping from msn.com</h2>
+<h2>Web Scraping from <a href="https://www.msn.com/en-us/sports/soccer/la-liga/scores/">MSN</a></h2>
 <p><img alt="image" src="images/laliga-home.png"></p>
 <p>The website lists the scores for each month on a separate page and it follows this pattern: </p>
 <p><em>https://www.msn.com/en-us/sports/soccer/la-liga/scores/</em></p>
 <p><em>https://www.msn.com/en-us/sports/soccer/la-liga/scores/sp-d-20190428</em></p>
 <p><em>https://www.msn.com/en-us/sports/soccer/la-liga/scores/sp-d-20190428-d-20190331</em></p>
 <p><em>https://www.msn.com/en-us/sports/soccer/la-liga/scores/sp-d-20190428-d-20190331-d-20190303</em></p>
-<p>As we can see notice the pattern here:(<em>I</em>)</p>
+<p>As we can notice the pattern here:(<em>I</em>)</p>
 <p>http://............./sp-d-(<em>new-match-date</em>)-d-(<em>past-date</em>)-d-(<em>past-date</em>).</p>
 <p>I recorded those dates in a list and created a function that gives me all the links.</p>
 <div class="highlight"><pre><span></span><span class="n">links</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;20190428&#39;</span><span class="p">,</span> <span class="s1">&#39;20190331&#39;</span><span class="p">,</span> <span class="s1">&#39;20190303&#39;</span><span class="p">,</span> <span class="s1">&#39;20190203&#39;</span><span class="p">,</span> <span class="s1">&#39;20190106&#39;</span><span class="p">,</span> <span class="s1">&#39;20181209&#39;</span><span class="p">,</span> <span class="s1">&#39;20181111&#39;</span><span class="p">,</span> <span class="s1">&#39;20181014&#39;</span><span class="p">,</span> <span class="s1">&#39;20180916&#39;</span><span class="p">,</span> <span class="s1">&#39;20180819&#39;</span><span class="p">]</span>
@@ -384,7 +386,8 @@
 <p><img alt="image" src="images/laliga-df.jpg"></p>
 <p>Now we can play around with this data and find insights. I am a huge fan of Barcelona so I decided to explore their different statistics and how they perform against other teams. </p>
 <p>Here is one of the plot that I made in Tableau (dashboard building in progress) that explores the number of fouls committed by Barcelona against other teams and vice-versa.</p>
-<p><img alt="image" src="images/laliga-barca.jpg"></p>                </article>
+<p><img alt="image" src="images/laliga-barca.jpg"></p>
+<p>Thank you for reading! Don't hesitate to reach out to me if you have any suggestion or an improvement.</p>                </article>
             </aside><!-- /#featured -->
                 <section id="content" class="body">
                     <h1>Other articles</h1>
