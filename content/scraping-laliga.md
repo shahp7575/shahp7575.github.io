@@ -53,7 +53,7 @@ urls = fetch_website(links)
  
  Once we have the links, all we have to do is create a script that runs through all the links and gives us the desired output. The page source of the web page looks like this:
 
-![image](images/laliga-pagesource.png)
+![image](images/laliga-pagesource.jpg)
 
 Our scores are listed in the *sectionsgroup* container. Each team scores are in a *tbody* tag distributed by *even rowlink* and *odd rownlink* classes. Now we can use the power of BeautifulSoup to scrape the contents with just two functions:
 
