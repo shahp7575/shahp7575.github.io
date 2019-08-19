@@ -2,6 +2,10 @@ title: Scraping LaLiga Statistics 2018/19
 date: 08/19/2019
 author: Parth Shah
 
+If there's something I do besides data science then it's watching soccer, especially LaLiga. You might hear me scream for a goal if you pass by my house on a weekend. But lately I realized that watching just LaLiga wasn't enough for me. I wanted to explore how each and every team is performing with time as well as against other teams. Which team plays aggressively? Which team dominates the posession?
+
+After a lot of research I didn't find the data I was looking for. So I decided to scrape it by myself. In this article I will show how with the help of Python I scraped the match results along with game statistics for each team in LaLiga 2018/19 season. 
+
 ## Environment Setup
 I have used Python 3.6 for this tutorial. The required libraries are as follows:
 
@@ -10,7 +14,7 @@ I have used Python 3.6 for this tutorial. The required libraries are as follows:
 - bs4 (BeautifulSoup)
 - urllib (Module for working with URLs)
 
-## Web Scraping from msn.com
+## Web Scraping from [MSN](https://www.msn.com/en-us/sports/soccer/la-liga/scores/)
 
 ![image](images/laliga-home.png)
 
@@ -24,7 +28,7 @@ The website lists the scores for each month on a separate page and it follows th
 
 *https://www.msn.com/en-us/sports/soccer/la-liga/scores/sp-d-20190428-d-20190331-d-20190303*
 
-As we can see notice the pattern here:(*I*)
+As we can notice the pattern here:(*I*)
 
 http://............./sp-d-(*new-match-date*)-d-(*past-date*)-d-(*past-date*).
 
@@ -387,3 +391,5 @@ Now we can play around with this data and find insights. I am a huge fan of Barc
 Here is one of the plot that I made in Tableau (dashboard building in progress) that explores the number of fouls committed by Barcelona against other teams and vice-versa.
 
 ![image](images/laliga-barca.jpg)
+
+Thank you for reading! Don't hesitate to reach out to me if you have any suggestion or an improvement.
