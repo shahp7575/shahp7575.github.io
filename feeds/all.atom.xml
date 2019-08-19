@@ -49,7 +49,7 @@
  'https://www.msn.com/en-us/sports/soccer/la-liga/scores/sp-d-20190428-d-20190331',
  'https://www.msn.com/en-us/sports/soccer/la-liga/scores/sp-d-20190428-d-20190331-d-20190303'...]&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;Once we have the links, all we have to do is create a script that runs through all the links and gives us the desired output. The page source of the web page looks like this:&lt;/p&gt;
-&lt;p&gt;&lt;img alt="image" src="images/laliga-pagesource.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="image" src="images/laliga-pagesource.jpg"&gt;&lt;/p&gt;
 &lt;p&gt;Our scores are listed in the &lt;em&gt;sectionsgroup&lt;/em&gt; container. Each team scores are in a &lt;em&gt;tbody&lt;/em&gt; tag distributed by &lt;em&gt;even rowlink&lt;/em&gt; and &lt;em&gt;odd rownlink&lt;/em&gt; classes. Now we can use the power of BeautifulSoup to scrape the contents with just two functions:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;em&gt;find&lt;/em&gt;: This function takes the name of the tag as string input and returns the first found match from the webpage. &lt;ul&gt;
