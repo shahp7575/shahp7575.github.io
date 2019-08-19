@@ -13,13 +13,395 @@
                 <nav><ul>
                     <li><a href="/pages/about-me.html">About Me</a></li>
                     <li class="active"><a href="/category/blog.html">Blog</a></li>
-                    <li><a href="/category/misc.html">misc</a></li>
                 </ul></nav>
         </header><!-- /#banner -->
 
             <aside id="featured" class="body">
                 <article>
-                    <h1 class="entry-title"><a href="/data-preprocessing.html">Data Preprocessing</a></h1>
+                    <h1 class="entry-title"><a href="/scraping-laliga-statistics-201819.html">Scraping LaLiga Statistics 2018/19</a></h1>
+<footer class="post-info">
+        <abbr class="published" title="2019-08-19T00:00:00-04:00">
+                Published: Mon 19 August 2019
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="/author/parth-shah.html">Parth Shah</a>
+        </address>
+<p>In <a href="/category/blog.html">Blog</a>.</p>
+
+</footer><!-- /.post-info --><p><img alt="image" src="images/laliga.png"></p>
+<p>If there's something I do besides data science then it's watching soccer, especially LaLiga. You might hear me scream for a goal if you pass by my house on a weekend. But lately I realized that watching just LaLiga wasn't enough for me. I wanted to explore how each and every team is performing with time as well as against other teams. Which team plays aggressively? Which team dominates the posession?</p>
+<p>After a lot of research I didn't find the data I was looking for. So I decided to scrape it by myself. In this article I will show how with the help of Python I scraped the match results along with game statistics for each team in LaLiga 2018/19 season. </p>
+<h2>Environment Setup</h2>
+<p>I have used Python 3.6 for this tutorial. The required libraries are as follows:</p>
+<ul>
+<li>numpy</li>
+<li>pandas</li>
+<li>bs4 (BeautifulSoup)</li>
+<li>urllib (Module for working with URLs)</li>
+</ul>
+<h2>Web Scraping from <a href="https://www.msn.com/en-us/sports/soccer/la-liga/scores/">MSN</a></h2>
+<p><img alt="image" src="images/laliga-home.png"></p>
+<p>The website lists the scores for each month on a separate page and it follows this pattern: </p>
+<p><em>https://www.msn.com/en-us/sports/soccer/la-liga/scores/</em></p>
+<p><em>https://www.msn.com/en-us/sports/soccer/la-liga/scores/sp-d-20190428</em></p>
+<p><em>https://www.msn.com/en-us/sports/soccer/la-liga/scores/sp-d-20190428-d-20190331</em></p>
+<p><em>https://www.msn.com/en-us/sports/soccer/la-liga/scores/sp-d-20190428-d-20190331-d-20190303</em></p>
+<p>As we can notice the pattern here:(<em>I</em>)</p>
+<p>http://............./sp-d-(<em>new-match-date</em>)-d-(<em>past-date</em>)-d-(<em>past-date</em>).</p>
+<p>I recorded those dates in a list and created a function that gives me all the links.</p>
+<div class="highlight"><pre><span></span><span class="n">links</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;20190428&#39;</span><span class="p">,</span> <span class="s1">&#39;20190331&#39;</span><span class="p">,</span> <span class="s1">&#39;20190303&#39;</span><span class="p">,</span> <span class="s1">&#39;20190203&#39;</span><span class="p">,</span> <span class="s1">&#39;20190106&#39;</span><span class="p">,</span> <span class="s1">&#39;20181209&#39;</span><span class="p">,</span> <span class="s1">&#39;20181111&#39;</span><span class="p">,</span> <span class="s1">&#39;20181014&#39;</span><span class="p">,</span> <span class="s1">&#39;20180916&#39;</span><span class="p">,</span> <span class="s1">&#39;20180819&#39;</span><span class="p">]</span>
+
+<span class="k">def</span> <span class="nf">fetch_website</span><span class="p">(</span><span class="n">links</span><span class="p">):</span>
+    <span class="n">urls</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;https://www.msn.com/en-us/sports/soccer/la-liga/scores/&#39;</span>
+    <span class="n">urls</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+    <span class="n">url</span> <span class="o">+=</span> <span class="s1">&#39;sp&#39;</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">l</span> <span class="ow">in</span>  <span class="nb">enumerate</span><span class="p">(</span><span class="n">links</span><span class="p">):</span>
+        <span class="n">url</span> <span class="o">+=</span> <span class="s1">&#39;-d-&#39;</span> <span class="o">+</span> <span class="n">links</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">urls</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">urls</span>
+
+<span class="n">urls</span> <span class="o">=</span> <span class="n">fetch_website</span><span class="p">(</span><span class="n">links</span><span class="p">)</span>
+</pre></div>
+
+
+<p><code>['https://www.msn.com/en-us/sports/soccer/la-liga/scores/',
+ 'https://www.msn.com/en-us/sports/soccer/la-liga/scores/sp-d-20190428',
+ 'https://www.msn.com/en-us/sports/soccer/la-liga/scores/sp-d-20190428-d-20190331',
+ 'https://www.msn.com/en-us/sports/soccer/la-liga/scores/sp-d-20190428-d-20190331-d-20190303'...]</code></p>
+<p>Once we have the links, all we have to do is create a script that runs through all the links and gives us the desired output. The page source of the web page looks like this:</p>
+<p><img alt="image" src="images/laliga-pagesource.jpg"></p>
+<p>Our scores are listed in the <em>sectionsgroup</em> container. Each team scores are in a <em>tbody</em> tag distributed by <em>even rowlink</em> and <em>odd rownlink</em> classes. Now we can use the power of BeautifulSoup to scrape the contents with just two functions:</p>
+<ul>
+<li><em>find</em>: This function takes the name of the tag as string input and returns the first found match from the webpage. <ul>
+<li>Here we will find the <em>div</em> container with class <em>sectionsgroup</em> that contains all the score results.</li>
+</ul>
+</li>
+<li><em>findAll</em>: to extract all the occurrences of a particular tag from the page.<ul>
+<li>Here we will <em>findAll</em> the <em>tbody</em> tags with classes <em>even rowlink</em> &amp; <em>odd rowlink</em> and then loop through each of them to get the contents.</li>
+</ul>
+</li>
+</ul>
+<p>The following is the code to scrape just one webpage:</p>
+<div class="highlight"><pre><span></span><span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;https://www.msn.com/en-us/sports/soccer/la-liga/scores/&#39;</span>
+<span class="n">html</span> <span class="o">=</span> <span class="n">urllib</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="n">url</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+<span class="n">raw</span> <span class="o">=</span> <span class="n">bs4</span><span class="o">.</span><span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">html</span><span class="p">,</span> <span class="s1">&#39;lxml&#39;</span><span class="p">)</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">raw</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;div&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;class&#39;</span><span class="p">:</span> <span class="s1">&#39;sectionsgroup&#39;</span><span class="p">})</span><span class="o">.</span><span class="n">findAll</span><span class="p">(</span><span class="s1">&#39;tbody&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;class&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;even rowlink&#39;</span><span class="p">,</span> <span class="s1">&#39;odd rowlink&#39;</span><span class="p">]})</span>
+<span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
+    <span class="n">home_team</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;td&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;class&#39;</span><span class="p">:</span> <span class="s1">&#39;teamname teaminline alignright size23&#39;</span><span class="p">})</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    <span class="n">away_team</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;td&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;class&#39;</span><span class="p">:</span> <span class="s1">&#39;teamname size23&#39;</span><span class="p">})</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    <span class="n">match_date</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;td&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;class&#39;</span><span class="p">:</span> <span class="s1">&#39;groupingcolumn paddingleft&#39;</span><span class="p">})</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;div&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;class&#39;</span><span class="p">:</span> <span class="s1">&#39;matchdate&#39;</span><span class="p">})</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    <span class="n">scores</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">findAll</span><span class="p">(</span><span class="s1">&#39;td&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;class&#39;</span><span class="p">:</span> <span class="s1">&#39;teamscore&#39;</span><span class="p">})</span>
+
+    <span class="n">home_team_score</span> <span class="o">=</span> <span class="n">scores</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    <span class="n">away_team_score</span> <span class="o">=</span> <span class="n">scores</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+
+    <span class="n">data_link</span> <span class="o">=</span> <span class="s1">&#39;https://www.msn.com&#39;</span> <span class="o">+</span> <span class="n">r</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;href&#39;</span><span class="p">)</span>
+</pre></div>
+
+
+<p>This gives us the team names, match date, their scores and the <em>data_link</em>(link that takes us to a separate page for detailed statistics of each match) using just <em>find</em> and <em>findAll</em> tags. Now to run through all pages we just have to run this for each and every link and append the results to a list.</p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">get_html</span><span class="p">(</span><span class="n">urls</span><span class="p">):</span>
+    <span class="n">teams</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">url</span> <span class="ow">in</span> <span class="n">urls</span><span class="p">:</span>
+        <span class="n">html</span> <span class="o">=</span> <span class="n">urllib</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="n">url</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="n">raw</span> <span class="o">=</span> <span class="n">bs4</span><span class="o">.</span><span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">html</span><span class="p">,</span> <span class="s1">&#39;lxml&#39;</span><span class="p">)</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="n">raw</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;div&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;class&#39;</span><span class="p">:</span> <span class="s1">&#39;sectionsgroup&#39;</span><span class="p">})</span><span class="o">.</span><span class="n">findAll</span><span class="p">(</span><span class="s1">&#39;tbody&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;class&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;even rowlink&#39;</span><span class="p">,</span> <span class="s1">&#39;odd rowlink&#39;</span><span class="p">]})</span>
+        <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
+            <span class="n">home_team</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;td&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;class&#39;</span><span class="p">:</span> <span class="s1">&#39;teamname teaminline alignright size23&#39;</span><span class="p">})</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="n">away_team</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;td&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;class&#39;</span><span class="p">:</span> <span class="s1">&#39;teamname size23&#39;</span><span class="p">})</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="n">match_date</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;td&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;class&#39;</span><span class="p">:</span> <span class="s1">&#39;groupingcolumn paddingleft&#39;</span><span class="p">})</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;div&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;class&#39;</span><span class="p">:</span> <span class="s1">&#39;matchdate&#39;</span><span class="p">})</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="n">scores</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">findAll</span><span class="p">(</span><span class="s1">&#39;td&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;class&#39;</span><span class="p">:</span> <span class="s1">&#39;teamscore&#39;</span><span class="p">})</span>
+
+            <span class="n">home_team_score</span> <span class="o">=</span> <span class="n">scores</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="n">away_team_score</span> <span class="o">=</span> <span class="n">scores</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+
+            <span class="n">data_link</span> <span class="o">=</span> <span class="s1">&#39;https://www.msn.com&#39;</span> <span class="o">+</span> <span class="n">r</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;href&#39;</span><span class="p">)</span>
+
+            <span class="n">teams</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">match_date</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span> <span class="n">match_date</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">:],</span> <span class="n">home_team</span><span class="p">,</span> <span class="n">away_team</span><span class="p">,</span>
+                          <span class="n">home_team_score</span><span class="p">,</span> <span class="n">away_team_score</span><span class="p">,</span> <span class="n">data_link</span><span class="p">])</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">teams</span>
+</pre></div>
+
+
+<p><code>[['Sun',
+  'May 19',
+  'Eibar',
+  'Barça',
+  '2',
+  '2',
+  'https://www.msn.com/en-us/sports/soccer/la-liga/eibar-v-barcelona/game-center/sp-id-80402000001009693'],
+ ['Sun',
+  'May 19',
+  'Real Madrid',
+  'Betis',
+  '0',
+  '2',
+  'https://www.msn.com/en-us/sports/soccer/la-liga/real-madrid-v-real-betis/game-center/sp-id-80402000001009694'],
+  ...
+ ]</code></p>
+<p>Now I don't only want the scores, I want the detailed statistics for each and every match such as team's posession, offsides, fouls, etc. This can be obtained by following the same scraping process we did above, but now for each <em>data_link</em> that we obtain from each match.</p>
+<p><img alt="image" src="images/laliga-stats.jpg"></p>
+<p><strong>Note</strong>: This image is from the 2019/20 season as msn have updated it to the current season.</p>
+<p>The following is the page source for one of the matches:</p>
+<p><img alt="image" src="images/laliga-statsdetail.jpg"></p>
+<p>The information of detailed stats is in the <em>div</em> container with id <em>matchupgamestatsmodule</em>. And all the individual statistics is present in the <em>div</em> container with class <em>statsitem</em>.</p>
+<div class="highlight"><pre><span></span><span class="n">html_link</span> <span class="o">=</span> <span class="n">urllib</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="n">data_link</span><span class="p">)</span>
+<span class="n">raw_link</span> <span class="o">=</span> <span class="n">bs4</span><span class="o">.</span><span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">html_link</span><span class="p">,</span> <span class="s1">&#39;lxml&#39;</span><span class="p">)</span>
+<span class="n">result_link</span> <span class="o">=</span> <span class="n">raw_link</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;div&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="s1">&#39;main&#39;</span><span class="p">})</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;div&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="s1">&#39;matchupgamestatsmodule&#39;</span><span class="p">})</span><span class="o">.</span><span class="n">findAll</span><span class="p">(</span><span class="s1">&#39;div&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;class&#39;</span><span class="p">:</span> <span class="s1">&#39;statsitem&#39;</span><span class="p">})</span>
+</pre></div>
+
+
+<div class="highlight"><pre><span></span>[<span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;statsitem&quot;</span><span class="p">&gt;</span> 
+ <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;statsvalue clearfix&quot;</span><span class="p">&gt;</span> 
+ <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;firstteamstats&quot;</span><span class="p">&gt;</span>28<span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span> 
+ <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;label&quot;</span><span class="p">&gt;</span> BALL POSSESSION % <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span> 
+ <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;secondteamstats&quot;</span><span class="p">&gt;</span>72<span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span> <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span> 
+ ...
+ <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;firstteamstats&quot;</span><span class="p">&gt;</span>11<span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span> 
+ <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;label&quot;</span><span class="p">&gt;</span> SHOTS <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span> <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;secondteamstats&quot;</span><span class="p">&gt;</span>11<span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span> 
+ ...]
+</pre></div>
+
+
+<p>Here there is no way to separate out individual statistics as all the class labels have been named the same for each statistics. The only way to separate them out is the text of the <em>div</em> tag with class <em>label</em>. So instead of fetching each stats through html elements, I simply converted them into a list which is simply looping through each <em>statsitem</em> container and get the textual data.</p>
+<div class="highlight"><pre><span></span><span class="n">stats</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">rl</span> <span class="ow">in</span> <span class="n">result_link</span><span class="p">:</span>
+  <span class="n">stats</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">rl</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
+</pre></div>
+
+
+<p>Now we have a nice list with individual statistics. The first and the last value in the list represent the stats of home team and away team respectively. </p>
+<p>[['28', 'BALL', 'POSSESSION', '%', '72'], 
+['11', 'SHOTS', '11'], 
+['5', 'SHOTS', 'ON', 'GOAL', '2'], 
+['14', 'FOULS', '9'], 
+['3', 'CORNERS', '8'], 
+['2', 'SAVES', '4'], 
+['2', 'OFFSIDES', '1'], 
+['1', 'YELLOW', 'CARDS', '1'], 
+['0', 'RED', 'CARDS', '0']]</p>
+<p>The second element in each list would be an identifier for each type of stats. I created a separate function <em>get_stats(stats)</em> for that. The <em>stats</em> parameter in the function is the list we obtained above which can be passed through our main <em>get_html()</em> function.</p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">get_stats</span><span class="p">(</span><span class="n">stats</span><span class="p">):</span>
+    <span class="n">stat_list</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;BALL&#39;</span><span class="p">,</span> <span class="s1">&#39;SHOTS&#39;</span><span class="p">,</span> <span class="s1">&#39;FOULS&#39;</span><span class="p">,</span> <span class="s1">&#39;CORNERS&#39;</span><span class="p">,</span> <span class="s1">&#39;SAVES&#39;</span><span class="p">,</span> <span class="s1">&#39;OFFSIDES&#39;</span><span class="p">,</span> <span class="s1">&#39;YELLOW&#39;</span><span class="p">,</span> <span class="s1">&#39;RED&#39;</span><span class="p">]</span>
+    <span class="n">len_stats</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">stats</span><span class="p">)</span>
+    <span class="n">home_shots_og</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="n">away_shots_og</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="n">home_saves</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="n">away_saves</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="n">home_offsides</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="n">away_offsides</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="n">home_poss</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="n">away_poss</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="n">home_fouls</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="n">away_fouls</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="n">home_shots</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="n">away_shots</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="n">home_corners</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="n">away_corners</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="n">home_yellow</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="n">away_yellow</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="n">home_red</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="n">away_red</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">len_stats</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">stats</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="ow">in</span> <span class="n">stat_list</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">stats</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;BALL&#39;</span><span class="p">:</span>
+                <span class="n">home_poss</span> <span class="o">=</span> <span class="n">stats</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">away_poss</span> <span class="o">=</span> <span class="n">stats</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">stats</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;FOULS&#39;</span><span class="p">:</span>
+                <span class="n">home_fouls</span> <span class="o">=</span> <span class="n">stats</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">away_fouls</span> <span class="o">=</span> <span class="n">stats</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">stats</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;CORNERS&#39;</span><span class="p">:</span>
+                <span class="n">home_corners</span> <span class="o">=</span> <span class="n">stats</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">away_corners</span> <span class="o">=</span> <span class="n">stats</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">stats</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;SAVES&#39;</span><span class="p">:</span>
+                <span class="n">home_saves</span> <span class="o">=</span> <span class="n">stats</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">away_saves</span> <span class="o">=</span> <span class="n">stats</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">stats</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;OFFSIDES&#39;</span><span class="p">:</span>
+                <span class="n">home_offsides</span> <span class="o">=</span> <span class="n">stats</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">away_offsides</span> <span class="o">=</span> <span class="n">stats</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">stats</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;YELLOW&#39;</span><span class="p">:</span>
+                <span class="n">home_yellow</span> <span class="o">=</span> <span class="n">stats</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">away_yellow</span> <span class="o">=</span> <span class="n">stats</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">stats</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;RED&#39;</span><span class="p">:</span>
+                <span class="n">home_red</span> <span class="o">=</span> <span class="n">stats</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">away_red</span> <span class="o">=</span> <span class="n">stats</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">stats</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;SHOTS&#39;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">stats</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+                    <span class="n">home_shots</span> <span class="o">=</span> <span class="n">stats</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="n">away_shots</span> <span class="o">=</span> <span class="n">stats</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">home_shots_og</span> <span class="o">=</span> <span class="n">stats</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="n">away_shots_og</span> <span class="o">=</span> <span class="n">stats</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">return</span><span class="p">(</span><span class="n">home_poss</span><span class="p">,</span> <span class="n">away_poss</span><span class="p">,</span> <span class="n">home_shots</span><span class="p">,</span> <span class="n">away_shots</span><span class="p">,</span> <span class="n">home_shots_og</span><span class="p">,</span> <span class="n">away_shots_og</span><span class="p">,</span> <span class="n">home_fouls</span><span class="p">,</span> <span class="n">away_fouls</span><span class="p">,</span> <span class="n">home_corners</span><span class="p">,</span> 
+           <span class="n">away_corners</span><span class="p">,</span> <span class="n">home_saves</span><span class="p">,</span> <span class="n">away_saves</span><span class="p">,</span> <span class="n">home_offsides</span><span class="p">,</span> <span class="n">away_offsides</span><span class="p">,</span> <span class="n">home_yellow</span><span class="p">,</span> <span class="n">away_yellow</span><span class="p">,</span> <span class="n">home_red</span><span class="p">,</span> <span class="n">away_red</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">get_html</span><span class="p">(</span><span class="n">urls</span><span class="p">):</span>
+    <span class="n">teams</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">url</span> <span class="ow">in</span> <span class="n">urls</span><span class="p">:</span>
+        <span class="n">html</span> <span class="o">=</span> <span class="n">urllib</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="n">url</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="n">raw</span> <span class="o">=</span> <span class="n">bs4</span><span class="o">.</span><span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">html</span><span class="p">,</span> <span class="s1">&#39;lxml&#39;</span><span class="p">)</span>
+        <span class="o">........</span>
+        <span class="n">data_link</span> <span class="o">=</span> <span class="s1">&#39;https://www.msn.com&#39;</span> <span class="o">+</span> <span class="n">r</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;href&#39;</span><span class="p">)</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">html_link</span> <span class="o">=</span> <span class="n">urllib</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="n">data_link</span><span class="p">)</span>
+            <span class="k">except</span> <span class="n">urllib</span><span class="o">.</span><span class="n">error</span><span class="o">.</span><span class="n">HTTPError</span><span class="p">:</span>
+                <span class="c1"># check this at the end. hard coded link</span>
+                <span class="n">html_link</span> <span class="o">=</span> <span class="n">urllib</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="s1">&#39;https://www.msn.com/en-us/sports/soccer/la-liga/eibar-v-barcelona/game-center/sp-id-80402000001009693&#39;</span><span class="p">)</span>
+            <span class="n">raw_link</span> <span class="o">=</span> <span class="n">bs4</span><span class="o">.</span><span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">html_link</span><span class="p">,</span> <span class="s1">&#39;lxml&#39;</span><span class="p">)</span>
+            <span class="n">result_link</span> <span class="o">=</span> <span class="n">raw_link</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;div&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="s1">&#39;main&#39;</span><span class="p">})</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;div&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="s1">&#39;matchupgamestatsmodule&#39;</span><span class="p">})</span><span class="o">.</span><span class="n">findAll</span><span class="p">(</span><span class="s1">&#39;div&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;class&#39;</span><span class="p">:</span> <span class="s1">&#39;statsitem&#39;</span><span class="p">})</span>
+
+            <span class="n">stats</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">rl</span> <span class="ow">in</span> <span class="n">result_link</span><span class="p">:</span>
+                <span class="n">stats</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">rl</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
+            <span class="n">res</span> <span class="o">=</span> <span class="n">get_stats</span><span class="p">(</span><span class="n">stats</span><span class="p">)</span>
+            <span class="n">teams</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">match_date</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span> <span class="n">match_date</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">:],</span> <span class="n">home_team</span><span class="p">,</span> <span class="n">away_team</span><span class="p">,</span>
+                          <span class="n">home_team_score</span><span class="p">,</span> <span class="n">away_team_score</span><span class="p">,</span> <span class="n">data_link</span><span class="p">,</span> <span class="n">res</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">res</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">res</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">res</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span>
+                          <span class="n">res</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span> <span class="n">res</span><span class="p">[</span><span class="mi">5</span><span class="p">],</span> <span class="n">res</span><span class="p">[</span><span class="mi">6</span><span class="p">],</span> <span class="n">res</span><span class="p">[</span><span class="mi">7</span><span class="p">],</span> <span class="n">res</span><span class="p">[</span><span class="mi">8</span><span class="p">],</span> <span class="n">res</span><span class="p">[</span><span class="mi">9</span><span class="p">],</span> <span class="n">res</span><span class="p">[</span><span class="mi">10</span><span class="p">],</span> <span class="n">res</span><span class="p">[</span><span class="mi">11</span><span class="p">],</span> <span class="n">res</span><span class="p">[</span><span class="mi">12</span><span class="p">],</span> <span class="n">res</span><span class="p">[</span><span class="mi">13</span><span class="p">],</span> <span class="n">res</span><span class="p">[</span><span class="mi">14</span><span class="p">],</span>
+                          <span class="n">res</span><span class="p">[</span><span class="mi">15</span><span class="p">],</span> <span class="n">res</span><span class="p">[</span><span class="mi">16</span><span class="p">],</span> <span class="n">res</span><span class="p">[</span><span class="mi">17</span><span class="p">]])</span>
+
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">teams</span>
+</pre></div>
+
+
+<p>This gives us all the match results with individual team statistics. We can also derive some statistics of our own from this. For example, I was curious to know if some teams are more likely to score in the first half or second half. So I created a separate function <em>get_score_count_perhalf(score_link)</em> to find number of goals scored by both home and away teams in each of the halves. </p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">get_score_count_perhalf</span><span class="p">(</span><span class="n">score_link</span><span class="p">):</span>
+    <span class="n">result_link</span> <span class="o">=</span> <span class="n">score_link</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;div&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="s1">&#39;main&#39;</span><span class="p">})</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;div&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;class&#39;</span><span class="p">:</span> <span class="s1">&#39;teamevent&#39;</span><span class="p">})</span>
+    <span class="n">home_team_scores</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">home_team_scores_firsthalf</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">home_team_scores_secondhalf</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">home_team_link</span> <span class="o">=</span> <span class="n">result_link</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;div&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;class&#39;</span><span class="p">:</span> <span class="s1">&#39;hometeamevent&#39;</span><span class="p">})</span><span class="o">.</span><span class="n">findAll</span><span class="p">(</span><span class="s1">&#39;span&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;class&#39;</span><span class="p">:</span> <span class="s1">&#39;scoremins&#39;</span><span class="p">})</span>
+        <span class="k">for</span> <span class="n">h</span> <span class="ow">in</span> <span class="n">home_team_link</span><span class="p">:</span>
+            <span class="n">score</span> <span class="o">=</span> <span class="n">h</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;&#39;&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">score</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">45</span><span class="p">:</span>
+                <span class="n">home_team_scores_firsthalf</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">score</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">45</span><span class="p">:</span>
+                <span class="n">home_team_scores_secondhalf</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">home_team_scores</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">score</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+        <span class="c1"># check this later.(Leganes vs Celta: Apr 27)</span>
+        <span class="n">home_team_scores</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">99</span><span class="p">)</span>
+        <span class="n">home_team_scores_firsthalf</span> <span class="o">=</span> <span class="mi">99</span>
+        <span class="n">home_team_scores_secondhalf</span> <span class="o">=</span> <span class="mi">99</span>
+
+    <span class="n">away_team_scores</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">away_team_scores_firsthalf</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">away_team_scores_secondhalf</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">away_team_link</span> <span class="o">=</span> <span class="n">result_link</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;div&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;class&#39;</span><span class="p">:</span> <span class="s1">&#39;visitingteamevent&#39;</span><span class="p">})</span><span class="o">.</span><span class="n">findAll</span><span class="p">(</span><span class="s1">&#39;span&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;class&#39;</span><span class="p">:</span> <span class="s1">&#39;scoremins&#39;</span><span class="p">})</span>
+        <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">away_team_link</span><span class="p">:</span>
+            <span class="n">score</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;&#39;&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">score</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">45</span><span class="p">:</span>
+                <span class="n">away_team_scores_firsthalf</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">score</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">45</span><span class="p">:</span>
+                <span class="n">away_team_scores_secondhalf</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">away_team_scores</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">score</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+        <span class="n">away_team_scores</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">99</span><span class="p">)</span>
+        <span class="n">away_team_scores_firsthalf</span> <span class="o">=</span> <span class="mi">99</span>
+        <span class="n">away_team_scores_secondhalf</span> <span class="o">=</span> <span class="mi">99</span>
+
+    <span class="k">return</span><span class="p">(</span><span class="n">home_team_scores_firsthalf</span><span class="p">,</span> <span class="n">home_team_scores_secondhalf</span><span class="p">,</span> <span class="n">away_team_scores_firsthalf</span><span class="p">,</span> <span class="n">away_team_scores_secondhalf</span><span class="p">)</span>
+</pre></div>
+
+
+<p>The <em>teams</em> list will now have all the information we needed. </p>
+<div class="highlight"><pre><span></span><span class="n">all_matches</span> <span class="o">=</span> <span class="n">get_html</span><span class="p">(</span><span class="n">urls</span><span class="p">)</span>
+</pre></div>
+
+
+<p><code>[['Sun',
+  'May 19',
+  'Eibar',
+  'Barça',
+  '2',
+  '2',
+  2,
+  0,
+  2,
+  0,
+  'https://www.msn.com/en-us/sports/soccer/la-liga/eibar-v-barcelona/game-center/sp-id-80402000001009693',
+  '39',
+  '61',
+  '18',
+  '8',
+  '8',
+  '3',
+  '17',
+  '5',
+  '5',
+  '2',
+  '1',
+  '6',
+  None,
+  None,
+  '4',
+  '2',
+  '0',
+  '0'],
+ ['Sun',
+  'May 19',
+  'Real Madrid',
+  'Betis',
+  '0',
+  '2',
+  0,
+  0,
+  0,
+  2,
+  'https://www.msn.com/en-us/sports/soccer/la-liga/real-madrid-v-real-betis/game-center/sp-id-80402000001009694',
+  '47',
+  '53',
+  '9',
+  '9',
+  '2',
+  '7',
+  '18',
+  '10',
+  '1',
+  '5',
+  '5',
+  '2',
+  '1',
+  '4',
+  '4',
+  '1',
+  '0',
+  '0'],...]</code></p>
+<p>Now we can very simply convert into a dataframe and start analyzing!</p>
+<div class="highlight"><pre><span></span><span class="n">cols</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;match_day&#39;</span><span class="p">,</span> <span class="s1">&#39;match_date&#39;</span><span class="p">,</span> <span class="s1">&#39;home_team&#39;</span><span class="p">,</span> <span class="s1">&#39;away_team&#39;</span><span class="p">,</span> <span class="s1">&#39;home_team_score&#39;</span><span class="p">,</span> <span class="s1">&#39;away_team_score&#39;</span><span class="p">,</span> <span class="s1">&#39;HT_num_goals_firsthalf&#39;</span><span class="p">,</span> 
+            <span class="s1">&#39;HT_num_goals_secondhalf&#39;</span><span class="p">,</span> <span class="s1">&#39;AT_num_goals_firsthalf&#39;</span><span class="p">,</span> <span class="s1">&#39;AT_num_goals_secondhalf&#39;</span><span class="p">,</span> <span class="s1">&#39;match_link&#39;</span><span class="p">,</span> <span class="s1">&#39;home_posession&#39;</span><span class="p">,</span> 
+            <span class="s1">&#39;away_posession&#39;</span><span class="p">,</span> <span class="s1">&#39;home_shots&#39;</span><span class="p">,</span> <span class="s1">&#39;away_shots&#39;</span><span class="p">,</span> <span class="s1">&#39;home_shots_ontarget&#39;</span><span class="p">,</span> <span class="s1">&#39;away_shots_ontarget&#39;</span><span class="p">,</span> <span class="s1">&#39;home_fouls&#39;</span><span class="p">,</span> 
+            <span class="s1">&#39;away_fouls&#39;</span><span class="p">,</span> <span class="s1">&#39;home_corners&#39;</span><span class="p">,</span> <span class="s1">&#39;away_corners&#39;</span><span class="p">,</span> <span class="s1">&#39;home_saves&#39;</span><span class="p">,</span> <span class="s1">&#39;away_saves&#39;</span><span class="p">,</span> <span class="s1">&#39;home_offsides&#39;</span><span class="p">,</span> <span class="s1">&#39;away_offsides&#39;</span><span class="p">,</span> 
+            <span class="s1">&#39;home_yellow&#39;</span><span class="p">,</span> <span class="s1">&#39;away_yellow&#39;</span><span class="p">,</span> <span class="s1">&#39;home_red&#39;</span><span class="p">,</span> <span class="s1">&#39;away_red&#39;</span><span class="p">]</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">all_matches</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">cols</span><span class="p">)</span>
+</pre></div>
+
+
+<p><img alt="image" src="images/laliga-df.jpg"></p>
+<p>Now we can play around with this data and find insights. I am a huge fan of Barcelona so I decided to explore their different statistics and how they perform against other teams. </p>
+<p>Here is one of the plot that I made in Tableau (dashboard building in progress) that explores the number of fouls committed by Barcelona against other teams and vice-versa.</p>
+<p><img alt="image" src="images/laliga-barca.jpg"></p>
+<p>Thank you for reading! Don't hesitate to reach out to me if you have any suggestion or an improvement.</p>                </article>
+            </aside><!-- /#featured -->
+                <section id="content" class="body">
+                    <h1>Other articles</h1>
+                    <hr />
+                    <ol id="posts-list" class="hfeed">
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="/data-preprocessing.html" rel="bookmark"
+                           title="Permalink to Data Preprocessing">Data Preprocessing</a></h1>
+                </header>
+
+                <div class="entry-content">
 <footer class="post-info">
         <abbr class="published" title="2018-11-14T00:00:00-05:00">
                 Published: Wed 14 November 2018
@@ -30,250 +412,35 @@
         </address>
 <p>In <a href="/category/blog.html">Blog</a>.</p>
 
-</footer><!-- /.post-info --><p><img alt="image" src="images/ml.png"></p>
-<p>It was 6 pm on October 17th, 2018, when the wind came crashing at my window. I woke up from my little nap and as usual — I picked up my phone and went to YouTube. Well thanks to YouTube for recommending me this Siraj Raval’s video, where he simply asks each and every Machine Learning enthusiasts to just dedicate at least one hour of everyday towards studying or coding Machine Learning. I found that motivating as I would have a goal to accomplish every day, rather than having one life-long goal that will take all of my time and effort to reach.</p>
-<p>From the very next moment, I was absolutely devoted to embarking in this one-hour-a-day-ship of Machine Learning. So far my journey has been smooth and I can say with certainty that anyone boarding this ship will definitely reach their destination.</p>
-<p><strong>Note:</strong>  If you are just like me, starting with machine learning, then I highly recommend you to take  <a href="https://www.udemy.com/machinelearning/">this</a>  course by two professionals of Machine Learning-Kirill Eremenko and Hadelin de Ponteves.</p>
-<p><strong>Data pre-processing</strong>  is an important step in the data mining process. Real world data can be incomplete, inconsistent, redundant, noisy or clean (if you’re lucky). Bad data makes the knowledge discovery during the training process very difficult. Hence, we perform data pre-processing so that our machine learning algorithm has a clean training set to train on.</p>
-<p>n this tutorial I will go through a simple example of data pre-processing where we handle missing data, categorical variables and feature scaling using Python.</p>
-<h1><strong>Step I: Importing libraries</strong></h1>
-<ul>
-<li>A library is tool that you can use to make a specific job. The best library to import and manage the datasets in Python is Pandas.</li>
-</ul>
-<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
-</pre></div>
+</footer><!-- /.post-info -->                <p><img alt="image" src="images/ml.png"></p>
+<p>It was 6 pm on October 17th, 2018, when the wind came crashing at my window. I woke up from my little nap and as usual — I picked up my phone and went to YouTube. Well thanks to YouTube for recommending me this Siraj Raval’s video, where he simply …</p>
+                <a class="readmore" href="/data-preprocessing.html">read more</a>
+                </div><!-- /.entry-content -->
+            </article></li>
 
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="/anscombes-quartet.html" rel="bookmark"
+                           title="Permalink to Anscombe's Quartet">Anscombe's Quartet</a></h1>
+                </header>
 
-<h1><strong>Step II: Importing the dataset</strong></h1>
-<ul>
-<li>Next, we will read our  <em>custdata.csv</em> file.</li>
-</ul>
-<div class="highlight"><pre><span></span><span class="n">dataset</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;custdata.csv&#39;</span><span class="p">)</span>
-</pre></div>
+                <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2018-09-19T00:00:00-04:00">
+                Published: Wed 19 September 2018
+        </abbr>
 
+        <address class="vcard author">
+                By                         <a class="url fn" href="/author/parth-shah.html">Parth Shah</a>
+        </address>
+<p>In <a href="/category/blog.html">Blog</a>.</p>
 
-<ul>
-<li>
-<p>Let’s take a look at our dataset :
-<img alt="image" src="images/preprocess-dataset.png"></p>
-</li>
-<li>
-<p>Looking at the dataset, we can say that we need to handle three things:</p>
-</li>
-<li>
-<p>Missing Data (NaN)</p>
-</li>
-<li>Categorical Variables (Country, Purchased)</li>
-<li>Feature Scaling</li>
-</ul>
-<h1>Step III: Features &amp; Labels</h1>
-<ul>
-<li>We will be using the features(Country, Age &amp; Salary) to predict the labels(Purchased).</li>
-<li>So let’s separate our features and labels as sometimes we don’t want to apply the same transformations to both of them.</li>
-</ul>
-<div class="highlight"><pre><span></span><span class="n">dataset_features</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="s1">&#39;Purchased&#39;</span><span class="p">,</span> <span class="n">axis</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span>  
-<span class="n">dataset_labels</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span> <span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
-</pre></div>
-
-
-<h1>Step IV: Missing data</h1>
-<ul>
-<li>We can see that our dataset has two missing data. Now, there are three ways in which we can handle this problem:</li>
-</ul>
-<h2>1) Remove the rows that have the missing data</h2>
-<div class="highlight"><pre><span></span><span class="sb">`dataset_features = dataset_features.dropna(subset = [&#39;Age&#39;, &#39;Salary&#39;])`</span>
-</pre></div>
-
-
-<p><img alt="image" src="images/preprocess-features.png"></p>
-<h2>2) Get rid of the entire column</h2>
-<div class="highlight"><pre><span></span><span class="n">dataset_features</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s1">&#39;Age&#39;</span><span class="p">,</span> <span class="s1">&#39;Salary&#39;</span><span class="p">],</span> <span class="n">axis</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">inplace</span> <span class="o">=</span> <span class="bp">True</span><span class="p">)</span>
-</pre></div>
-
-
-<p><img alt="image" src="images/preprocess-nanremoved.png"></p>
-<h2>3) Replace the missing values with some value(mean, median, zero etc.)</h2>
-<ul>
-<li>We will use scikit-learn’s  <em>preprocessing</em> library for this. From this library we will import the  <em>Imputer</em> class.</li>
-</ul>
-<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.preprocessing</span> <span class="kn">import</span> <span class="n">Imputer</span>
-</pre></div>
-
-
-<ul>
-<li>Next, we will create an object  <em>imputer</em> for the class.  <a href="http://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.Imputer.html">Click here</a>  for the parameters of  <em>Imputer</em>.</li>
-</ul>
-<div class="highlight"><pre><span></span><span class="n">imputer</span> <span class="o">=</span> <span class="n">Imputer</span><span class="p">(</span><span class="n">strategy</span> <span class="o">=</span> <span class="s1">&#39;mean&#39;</span><span class="p">,</span> <span class="n">axis</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span>
-</pre></div>
-
-
-<ul>
-<li>As the mean can only be computed on numerical attributes, we will create a copy of our dataset without the text attributes.</li>
-</ul>
-<div class="highlight"><pre><span></span><span class="n">dataset_num</span> <span class="o">=</span> <span class="n">dataset_features</span><span class="p">[[</span><span class="s1">&#39;Age&#39;</span><span class="p">,</span> <span class="s1">&#39;Salary&#39;</span><span class="p">]]</span>
-</pre></div>
-
-
-<ul>
-<li>Now it’s time to  <a href="https://kite.com/python/docs/sklearn.preprocessing.Imputer.fit_transform">fit and transform</a>  our  <em>imputer</em> object to  <em>dataset_num</em>.</li>
-</ul>
-<div class="highlight"><pre><span></span><span class="n">dataset_num</span> <span class="o">=</span> <span class="n">imputer</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">dataset_num</span><span class="p">)</span>
-</pre></div>
-
-
-<ul>
-<li>Let’s take a look at  <em>dataset_num:</em>
-<img alt="image" src="images/preprocess-datanum.png"></li>
-</ul>
-<p>Great! The result  <em>dataset_num</em> is a numpy array (we can convert into a dataframe) and we can see that the missing values have been replaced by the mean.</p>
-<ul>
-<li><em>imputer</em> actually  stores the result of the mean in it  _statistics__ instance variable:</li>
-</ul>
-<div class="highlight"><pre><span></span><span class="n">imputer</span><span class="o">.</span><span class="n">statistics_</span>  
-<span class="o">&gt;&gt;&gt;</span><span class="n">array</span><span class="p">([</span><span class="mf">3.36e+01</span><span class="p">,</span> <span class="mf">5.16e+04</span><span class="p">])</span><span class="n">dataset_features</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="o">.</span><span class="n">values</span> 
-
-<span class="o">&gt;&gt;&gt;</span><span class="n">array</span><span class="p">([</span><span class="mf">3.36e+01</span><span class="p">,</span> <span class="mf">5.16e+04</span><span class="p">])</span>
-</pre></div>
-
-
-<h1>Step V: Categorical Data</h1>
-<ul>
-<li>Our dataset has two categorical variables: Country &amp; Purchased.</li>
-<li>The  <em>Country</em> contains three categories:</li>
-</ul>
-<div class="highlight"><pre><span></span><span class="n">dataset_features</span><span class="o">.</span><span class="n">Country</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
-</pre></div>
-
-
-<p><img alt="image" src="images/preprocess-unique.png"></p>
-<p>First, let’s fetch the categorical attributes from our dataset.</p>
-<div class="highlight"><pre><span></span><span class="n">dataset_cat</span> <span class="o">=</span> <span class="n">dataset_features</span><span class="p">[[</span><span class="s1">&#39;Country&#39;</span><span class="p">]]</span>
-</pre></div>
-
-
-<h2>Now the question is why categorical data needs to be handled?</h2>
-<ul>
-<li>It’s because the machine learning models are based on mathematical equations, so if we keep the text or categorical variables in the equation then it will cause some problem. Hence, we encode the categorical variables i.e. encode the text into numbers.(For example: USA = 2, India = 1, Canada = 0)</li>
-<li>However, there’s one problem with this encoding — Since 2&gt;1&gt;0, the equation in the model would think that USA&gt;India&gt;Canada, which we know is not the case at all.</li>
-<li>These are actually three categories and there is no relational order between them. Therefore, in order to prevent the machine learning model from this problem we use dummy variables.</li>
-<li>
-<p>Dummy variables are used to sort data into mutually exclusive categories. So instead of one column we will have three separate columns:
-<img alt="image" src="images/preprocess-categorical.png"></p>
-</li>
-<li>
-<p>To create dummy variables we use another class called the  <em>OneHotEncoder</em> from the scikit-learn  <em>preprocessing</em> library.</p>
-</li>
-</ul>
-<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.preprocessing</span> <span class="kn">import</span> <span class="n">OneHotEncoder</span>
-</pre></div>
-
-
-<ul>
-<li>Next, we create an object  <em>onehotencoder</em> for the class OneHotEncoder. Then we fit and transform to our categorical attribute dataset_cat.</li>
-</ul>
-<div class="highlight"><pre><span></span><span class="n">onehotencoder</span> <span class="o">=</span> <span class="n">OneHotEncoder</span><span class="p">()</span><span class="n">dataset_cat_encoded</span> <span class="o">=</span> <span class="n">onehotencoder</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">dataset_cat</span><span class="p">)</span><span class="o">.</span><span class="n">toarray</span><span class="p">()</span>
-</pre></div>
-
-
-<ul>
-<li>
-<p>The toarray() method is applied just to get a dense NumPy array, else the output would be a sparse matrix.
-<img alt="image" src="images/preprocess-catencoded.png"></p>
-</li>
-<li>
-<p>We do the same for our  <em>Purchased</em> column. But since it is the dependent variable, the machine learning model will know that it is a category. Hence, there’s no need for one-hot encoding. We can simply encode them into integers using the  <em>OrdinalEncoder</em> class.</p>
-</li>
-</ul>
-<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.preprocessing</span> <span class="kn">import</span> <span class="n">OrdinalEncoder</span>
-
-<span class="n">ordencoder</span> <span class="o">=</span> <span class="n">OrdinalEncoder</span><span class="p">()</span>  
-<span class="n">dataset_labels</span> <span class="o">=</span> <span class="n">ordencoder</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">dataset_labels</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
-</pre></div>
-
-
-<p><img alt="image" src="images/preprocess-ordencoded.png">
-Awesome!</p>
-<h1>Step VI: Feature Scaling</h1>
-<ul>
-<li>If we look at the age and the salary columns, we can see that they are not on the same scale. The age is ranging from 25 to 56, while the salary is in a range from 28k to 75k.</li>
-<li>Many machine algorithms don’t perform well when the numerical attributes of the independent variables have very different scales. The two common ways of scaling the data are: min-max scaling(normalization) and standardization.</li>
-</ul>
-<h2>Min-Max Scaling</h2>
-<ul>
-<li>Here all the values are subtracted by the minimum value and then divided by maximum minus the minimum. In this approach the data is usually scaled to a fixed range of 0 to 1.</li>
-<li>To implement min-max scaling, we use the  <em>MinMaxScaler</em> by scikit-learn. It also has a  <em>feature_range</em> hyperparameter which can be used if we don’t want our scaling to be from 0 to 1.</li>
-</ul>
-<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.preprocessing</span> <span class="kn">import</span> <span class="n">MinMaxScaler</span>
-
-<span class="n">scaler</span> <span class="o">=</span> <span class="n">MinMaxScaler</span><span class="p">()</span>  
-<span class="n">dataset_num_scaled</span> <span class="o">=</span> <span class="n">scaler</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">dataset_num</span><span class="p">)</span>  
-<span class="n">dataset_num_scaled</span>
-</pre></div>
-
-
-<p><img alt="image" src="images/preprocess-minmax.png"></p>
-<h2>Standardization</h2>
-<ul>
-<li>In standardization, all the values are subtracted by the mean and then it is divided by the variance. Hence, to have features with zero mean and a unit variance.</li>
-<li>To implement standardization, we use the  <em>StandardScaler</em> transformer from Scikit-learn.</li>
-</ul>
-<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.preprocessing</span> <span class="kn">import</span> <span class="n">StandardScaler</span>
-
-<span class="n">std_scaler</span> <span class="o">=</span> <span class="n">StandardScaler</span><span class="p">()</span>  
-<span class="n">dataset_num_scaled</span> <span class="o">=</span> <span class="n">std_scaler</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">dataset_num</span><span class="p">)</span>  
-<span class="n">dataset_num_scaled</span>
-</pre></div>
-
-
-<p><img alt="image" src="images/preprocess-standardization.png"></p>
-<ul>
-<li>Note that unlike min-max scaling, standardization cannot guarantee balanced feature scales in the presence of outliers.</li>
-<li>However, in the presence of an outlier the min-max scaling can compress all the inliers in a narrow range. Whereas standardization isn’t much affected by outliers.</li>
-</ul>
-<p>As we can see that many data transformation steps are required and they all must be executed in the right order. We can actually create a Pipeline to have a single interface for all the transformations.</p>
-<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.pipeline</span> <span class="kn">import</span> <span class="n">Pipeline</span>
-
-<span class="n">num_attribs</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Age&#39;</span><span class="p">,</span> <span class="s1">&#39;Salary&#39;</span><span class="p">]</span>  
-<span class="n">cat_attribs</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Country&#39;</span><span class="p">]</span>
-
-<span class="n">num_pipeline</span> <span class="o">=</span> <span class="n">Pipeline</span><span class="p">([</span>  
-    <span class="p">(</span><span class="s1">&#39;imputer&#39;</span><span class="p">,</span> <span class="n">Imputer</span><span class="p">(</span><span class="n">strategy</span> <span class="o">=</span> <span class="s1">&#39;mean&#39;</span><span class="p">)),</span>  
-    <span class="p">(</span><span class="s1">&#39;std_scaler&#39;</span><span class="p">,</span> <span class="n">StandardScaler</span><span class="p">())</span>  
-<span class="p">])</span>
-
-<span class="n">cat_pipeline</span> <span class="o">=</span> <span class="n">Pipeline</span><span class="p">([</span>  
-    <span class="p">(</span><span class="s1">&#39;onehotencoder&#39;</span><span class="p">,</span> <span class="n">OneHotEncoder</span><span class="p">())</span>  
-<span class="p">])</span>
-
-<span class="kn">from</span> <span class="nn">sklearn.compose</span> <span class="kn">import</span> <span class="n">ColumnTransformer</span>
-
-<span class="n">full_pipeline</span> <span class="o">=</span> <span class="n">ColumnTransformer</span><span class="p">(</span><span class="n">transformers</span> <span class="o">=</span> <span class="p">[</span>  
-    <span class="p">(</span><span class="s1">&#39;numeric&#39;</span><span class="p">,</span> <span class="n">num_pipeline</span><span class="p">,</span> <span class="n">num_attribs</span><span class="p">),</span>  
-    <span class="p">(</span><span class="s1">&#39;category&#39;</span><span class="p">,</span> <span class="n">cat_pipeline</span><span class="p">,</span> <span class="n">cat_attribs</span><span class="p">)</span>  
-<span class="p">])</span>
-</pre></div>
-
-
-<ul>
-<li>And then we can simply run the whole pipeline and get the results:</li>
-</ul>
-<div class="highlight"><pre><span></span><span class="n">dataset_prepared</span> <span class="o">=</span> <span class="n">full_pipeline</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">dataset_features</span><span class="p">)</span>
-</pre></div>
-
-
-<p><img alt="image" src="images/preprocess-pipeline.png"></p>
-<h1>Step VII: Training Set &amp; Test Set</h1>
-<ul>
-<li>We build our machine learning model on a dataset i.e. the  <em>training set</em> and then we test the performance of our model on the  <em>test set</em>. For this, we will use the scikit-learn’s  <em>train_test_split()</em>  function.</li>
-<li>It has few parameters, but the one we will be using is the  <em>random_state_to set the random generator seed. Another parameter is the  _test_size</em>. Here will choose it as 20%(0.2).</li>
-</ul>
-<div class="highlight"><pre><span></span><span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">dataset_prepared</span><span class="p">,</span> <span class="n">dataset_labels</span><span class="p">,</span> <span class="n">test_size</span> <span class="o">=</span> <span class="mf">0.2</span><span class="p">,</span> <span class="n">random_state</span> <span class="o">=</span> <span class="mi">42</span><span class="p">)</span>
-</pre></div>
-
-
-<h1>Conclusion</h1>
-<p>Now we can say that our data is ready for training our model on! In real life however, datasets are HUGE but I believe this can be a good starting point to practice and learn and implement the same strategy on large datasets.</p>                </article>
-            </aside><!-- /#featured -->
+</footer><!-- /.post-info -->                <p>I always believed in “numerical calculations are exact, but graphs are rough”. Coming from a person who has just started learning Data Analytics, it was hard for me to understand the importance of Data Visualization along with summary statistics. But it all changed after attending this Data Visualization Meetup, which …</p>
+                <a class="readmore" href="/anscombes-quartet.html">read more</a>
+                </div><!-- /.entry-content -->
+            </article></li>
+                </ol><!-- /#posts-list -->
+                </section><!-- /#content -->
         <section id="extras" class="body">
                 <div class="blogroll">
                         <h2>links</h2>
