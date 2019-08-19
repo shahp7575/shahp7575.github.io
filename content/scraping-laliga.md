@@ -47,6 +47,9 @@ urls = fetch_website(links)
 ```
 
 `['https://www.msn.com/en-us/sports/soccer/la-liga/scores/',
+
  'https://www.msn.com/en-us/sports/soccer/la-liga/scores/sp-d-20190428',
+ 
  'https://www.msn.com/en-us/sports/soccer/la-liga/scores/sp-d-20190428-d-20190331',
+ 
  'https://www.msn.com/en-us/sports/soccer/la-liga/scores/sp-d-20190428-d-20190331-d-20190303']`
