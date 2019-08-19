@@ -382,3 +382,8 @@ df = pd.DataFrame(all_matches, columns=cols)
 
 ![image](images/laliga-df.jpg)
 
+Now we can play around with this data and find insights. I am a huge fan of Barcelona so I decided to explore their different statistics and how they perform against other teams. 
+
+Here is one of the plot that I made in Tableau (dashboard building in progress) that explores the number of fouls committed by Barcelona against other teams and vice-versa.
+
+![image](images/laliga-barca.jpg)
