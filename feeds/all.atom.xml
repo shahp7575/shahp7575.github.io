@@ -9,7 +9,7 @@
 &lt;li&gt;urllib (Module for working with URLs)&lt;/li&gt;
 &lt;/ul&gt;
 &lt;h2&gt;Web Scraping from msn.com&lt;/h2&gt;
-&lt;p&gt;&lt;img alt="image" src="images/laliga-home.PNG"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="image" src="images/laliga-home.png"&gt;&lt;/p&gt;
 &lt;p&gt;The website lists the scores for each month on a separate page and …&lt;/p&gt;</summary><content type="html">&lt;h1&gt;Scraping Laliga Statistics with Python&lt;/h1&gt;
 &lt;h2&gt;Environment Setup&lt;/h2&gt;
 &lt;p&gt;I have used Python 3.6 for this tutorial. The required libraries are as follows:&lt;/p&gt;
@@ -20,12 +20,12 @@
 &lt;li&gt;urllib (Module for working with URLs)&lt;/li&gt;
 &lt;/ul&gt;
 &lt;h2&gt;Web Scraping from msn.com&lt;/h2&gt;
-&lt;p&gt;&lt;img alt="image" src="images/laliga-home.PNG"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="image" src="images/laliga-home.png"&gt;&lt;/p&gt;
 &lt;p&gt;The website lists the scores for each month on a separate page and it follows this pattern: &lt;/p&gt;
-&lt;p&gt;&lt;em&gt;https://www.msn.com/en-us/sports/soccer/la-liga/scores/&lt;/em&gt;
-&lt;em&gt;https://www.msn.com/en-us/sports/soccer/la-liga/scores/sp-d-20190428&lt;/em&gt;
-&lt;em&gt;https://www.msn.com/en-us/sports/soccer/la-liga/scores/sp-d-20190428-d-20190331&lt;/em&gt;
-&lt;em&gt;https://www.msn.com/en-us/sports/soccer/la-liga/scores/sp-d-20190428-d-20190331-d-20190303&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;https://www.msn.com/en-us/sports/soccer/la-liga/scores/&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;https://www.msn.com/en-us/sports/soccer/la-liga/scores/sp-d-20190428&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;https://www.msn.com/en-us/sports/soccer/la-liga/scores/sp-d-20190428-d-20190331&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;https://www.msn.com/en-us/sports/soccer/la-liga/scores/sp-d-20190428-d-20190331-d-20190303&lt;/em&gt;&lt;/p&gt;
 &lt;p&gt;As we can see notice the pattern here:&lt;/p&gt;
 &lt;p&gt;http://............./sp-d-(&lt;em&gt;new-match-date&lt;/em&gt;)-d-(&lt;em&gt;past-date&lt;/em&gt;)-d-(&lt;em&gt;past-date&lt;/em&gt;).&lt;/p&gt;
 &lt;p&gt;I recorded those dates in a list and created a function that gives me all the links.&lt;/p&gt;

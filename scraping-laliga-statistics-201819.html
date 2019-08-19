@@ -44,12 +44,12 @@
 <li>urllib (Module for working with URLs)</li>
 </ul>
 <h2>Web Scraping from msn.com</h2>
-<p><img alt="image" src="images/laliga-home.PNG"></p>
+<p><img alt="image" src="images/laliga-home.png"></p>
 <p>The website lists the scores for each month on a separate page and it follows this pattern: </p>
-<p><em>https://www.msn.com/en-us/sports/soccer/la-liga/scores/</em>
-<em>https://www.msn.com/en-us/sports/soccer/la-liga/scores/sp-d-20190428</em>
-<em>https://www.msn.com/en-us/sports/soccer/la-liga/scores/sp-d-20190428-d-20190331</em>
-<em>https://www.msn.com/en-us/sports/soccer/la-liga/scores/sp-d-20190428-d-20190331-d-20190303</em></p>
+<p><em>https://www.msn.com/en-us/sports/soccer/la-liga/scores/</em></p>
+<p><em>https://www.msn.com/en-us/sports/soccer/la-liga/scores/sp-d-20190428</em></p>
+<p><em>https://www.msn.com/en-us/sports/soccer/la-liga/scores/sp-d-20190428-d-20190331</em></p>
+<p><em>https://www.msn.com/en-us/sports/soccer/la-liga/scores/sp-d-20190428-d-20190331-d-20190303</em></p>
 <p>As we can see notice the pattern here:</p>
 <p>http://............./sp-d-(<em>new-match-date</em>)-d-(<em>past-date</em>)-d-(<em>past-date</em>).</p>
 <p>I recorded those dates in a list and created a function that gives me all the links.</p>
