@@ -6,20 +6,25 @@ author: Parth Shah
 
 ## Environment Setup
 I have used Python 3.6 for this tutorial. The required libraries are as follows:
+
 - numpy
 - pandas
 - bs4 (BeautifulSoup)
 - urllib (Module for working with URLs)
 
 ## Web Scraping from msn.com
+
 ![image](images/laliga-home.PNG)
+
 The website lists the scores for each month on a separate page and it follows this pattern: 
+
 *https://www.msn.com/en-us/sports/soccer/la-liga/scores/*
 *https://www.msn.com/en-us/sports/soccer/la-liga/scores/sp-d-20190428*
 *https://www.msn.com/en-us/sports/soccer/la-liga/scores/sp-d-20190428-d-20190331*
 *https://www.msn.com/en-us/sports/soccer/la-liga/scores/sp-d-20190428-d-20190331-d-20190303*
 
 As we can see notice the pattern here:
+
 http://............./sp-d-(*new-match-date*)-d-(*past-date*)-d-(*past-date*).
 
 I recorded those dates in a list and created a function that gives me all the links.
