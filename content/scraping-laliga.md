@@ -2,6 +2,8 @@ title: Scraping LaLiga Statistics 2018/19
 date: 08/19/2019
 author: Parth Shah
 
+![image](images/laliga.png)
+
 If there's something I do besides data science then it's watching soccer, especially LaLiga. You might hear me scream for a goal if you pass by my house on a weekend. But lately I realized that watching just LaLiga wasn't enough for me. I wanted to explore how each and every team is performing with time as well as against other teams. Which team plays aggressively? Which team dominates the posession?
 
 After a lot of research I didn't find the data I was looking for. So I decided to scrape it by myself. In this article I will show how with the help of Python I scraped the match results along with game statistics for each team in LaLiga 2018/19 season. 
