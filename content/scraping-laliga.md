@@ -106,8 +106,6 @@ def get_html(urls):
 	return teams
 ```
 
-This gives us results for each match in a list that can be easily converted into a dataframe. 
-
 `
 [['Sun',
   'May 19',
@@ -127,3 +125,259 @@ This gives us results for each match in a list that can be easily converted into
  ]
 `
  
+Now I don't only want the scores, I want the detailed statistics for each and every match such as team's posession, offsides, fouls, etc. This can be obtained by following the same scraping process we did above, but now for each *data_link* that we obtain from each match.
+
+![image](images/laliga-stats.jpg)
+**Note**: This image is from the 2019/20 season as msn have updated it to the current season.
+
+The following is the page source for one of the matches:
+
+![image](images/laliga-statsdetails.jpg)
+
+The information of detailed stats is in the *div* container with id *matchupgamestatsmodule*. And all the individual statistics is present in the *div* container with class *statsitem*.
+
+```python
+html_link = urllib.request.urlopen(data_link)
+raw_link = bs4.BeautifulSoup(html_link, 'lxml')
+result_link = raw_link.find('div', {'id': 'main'}).find('div', {'id': 'matchupgamestatsmodule'}).findAll('div', {'class': 'statsitem'})
+```
+
+```html
+[<div class="statsitem"> 
+ <div class="statsvalue clearfix"> 
+ <div class="firstteamstats">28</div> 
+ <div class="label"> BALL POSSESSION % </div> 
+ <div class="secondteamstats">72</div> </div> 
+ ...
+ <div class="firstteamstats">11</div> 
+ <div class="label"> SHOTS </div> <div class="secondteamstats">11</div> 
+ ...]
+```
+Here there is no way to separate out individual statistics as all the class labels have been named the same for each statistics. The only way to separate them out is the text of the *div* tag with class *label*. So instead of fetching each stats through html elements, I simply converted them into a list which is simply looping through each *statsitem* container and get the textual data.
+
+```python
+stats = []
+for rl in result_link:
+  stats.append(rl.text.split())
+```
+Now we have a nice list with individual statistics. The first and the last value in the list represent the stats of home team and away team respectively. 
+
+[['28', 'BALL', 'POSSESSION', '%', '72'], 
+['11', 'SHOTS', '11'], 
+['5', 'SHOTS', 'ON', 'GOAL', '2'], 
+['14', 'FOULS', '9'], 
+['3', 'CORNERS', '8'], 
+['2', 'SAVES', '4'], 
+['2', 'OFFSIDES', '1'], 
+['1', 'YELLOW', 'CARDS', '1'], 
+['0', 'RED', 'CARDS', '0']]
+
+The second element in each list would be an identifier for each type of stats. I created a separate function *get_stats(stats)* for that. The *stats* parameter in the function is the list we obtained above which can be passed through our main *get_html()* function.
+
+```python
+def get_stats(stats):
+    stat_list = ['BALL', 'SHOTS', 'FOULS', 'CORNERS', 'SAVES', 'OFFSIDES', 'YELLOW', 'RED']
+    len_stats = len(stats)
+    home_shots_og = None
+    away_shots_og = None
+    home_saves = None
+    away_saves = None
+    home_offsides = None
+    away_offsides = None
+    home_poss = None
+    away_poss = None
+    home_fouls = None
+    away_fouls = None
+    home_shots = None
+    away_shots = None
+    home_corners = None
+    away_corners = None
+    home_yellow = None
+    away_yellow = None
+    home_red = None
+    away_red = None
+    for i in range(len_stats):
+        if stats[i][1] in stat_list:
+            if stats[i][1] == 'BALL':
+                home_poss = stats[i][0]
+                away_poss = stats[i][-1]
+            if stats[i][1] == 'FOULS':
+                home_fouls = stats[i][0]
+                away_fouls = stats[i][-1]
+            if stats[i][1] == 'CORNERS':
+                home_corners = stats[i][0]
+                away_corners = stats[i][-1]
+            if stats[i][1] == 'SAVES':
+                home_saves = stats[i][0]
+                away_saves = stats[i][-1]
+            if stats[i][1] == 'OFFSIDES':
+                home_offsides = stats[i][0]
+                away_offsides = stats[i][-1]
+            if stats[i][1] == 'YELLOW':
+                home_yellow = stats[i][0]
+                away_yellow = stats[i][-1]
+            if stats[i][1] == 'RED':
+                home_red = stats[i][0]
+                away_red = stats[i][-1]
+            if stats[i][1] == 'SHOTS':
+                if len(stats[i]) == 3:
+                    home_shots = stats[i][0]
+                    away_shots = stats[i][-1]
+                else:
+                    home_shots_og = stats[i][0]
+                    away_shots_og = stats[i][-1]
+    return(home_poss, away_poss, home_shots, away_shots, home_shots_og, away_shots_og, home_fouls, away_fouls, home_corners, 
+           away_corners, home_saves, away_saves, home_offsides, away_offsides, home_yellow, away_yellow, home_red, away_red)
+
+def get_html(urls):
+    teams = []
+    for url in urls:
+        html = urllib.request.urlopen(url).read()
+        raw = bs4.BeautifulSoup(html, 'lxml')
+        ........
+        data_link = 'https://www.msn.com' + r.find('a').get('href')
+            
+            try:
+                html_link = urllib.request.urlopen(data_link)
+            except urllib.error.HTTPError:
+                # check this at the end. hard coded link
+                html_link = urllib.request.urlopen('https://www.msn.com/en-us/sports/soccer/la-liga/eibar-v-barcelona/game-center/sp-id-80402000001009693')
+            raw_link = bs4.BeautifulSoup(html_link, 'lxml')
+            result_link = raw_link.find('div', {'id': 'main'}).find('div', {'id': 'matchupgamestatsmodule'}).findAll('div', {'class': 'statsitem'})
+            
+            stats = []
+            for rl in result_link:
+                stats.append(rl.text.split())
+            res = get_stats(stats)
+            teams.append([match_date.split(',')[0], match_date.split(',')[1][1:], home_team, away_team,
+                          home_team_score, away_team_score, data_link, res[0], res[1], res[2], res[3],
+                          res[4], res[5], res[6], res[7], res[8], res[9], res[10], res[11], res[12], res[13], res[14],
+                          res[15], res[16], res[17]])
+
+		time.sleep(5)
+	return teams
+```
+
+This gives us all the match results with individual team statistics. We can also derive some statistics of our own from this. For example, I was curious to know if some teams are more likely to score in the first half or second half. So I created a separate function *get_score_count_perhalf(score_link)* to find number of goals scored by both home and away teams in each of the halves. 
+
+```python
+def get_score_count_perhalf(score_link):
+    result_link = score_link.find('div', {'id': 'main'}).find('div', {'class': 'teamevent'})
+    home_team_scores = []
+    home_team_scores_firsthalf = 0
+    home_team_scores_secondhalf = 0
+    try:
+        home_team_link = result_link.find('div', {'class': 'hometeamevent'}).findAll('span', {'class': 'scoremins'})
+        for h in home_team_link:
+            score = h.text.strip().split("'")[0]
+            if int(score) <= 45:
+                home_team_scores_firsthalf += 1
+            if int(score) > 45:
+                home_team_scores_secondhalf += 1
+            home_team_scores.append(score)
+    except AttributeError:
+        # check this later.(Leganes vs Celta: Apr 27)
+        home_team_scores.append(99)
+        home_team_scores_firsthalf = 99
+        home_team_scores_secondhalf = 99
+
+    away_team_scores = []
+    away_team_scores_firsthalf = 0
+    away_team_scores_secondhalf = 0
+        
+    try:
+        away_team_link = result_link.find('div', {'class': 'visitingteamevent'}).findAll('span', {'class': 'scoremins'})
+        for a in away_team_link:
+            score = a.text.strip().split("'")[0]
+            if int(score) <= 45:
+                away_team_scores_firsthalf += 1
+            if int(score) > 45:
+                away_team_scores_secondhalf += 1
+            away_team_scores.append(score)
+    except AttributeError:
+        away_team_scores.append(99)
+        away_team_scores_firsthalf = 99
+        away_team_scores_secondhalf = 99
+        
+    return(home_team_scores_firsthalf, home_team_scores_secondhalf, away_team_scores_firsthalf, away_team_scores_secondhalf)
+```
+
+The *teams* list will now have all the information we needed. 
+```python
+all_matches = get_html(urls)
+```
+
+``
+[['Sun',
+  'May 19',
+  'Eibar',
+  'Barça',
+  '2',
+  '2',
+  2,
+  0,
+  2,
+  0,
+  'https://www.msn.com/en-us/sports/soccer/la-liga/eibar-v-barcelona/game-center/sp-id-80402000001009693',
+  '39',
+  '61',
+  '18',
+  '8',
+  '8',
+  '3',
+  '17',
+  '5',
+  '5',
+  '2',
+  '1',
+  '6',
+  None,
+  None,
+  '4',
+  '2',
+  '0',
+  '0'],
+ ['Sun',
+  'May 19',
+  'Real Madrid',
+  'Betis',
+  '0',
+  '2',
+  0,
+  0,
+  0,
+  2,
+  'https://www.msn.com/en-us/sports/soccer/la-liga/real-madrid-v-real-betis/game-center/sp-id-80402000001009694',
+  '47',
+  '53',
+  '9',
+  '9',
+  '2',
+  '7',
+  '18',
+  '10',
+  '1',
+  '5',
+  '5',
+  '2',
+  '1',
+  '4',
+  '4',
+  '1',
+  '0',
+  '0'],...]
+  ``
+
+Now we can very simply convert into a dataframe and start analyzing!
+
+```python
+cols = ['match_day', 'match_date', 'home_team', 'away_team', 'home_team_score', 'away_team_score', 'HT_num_goals_firsthalf', 
+            'HT_num_goals_secondhalf', 'AT_num_goals_firsthalf', 'AT_num_goals_secondhalf', 'match_link', 'home_posession', 
+            'away_posession', 'home_shots', 'away_shots', 'home_shots_ontarget', 'away_shots_ontarget', 'home_fouls', 
+            'away_fouls', 'home_corners', 'away_corners', 'home_saves', 'away_saves', 'home_offsides', 'away_offsides', 
+            'home_yellow', 'away_yellow', 'home_red', 'away_red']
+df = pd.DataFrame(all_matches, columns=cols)
+```
+
+![image](images/laliga-df.jpg)
+
