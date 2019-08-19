@@ -2,8 +2,6 @@ title: Scraping LaLiga Statistics 2018/19
 date: 08/19/2019
 author: Parth Shah
 
-# Scraping Laliga Statistics with Python
-
 ## Environment Setup
 I have used Python 3.6 for this tutorial. The required libraries are as follows:
 
@@ -26,7 +24,7 @@ The website lists the scores for each month on a separate page and it follows th
 
 *https://www.msn.com/en-us/sports/soccer/la-liga/scores/sp-d-20190428-d-20190331-d-20190303*
 
-As we can see notice the pattern here:
+As we can see notice the pattern here:(*I*)
 
 http://............./sp-d-(*new-match-date*)-d-(*past-date*)-d-(*past-date*).
 
@@ -47,3 +45,8 @@ def fetch_website(links):
     
 urls = fetch_website(links)
 ```
+
+`['https://www.msn.com/en-us/sports/soccer/la-liga/scores/',
+ 'https://www.msn.com/en-us/sports/soccer/la-liga/scores/sp-d-20190428',
+ 'https://www.msn.com/en-us/sports/soccer/la-liga/scores/sp-d-20190428-d-20190331',
+ 'https://www.msn.com/en-us/sports/soccer/la-liga/scores/sp-d-20190428-d-20190331-d-20190303']`
