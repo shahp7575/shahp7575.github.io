@@ -1,6 +1,7 @@
 title: Data Preprocessing
 date: 11/14/2018
 author: Parth Shah
+category: Blog
 
 ![image](images/ml.png)
 
