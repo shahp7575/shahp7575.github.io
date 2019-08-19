@@ -44,12 +44,14 @@
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;```
-['https://www.msn.com/en-us/sports/soccer/la-liga/scores/',&lt;/p&gt;
-&lt;p&gt;'https://www.msn.com/en-us/sports/soccer/la-liga/scores/sp-d-20190428',&lt;/p&gt;
-&lt;p&gt;'https://www.msn.com/en-us/sports/soccer/la-liga/scores/sp-d-20190428-d-20190331',&lt;/p&gt;
-&lt;p&gt;'https://www.msn.com/en-us/sports/soccer/la-liga/scores/sp-d-20190428-d-20190331-d-20190303']
- ```&lt;/p&gt;</content></entry><entry><title>Data Preprocessing</title><link href="/data-preprocessing.html" rel="alternate"></link><published>2018-11-14T00:00:00-05:00</published><updated>2018-11-14T00:00:00-05:00</updated><author><name>Parth Shah</name></author><id>tag:None,2018-11-14:/data-preprocessing.html</id><summary type="html">&lt;p&gt;&lt;img alt="image" src="images/ml.png"&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;[&amp;#39;https://www.msn.com/en-us/sports/soccer/la-liga/scores/&amp;#39;,
+
+ &amp;#39;https://www.msn.com/en-us/sports/soccer/la-liga/scores/sp-d-20190428&amp;#39;,
+
+ &amp;#39;https://www.msn.com/en-us/sports/soccer/la-liga/scores/sp-d-20190428-d-20190331&amp;#39;,
+
+ &amp;#39;https://www.msn.com/en-us/sports/soccer/la-liga/scores/sp-d-20190428-d-20190331-d-20190303&amp;#39;...]
+&lt;/pre&gt;&lt;/div&gt;</content></entry><entry><title>Data Preprocessing</title><link href="/data-preprocessing.html" rel="alternate"></link><published>2018-11-14T00:00:00-05:00</published><updated>2018-11-14T00:00:00-05:00</updated><author><name>Parth Shah</name></author><id>tag:None,2018-11-14:/data-preprocessing.html</id><summary type="html">&lt;p&gt;&lt;img alt="image" src="images/ml.png"&gt;&lt;/p&gt;
 &lt;p&gt;It was 6 pm on October 17th, 2018, when the wind came crashing at my window. I woke up from my little nap and as usual — I picked up my phone and went to YouTube. Well thanks to YouTube for recommending me this Siraj Raval’s video, where he simply …&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;img alt="image" src="images/ml.png"&gt;&lt;/p&gt;
 &lt;p&gt;It was 6 pm on October 17th, 2018, when the wind came crashing at my window. I woke up from my little nap and as usual — I picked up my phone and went to YouTube. Well thanks to YouTube for recommending me this Siraj Raval’s video, where he simply asks each and every Machine Learning enthusiasts to just dedicate at least one hour of everyday towards studying or coding Machine Learning. I found that motivating as I would have a goal to accomplish every day, rather than having one life-long goal that will take all of my time and effort to reach.&lt;/p&gt;
 &lt;p&gt;From the very next moment, I was absolutely devoted to embarking in this one-hour-a-day-ship of Machine Learning. So far my journey has been smooth and I can say with certainty that anyone boarding this ship will definitely reach their destination.&lt;/p&gt;
