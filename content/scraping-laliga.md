@@ -1,6 +1,7 @@
 title: Scraping LaLiga Statistics 2018/19
 date: 08/19/2019
 author: Parth Shah
+category: Blog
 
 ![image](images/laliga.png)
 

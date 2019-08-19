@@ -1,6 +1,7 @@
 title: Anscombe's Quartet
 date: 09/19/2018
 author: Parth Shah
+category: Blog
 
 I always believed in “numerical calculations are exact, but graphs are rough”. Coming from a person who has just started learning Data Analytics, it was hard for me to understand the importance of Data Visualization along with summary statistics. But it all changed after attending this Data Visualization Meetup, which is when I was introduced to the *Anscombe’s Quartet*.
 
