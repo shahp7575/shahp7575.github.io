@@ -127,12 +127,12 @@ def get_html(urls):
  
 Now I don't only want the scores, I want the detailed statistics for each and every match such as team's posession, offsides, fouls, etc. This can be obtained by following the same scraping process we did above, but now for each *data_link* that we obtain from each match.
 
-![image](images/laliga-stats.jpg)
+![image](images/laliga-stats.JPG)
 **Note**: This image is from the 2019/20 season as msn have updated it to the current season.
 
 The following is the page source for one of the matches:
 
-![image](images/laliga-statsdetails.jpg)
+![image](images/laliga-statsdetail.jpg)
 
 The information of detailed stats is in the *div* container with id *matchupgamestatsmodule*. And all the individual statistics is present in the *div* container with class *statsitem*.
 
