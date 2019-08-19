@@ -123,7 +123,6 @@
 </pre></div>
 
 
-<p>This gives us results for each match in a list that can be easily converted into a dataframe. </p>
 <p><code>[['Sun',
   'May 19',
   'Eibar',
@@ -139,7 +138,250 @@
   '2',
   'https://www.msn.com/en-us/sports/soccer/la-liga/real-madrid-v-real-betis/game-center/sp-id-80402000001009694'],
   ...
- ]</code></p>                </article>
+ ]</code></p>
+<p>Now I don't only want the scores, I want the detailed statistics for each and every match such as team's posession, offsides, fouls, etc. This can be obtained by following the same scraping process we did above, but now for each <em>data_link</em> that we obtain from each match.</p>
+<p><img alt="image" src="images/laliga-stats.jpg">
+<strong>Note</strong>: This image is from the 2019/20 season as msn have updated it to the current season.</p>
+<p>The following is the page source for one of the matches:</p>
+<p><img alt="image" src="images/laliga-statsdetails.jpg"></p>
+<p>The information of detailed stats is in the <em>div</em> container with id <em>matchupgamestatsmodule</em>. And all the individual statistics is present in the <em>div</em> container with class <em>statsitem</em>.</p>
+<div class="highlight"><pre><span></span><span class="n">html_link</span> <span class="o">=</span> <span class="n">urllib</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="n">data_link</span><span class="p">)</span>
+<span class="n">raw_link</span> <span class="o">=</span> <span class="n">bs4</span><span class="o">.</span><span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">html_link</span><span class="p">,</span> <span class="s1">&#39;lxml&#39;</span><span class="p">)</span>
+<span class="n">result_link</span> <span class="o">=</span> <span class="n">raw_link</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;div&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="s1">&#39;main&#39;</span><span class="p">})</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;div&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="s1">&#39;matchupgamestatsmodule&#39;</span><span class="p">})</span><span class="o">.</span><span class="n">findAll</span><span class="p">(</span><span class="s1">&#39;div&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;class&#39;</span><span class="p">:</span> <span class="s1">&#39;statsitem&#39;</span><span class="p">})</span>
+</pre></div>
+
+
+<div class="highlight"><pre><span></span>[<span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;statsitem&quot;</span><span class="p">&gt;</span> 
+ <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;statsvalue clearfix&quot;</span><span class="p">&gt;</span> 
+ <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;firstteamstats&quot;</span><span class="p">&gt;</span>28<span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span> 
+ <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;label&quot;</span><span class="p">&gt;</span> BALL POSSESSION % <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span> 
+ <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;secondteamstats&quot;</span><span class="p">&gt;</span>72<span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span> <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span> 
+ ...
+ <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;firstteamstats&quot;</span><span class="p">&gt;</span>11<span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span> 
+ <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;label&quot;</span><span class="p">&gt;</span> SHOTS <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span> <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;secondteamstats&quot;</span><span class="p">&gt;</span>11<span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span> 
+ ...]
+</pre></div>
+
+
+<p>Here there is no way to separate out individual statistics as all the class labels have been named the same for each statistics. The only way to separate them out is the text of the <em>div</em> tag with class <em>label</em>. So instead of fetching each stats through html elements, I simply converted them into a list which is simply looping through each <em>statsitem</em> container and get the textual data.</p>
+<div class="highlight"><pre><span></span><span class="n">stats</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">rl</span> <span class="ow">in</span> <span class="n">result_link</span><span class="p">:</span>
+  <span class="n">stats</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">rl</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
+</pre></div>
+
+
+<p>Now we have a nice list with individual statistics. The first and the last value in the list represent the stats of home team and away team respectively. </p>
+<p>[['28', 'BALL', 'POSSESSION', '%', '72'], 
+['11', 'SHOTS', '11'], 
+['5', 'SHOTS', 'ON', 'GOAL', '2'], 
+['14', 'FOULS', '9'], 
+['3', 'CORNERS', '8'], 
+['2', 'SAVES', '4'], 
+['2', 'OFFSIDES', '1'], 
+['1', 'YELLOW', 'CARDS', '1'], 
+['0', 'RED', 'CARDS', '0']]</p>
+<p>The second element in each list would be an identifier for each type of stats. I created a separate function <em>get_stats(stats)</em> for that. The <em>stats</em> parameter in the function is the list we obtained above which can be passed through our main <em>get_html()</em> function.</p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">get_stats</span><span class="p">(</span><span class="n">stats</span><span class="p">):</span>
+    <span class="n">stat_list</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;BALL&#39;</span><span class="p">,</span> <span class="s1">&#39;SHOTS&#39;</span><span class="p">,</span> <span class="s1">&#39;FOULS&#39;</span><span class="p">,</span> <span class="s1">&#39;CORNERS&#39;</span><span class="p">,</span> <span class="s1">&#39;SAVES&#39;</span><span class="p">,</span> <span class="s1">&#39;OFFSIDES&#39;</span><span class="p">,</span> <span class="s1">&#39;YELLOW&#39;</span><span class="p">,</span> <span class="s1">&#39;RED&#39;</span><span class="p">]</span>
+    <span class="n">len_stats</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">stats</span><span class="p">)</span>
+    <span class="n">home_shots_og</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="n">away_shots_og</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="n">home_saves</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="n">away_saves</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="n">home_offsides</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="n">away_offsides</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="n">home_poss</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="n">away_poss</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="n">home_fouls</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="n">away_fouls</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="n">home_shots</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="n">away_shots</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="n">home_corners</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="n">away_corners</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="n">home_yellow</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="n">away_yellow</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="n">home_red</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="n">away_red</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">len_stats</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">stats</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="ow">in</span> <span class="n">stat_list</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">stats</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;BALL&#39;</span><span class="p">:</span>
+                <span class="n">home_poss</span> <span class="o">=</span> <span class="n">stats</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">away_poss</span> <span class="o">=</span> <span class="n">stats</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">stats</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;FOULS&#39;</span><span class="p">:</span>
+                <span class="n">home_fouls</span> <span class="o">=</span> <span class="n">stats</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">away_fouls</span> <span class="o">=</span> <span class="n">stats</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">stats</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;CORNERS&#39;</span><span class="p">:</span>
+                <span class="n">home_corners</span> <span class="o">=</span> <span class="n">stats</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">away_corners</span> <span class="o">=</span> <span class="n">stats</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">stats</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;SAVES&#39;</span><span class="p">:</span>
+                <span class="n">home_saves</span> <span class="o">=</span> <span class="n">stats</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">away_saves</span> <span class="o">=</span> <span class="n">stats</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">stats</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;OFFSIDES&#39;</span><span class="p">:</span>
+                <span class="n">home_offsides</span> <span class="o">=</span> <span class="n">stats</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">away_offsides</span> <span class="o">=</span> <span class="n">stats</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">stats</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;YELLOW&#39;</span><span class="p">:</span>
+                <span class="n">home_yellow</span> <span class="o">=</span> <span class="n">stats</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">away_yellow</span> <span class="o">=</span> <span class="n">stats</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">stats</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;RED&#39;</span><span class="p">:</span>
+                <span class="n">home_red</span> <span class="o">=</span> <span class="n">stats</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">away_red</span> <span class="o">=</span> <span class="n">stats</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">stats</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;SHOTS&#39;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">stats</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+                    <span class="n">home_shots</span> <span class="o">=</span> <span class="n">stats</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="n">away_shots</span> <span class="o">=</span> <span class="n">stats</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">home_shots_og</span> <span class="o">=</span> <span class="n">stats</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="n">away_shots_og</span> <span class="o">=</span> <span class="n">stats</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">return</span><span class="p">(</span><span class="n">home_poss</span><span class="p">,</span> <span class="n">away_poss</span><span class="p">,</span> <span class="n">home_shots</span><span class="p">,</span> <span class="n">away_shots</span><span class="p">,</span> <span class="n">home_shots_og</span><span class="p">,</span> <span class="n">away_shots_og</span><span class="p">,</span> <span class="n">home_fouls</span><span class="p">,</span> <span class="n">away_fouls</span><span class="p">,</span> <span class="n">home_corners</span><span class="p">,</span> 
+           <span class="n">away_corners</span><span class="p">,</span> <span class="n">home_saves</span><span class="p">,</span> <span class="n">away_saves</span><span class="p">,</span> <span class="n">home_offsides</span><span class="p">,</span> <span class="n">away_offsides</span><span class="p">,</span> <span class="n">home_yellow</span><span class="p">,</span> <span class="n">away_yellow</span><span class="p">,</span> <span class="n">home_red</span><span class="p">,</span> <span class="n">away_red</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">get_html</span><span class="p">(</span><span class="n">urls</span><span class="p">):</span>
+    <span class="n">teams</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">url</span> <span class="ow">in</span> <span class="n">urls</span><span class="p">:</span>
+        <span class="n">html</span> <span class="o">=</span> <span class="n">urllib</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="n">url</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="n">raw</span> <span class="o">=</span> <span class="n">bs4</span><span class="o">.</span><span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">html</span><span class="p">,</span> <span class="s1">&#39;lxml&#39;</span><span class="p">)</span>
+        <span class="o">........</span>
+        <span class="n">data_link</span> <span class="o">=</span> <span class="s1">&#39;https://www.msn.com&#39;</span> <span class="o">+</span> <span class="n">r</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;href&#39;</span><span class="p">)</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">html_link</span> <span class="o">=</span> <span class="n">urllib</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="n">data_link</span><span class="p">)</span>
+            <span class="k">except</span> <span class="n">urllib</span><span class="o">.</span><span class="n">error</span><span class="o">.</span><span class="n">HTTPError</span><span class="p">:</span>
+                <span class="c1"># check this at the end. hard coded link</span>
+                <span class="n">html_link</span> <span class="o">=</span> <span class="n">urllib</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="s1">&#39;https://www.msn.com/en-us/sports/soccer/la-liga/eibar-v-barcelona/game-center/sp-id-80402000001009693&#39;</span><span class="p">)</span>
+            <span class="n">raw_link</span> <span class="o">=</span> <span class="n">bs4</span><span class="o">.</span><span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">html_link</span><span class="p">,</span> <span class="s1">&#39;lxml&#39;</span><span class="p">)</span>
+            <span class="n">result_link</span> <span class="o">=</span> <span class="n">raw_link</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;div&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="s1">&#39;main&#39;</span><span class="p">})</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;div&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="s1">&#39;matchupgamestatsmodule&#39;</span><span class="p">})</span><span class="o">.</span><span class="n">findAll</span><span class="p">(</span><span class="s1">&#39;div&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;class&#39;</span><span class="p">:</span> <span class="s1">&#39;statsitem&#39;</span><span class="p">})</span>
+
+            <span class="n">stats</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">rl</span> <span class="ow">in</span> <span class="n">result_link</span><span class="p">:</span>
+                <span class="n">stats</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">rl</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
+            <span class="n">res</span> <span class="o">=</span> <span class="n">get_stats</span><span class="p">(</span><span class="n">stats</span><span class="p">)</span>
+            <span class="n">teams</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">match_date</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span> <span class="n">match_date</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">:],</span> <span class="n">home_team</span><span class="p">,</span> <span class="n">away_team</span><span class="p">,</span>
+                          <span class="n">home_team_score</span><span class="p">,</span> <span class="n">away_team_score</span><span class="p">,</span> <span class="n">data_link</span><span class="p">,</span> <span class="n">res</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">res</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">res</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">res</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span>
+                          <span class="n">res</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span> <span class="n">res</span><span class="p">[</span><span class="mi">5</span><span class="p">],</span> <span class="n">res</span><span class="p">[</span><span class="mi">6</span><span class="p">],</span> <span class="n">res</span><span class="p">[</span><span class="mi">7</span><span class="p">],</span> <span class="n">res</span><span class="p">[</span><span class="mi">8</span><span class="p">],</span> <span class="n">res</span><span class="p">[</span><span class="mi">9</span><span class="p">],</span> <span class="n">res</span><span class="p">[</span><span class="mi">10</span><span class="p">],</span> <span class="n">res</span><span class="p">[</span><span class="mi">11</span><span class="p">],</span> <span class="n">res</span><span class="p">[</span><span class="mi">12</span><span class="p">],</span> <span class="n">res</span><span class="p">[</span><span class="mi">13</span><span class="p">],</span> <span class="n">res</span><span class="p">[</span><span class="mi">14</span><span class="p">],</span>
+                          <span class="n">res</span><span class="p">[</span><span class="mi">15</span><span class="p">],</span> <span class="n">res</span><span class="p">[</span><span class="mi">16</span><span class="p">],</span> <span class="n">res</span><span class="p">[</span><span class="mi">17</span><span class="p">]])</span>
+
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">teams</span>
+</pre></div>
+
+
+<p>This gives us all the match results with individual team statistics. We can also derive some statistics of our own from this. For example, I was curious to know if some teams are more likely to score in the first half or second half. So I created a separate function <em>get_score_count_perhalf(score_link)</em> to find number of goals scored by both home and away teams in each of the halves. </p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">get_score_count_perhalf</span><span class="p">(</span><span class="n">score_link</span><span class="p">):</span>
+    <span class="n">result_link</span> <span class="o">=</span> <span class="n">score_link</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;div&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="s1">&#39;main&#39;</span><span class="p">})</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;div&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;class&#39;</span><span class="p">:</span> <span class="s1">&#39;teamevent&#39;</span><span class="p">})</span>
+    <span class="n">home_team_scores</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">home_team_scores_firsthalf</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">home_team_scores_secondhalf</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">home_team_link</span> <span class="o">=</span> <span class="n">result_link</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;div&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;class&#39;</span><span class="p">:</span> <span class="s1">&#39;hometeamevent&#39;</span><span class="p">})</span><span class="o">.</span><span class="n">findAll</span><span class="p">(</span><span class="s1">&#39;span&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;class&#39;</span><span class="p">:</span> <span class="s1">&#39;scoremins&#39;</span><span class="p">})</span>
+        <span class="k">for</span> <span class="n">h</span> <span class="ow">in</span> <span class="n">home_team_link</span><span class="p">:</span>
+            <span class="n">score</span> <span class="o">=</span> <span class="n">h</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;&#39;&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">score</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">45</span><span class="p">:</span>
+                <span class="n">home_team_scores_firsthalf</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">score</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">45</span><span class="p">:</span>
+                <span class="n">home_team_scores_secondhalf</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">home_team_scores</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">score</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+        <span class="c1"># check this later.(Leganes vs Celta: Apr 27)</span>
+        <span class="n">home_team_scores</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">99</span><span class="p">)</span>
+        <span class="n">home_team_scores_firsthalf</span> <span class="o">=</span> <span class="mi">99</span>
+        <span class="n">home_team_scores_secondhalf</span> <span class="o">=</span> <span class="mi">99</span>
+
+    <span class="n">away_team_scores</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">away_team_scores_firsthalf</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">away_team_scores_secondhalf</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">away_team_link</span> <span class="o">=</span> <span class="n">result_link</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;div&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;class&#39;</span><span class="p">:</span> <span class="s1">&#39;visitingteamevent&#39;</span><span class="p">})</span><span class="o">.</span><span class="n">findAll</span><span class="p">(</span><span class="s1">&#39;span&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;class&#39;</span><span class="p">:</span> <span class="s1">&#39;scoremins&#39;</span><span class="p">})</span>
+        <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">away_team_link</span><span class="p">:</span>
+            <span class="n">score</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;&#39;&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">score</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">45</span><span class="p">:</span>
+                <span class="n">away_team_scores_firsthalf</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">score</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">45</span><span class="p">:</span>
+                <span class="n">away_team_scores_secondhalf</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">away_team_scores</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">score</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+        <span class="n">away_team_scores</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">99</span><span class="p">)</span>
+        <span class="n">away_team_scores_firsthalf</span> <span class="o">=</span> <span class="mi">99</span>
+        <span class="n">away_team_scores_secondhalf</span> <span class="o">=</span> <span class="mi">99</span>
+
+    <span class="k">return</span><span class="p">(</span><span class="n">home_team_scores_firsthalf</span><span class="p">,</span> <span class="n">home_team_scores_secondhalf</span><span class="p">,</span> <span class="n">away_team_scores_firsthalf</span><span class="p">,</span> <span class="n">away_team_scores_secondhalf</span><span class="p">)</span>
+</pre></div>
+
+
+<p>The <em>teams</em> list will now have all the information we needed. </p>
+<div class="highlight"><pre><span></span><span class="n">all_matches</span> <span class="o">=</span> <span class="n">get_html</span><span class="p">(</span><span class="n">urls</span><span class="p">)</span>
+</pre></div>
+
+
+<p><code>[['Sun',
+  'May 19',
+  'Eibar',
+  'Barça',
+  '2',
+  '2',
+  2,
+  0,
+  2,
+  0,
+  'https://www.msn.com/en-us/sports/soccer/la-liga/eibar-v-barcelona/game-center/sp-id-80402000001009693',
+  '39',
+  '61',
+  '18',
+  '8',
+  '8',
+  '3',
+  '17',
+  '5',
+  '5',
+  '2',
+  '1',
+  '6',
+  None,
+  None,
+  '4',
+  '2',
+  '0',
+  '0'],
+ ['Sun',
+  'May 19',
+  'Real Madrid',
+  'Betis',
+  '0',
+  '2',
+  0,
+  0,
+  0,
+  2,
+  'https://www.msn.com/en-us/sports/soccer/la-liga/real-madrid-v-real-betis/game-center/sp-id-80402000001009694',
+  '47',
+  '53',
+  '9',
+  '9',
+  '2',
+  '7',
+  '18',
+  '10',
+  '1',
+  '5',
+  '5',
+  '2',
+  '1',
+  '4',
+  '4',
+  '1',
+  '0',
+  '0'],...]</code></p>
+<p>Now we can very simply convert into a dataframe and start analyzing!</p>
+<div class="highlight"><pre><span></span><span class="n">cols</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;match_day&#39;</span><span class="p">,</span> <span class="s1">&#39;match_date&#39;</span><span class="p">,</span> <span class="s1">&#39;home_team&#39;</span><span class="p">,</span> <span class="s1">&#39;away_team&#39;</span><span class="p">,</span> <span class="s1">&#39;home_team_score&#39;</span><span class="p">,</span> <span class="s1">&#39;away_team_score&#39;</span><span class="p">,</span> <span class="s1">&#39;HT_num_goals_firsthalf&#39;</span><span class="p">,</span> 
+            <span class="s1">&#39;HT_num_goals_secondhalf&#39;</span><span class="p">,</span> <span class="s1">&#39;AT_num_goals_firsthalf&#39;</span><span class="p">,</span> <span class="s1">&#39;AT_num_goals_secondhalf&#39;</span><span class="p">,</span> <span class="s1">&#39;match_link&#39;</span><span class="p">,</span> <span class="s1">&#39;home_posession&#39;</span><span class="p">,</span> 
+            <span class="s1">&#39;away_posession&#39;</span><span class="p">,</span> <span class="s1">&#39;home_shots&#39;</span><span class="p">,</span> <span class="s1">&#39;away_shots&#39;</span><span class="p">,</span> <span class="s1">&#39;home_shots_ontarget&#39;</span><span class="p">,</span> <span class="s1">&#39;away_shots_ontarget&#39;</span><span class="p">,</span> <span class="s1">&#39;home_fouls&#39;</span><span class="p">,</span> 
+            <span class="s1">&#39;away_fouls&#39;</span><span class="p">,</span> <span class="s1">&#39;home_corners&#39;</span><span class="p">,</span> <span class="s1">&#39;away_corners&#39;</span><span class="p">,</span> <span class="s1">&#39;home_saves&#39;</span><span class="p">,</span> <span class="s1">&#39;away_saves&#39;</span><span class="p">,</span> <span class="s1">&#39;home_offsides&#39;</span><span class="p">,</span> <span class="s1">&#39;away_offsides&#39;</span><span class="p">,</span> 
+            <span class="s1">&#39;home_yellow&#39;</span><span class="p">,</span> <span class="s1">&#39;away_yellow&#39;</span><span class="p">,</span> <span class="s1">&#39;home_red&#39;</span><span class="p">,</span> <span class="s1">&#39;away_red&#39;</span><span class="p">]</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">all_matches</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">cols</span><span class="p">)</span>
+</pre></div>
+
+
+<p><img alt="image" src="images/laliga-df.jpg"></p>                </article>
             </aside><!-- /#featured -->
                 <section id="content" class="body">
                     <h1>Other articles</h1>
