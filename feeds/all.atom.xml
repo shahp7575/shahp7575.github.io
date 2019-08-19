@@ -1,29 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom"><title>Parth's Blog</title><link href="/" rel="alternate"></link><link href="/feeds/all.atom.xml" rel="self"></link><id>/</id><updated>2019-08-19T00:00:00-04:00</updated><entry><title>Scraping LaLiga Statistics 2018/19</title><link href="/scraping-laliga-statistics-201819.html" rel="alternate"></link><published>2019-08-19T00:00:00-04:00</published><updated>2019-08-19T00:00:00-04:00</updated><author><name>Parth Shah</name></author><id>tag:None,2019-08-19:/scraping-laliga-statistics-201819.html</id><summary type="html">&lt;h1&gt;Scraping Laliga Statistics with Python&lt;/h1&gt;
 &lt;h2&gt;Environment Setup&lt;/h2&gt;
-&lt;p&gt;I have used Python 3.6 for this tutorial. The required libraries are as follows:
-- numpy
-- pandas
-- bs4 (BeautifulSoup)
-- urllib (Module for working with URLs)&lt;/p&gt;
+&lt;p&gt;I have used Python 3.6 for this tutorial. The required libraries are as follows:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;numpy&lt;/li&gt;
+&lt;li&gt;pandas&lt;/li&gt;
+&lt;li&gt;bs4 (BeautifulSoup)&lt;/li&gt;
+&lt;li&gt;urllib (Module for working with URLs)&lt;/li&gt;
+&lt;/ul&gt;
 &lt;h2&gt;Web Scraping from msn.com&lt;/h2&gt;
-&lt;p&gt;&lt;img alt="image" src="images/laliga-home.PNG"&gt;
-The website lists the scores for each month on a separate page and …&lt;/p&gt;</summary><content type="html">&lt;h1&gt;Scraping Laliga Statistics with Python&lt;/h1&gt;
+&lt;p&gt;&lt;img alt="image" src="images/laliga-home.PNG"&gt;&lt;/p&gt;
+&lt;p&gt;The website lists the scores for each month on a separate page and …&lt;/p&gt;</summary><content type="html">&lt;h1&gt;Scraping Laliga Statistics with Python&lt;/h1&gt;
 &lt;h2&gt;Environment Setup&lt;/h2&gt;
-&lt;p&gt;I have used Python 3.6 for this tutorial. The required libraries are as follows:
-- numpy
-- pandas
-- bs4 (BeautifulSoup)
-- urllib (Module for working with URLs)&lt;/p&gt;
+&lt;p&gt;I have used Python 3.6 for this tutorial. The required libraries are as follows:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;numpy&lt;/li&gt;
+&lt;li&gt;pandas&lt;/li&gt;
+&lt;li&gt;bs4 (BeautifulSoup)&lt;/li&gt;
+&lt;li&gt;urllib (Module for working with URLs)&lt;/li&gt;
+&lt;/ul&gt;
 &lt;h2&gt;Web Scraping from msn.com&lt;/h2&gt;
-&lt;p&gt;&lt;img alt="image" src="images/laliga-home.PNG"&gt;
-The website lists the scores for each month on a separate page and it follows this pattern: 
-&lt;em&gt;https://www.msn.com/en-us/sports/soccer/la-liga/scores/&lt;/em&gt;
+&lt;p&gt;&lt;img alt="image" src="images/laliga-home.PNG"&gt;&lt;/p&gt;
+&lt;p&gt;The website lists the scores for each month on a separate page and it follows this pattern: &lt;/p&gt;
+&lt;p&gt;&lt;em&gt;https://www.msn.com/en-us/sports/soccer/la-liga/scores/&lt;/em&gt;
 &lt;em&gt;https://www.msn.com/en-us/sports/soccer/la-liga/scores/sp-d-20190428&lt;/em&gt;
 &lt;em&gt;https://www.msn.com/en-us/sports/soccer/la-liga/scores/sp-d-20190428-d-20190331&lt;/em&gt;
 &lt;em&gt;https://www.msn.com/en-us/sports/soccer/la-liga/scores/sp-d-20190428-d-20190331-d-20190303&lt;/em&gt;&lt;/p&gt;
-&lt;p&gt;As we can see notice the pattern here:
-http://............./sp-d-(&lt;em&gt;new-match-date&lt;/em&gt;)-d-(&lt;em&gt;past-date&lt;/em&gt;)-d-(&lt;em&gt;past-date&lt;/em&gt;).&lt;/p&gt;
+&lt;p&gt;As we can see notice the pattern here:&lt;/p&gt;
+&lt;p&gt;http://............./sp-d-(&lt;em&gt;new-match-date&lt;/em&gt;)-d-(&lt;em&gt;past-date&lt;/em&gt;)-d-(&lt;em&gt;past-date&lt;/em&gt;).&lt;/p&gt;
 &lt;p&gt;I recorded those dates in a list and created a function that gives me all the links.&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;links&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;20190428&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;20190331&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;20190303&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;20190203&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;20190106&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;20181209&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;20181111&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;20181014&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;20180916&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;20180819&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
 
