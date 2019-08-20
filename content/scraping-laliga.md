@@ -5,9 +5,9 @@ category: Blog
 
 ![image](images/laliga.png)
 
-If there's something I do besides data science then it's watching soccer, especially LaLiga. You might hear me scream for a goal if you pass by my house on a weekend. But lately I realized that watching just LaLiga wasn't enough for me. I wanted to explore how each and every team is performing with time as well as against other teams. Which team plays aggressively? Which team dominates the posession?
+If there's anythin I do besides data science, then it's definitely watching soccer--especially LaLiga. You might hear me scream for a goal if you pass by my house on a weekend. Lately I realized that just watching LaLiga wasn't enough for me, I wanted to explore how each and every team is performing time-wise as well as against other teams. Questions such as "what team plays most aggressively?" "what team dominates the posession of the ball?" have been running through my mind.
 
-After a lot of research I didn't find the data I was looking for. So I decided to scrape it by myself. In this article I will show how with the help of Python I scraped the match results along with game statistics for each team in LaLiga 2018/19 season. 
+After a lot of research I wasn't able to find the exact data I was looking for, so I decided to scrape it by myself. In this article with the help of Python, I will show how I scraped the match results along with game statistics for each team in LaLiga 2018/19 season. 
 
 ## Environment Setup
 I have used Python 3.6 for this tutorial. The required libraries are as follows:
