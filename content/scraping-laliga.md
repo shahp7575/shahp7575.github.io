@@ -394,6 +394,6 @@ Now we can play around with this data and find insights. I am a huge fan of Barc
 Here is one of the plot that I made in Tableau (dashboard building in progress) that explores the number of fouls committed by Barcelona against other teams and vice-versa.
 
 <iframe src="https://public.tableau.com/views/BarcaStatsLaLiga201819/Barca?:showVizHome=no:embed=true" width="1000", height="3400"></iframe>
-![image|999x3399,20%](images/Barca.png)
+<img src="images/Barca.png" width="850", height="3400">
 
 Thank you for reading! Don't hesitate to reach out to me if you have any suggestion or an improvement.
