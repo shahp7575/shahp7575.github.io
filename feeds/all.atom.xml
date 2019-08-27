@@ -358,7 +358,7 @@
 &lt;p&gt;&lt;img alt="image" src="images/laliga-df.jpg"&gt;&lt;/p&gt;
 &lt;p&gt;Now we can play around with this data and find insights. I am a huge fan of Barcelona so I decided to explore their different statistics and how they perform against other teams. &lt;/p&gt;
 &lt;p&gt;Here is one of the plot that I made in Tableau (dashboard building in progress) that explores the number of fouls committed by Barcelona against other teams and vice-versa.&lt;/p&gt;
-&lt;iframe src="https://public.tableau.com/views/BarcaStatsLaLiga201819/Barca?:showVizHome=no:embed=true"&gt;&lt;/iframe&gt;
+&lt;iframe src="https://public.tableau.com/views/BarcaStatsLaLiga201819/Barca?:showVizHome=no:embed=true" width="1000", height="3400"&gt;&lt;/iframe&gt;
 
 &lt;p&gt;&lt;img alt="image|999x3399,20%" src="images/Barca.png"&gt;&lt;/p&gt;
 &lt;p&gt;Thank you for reading! Don't hesitate to reach out to me if you have any suggestion or an improvement.&lt;/p&gt;</content></entry><entry><title>Data Preprocessing</title><link href="/data-preprocessing.html" rel="alternate"></link><published>2018-11-14T00:00:00-05:00</published><updated>2018-11-14T00:00:00-05:00</updated><author><name>Parth Shah</name></author><id>tag:None,2018-11-14:/data-preprocessing.html</id><summary type="html">&lt;p&gt;&lt;img alt="image" src="images/ml.png"&gt;&lt;/p&gt;
