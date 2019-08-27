@@ -358,9 +358,9 @@
 &lt;p&gt;&lt;img alt="image" src="images/laliga-df.jpg"&gt;&lt;/p&gt;
 &lt;p&gt;Now we can play around with this data and find insights. I am a huge fan of Barcelona so I decided to explore their different statistics and how they perform against other teams. &lt;/p&gt;
 &lt;p&gt;Here is one of the plot that I made in Tableau (dashboard building in progress) that explores the number of fouls committed by Barcelona against other teams and vice-versa.&lt;/p&gt;
-&lt;iframe src="https://public.tableau.com/views/BarcaStatsLaLiga201819/Barca?:showVizHome=no:embed=true" width="1000", height="3400"&gt;&lt;/iframe&gt;
+&lt;iframe src="https://public.tableau.com/views/BarcaStatsLaLiga201819/Barca?:showVizHome=no:embed=true" width="700", height="3400"&gt;&lt;/iframe&gt;
 
-&lt;p&gt;&lt;img src="images/Barca.png" width="850", height="3400"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="images/Barca.png" width="700", height="3400"&gt;&lt;/p&gt;
 &lt;p&gt;Thank you for reading! Don't hesitate to reach out to me if you have any suggestion or an improvement.&lt;/p&gt;</content></entry><entry><title>Data Preprocessing</title><link href="/data-preprocessing.html" rel="alternate"></link><published>2018-11-14T00:00:00-05:00</published><updated>2018-11-14T00:00:00-05:00</updated><author><name>Parth Shah</name></author><id>tag:None,2018-11-14:/data-preprocessing.html</id><summary type="html">&lt;p&gt;&lt;img alt="image" src="images/ml.png"&gt;&lt;/p&gt;
 &lt;p&gt;It was 6 pm on October 17th, 2018, when the wind came crashing at my window. I woke up from my little nap and as usual — I picked up my phone and went to YouTube. Well thanks to YouTube for recommending me this Siraj Raval’s video, where he simply …&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;img alt="image" src="images/ml.png"&gt;&lt;/p&gt;
 &lt;p&gt;It was 6 pm on October 17th, 2018, when the wind came crashing at my window. I woke up from my little nap and as usual — I picked up my phone and went to YouTube. Well thanks to YouTube for recommending me this Siraj Raval’s video, where he simply asks each and every Machine Learning enthusiasts to just dedicate at least one hour of everyday towards studying or coding Machine Learning. I found that motivating as I would have a goal to accomplish every day, rather than having one life-long goal that will take all of my time and effort to reach.&lt;/p&gt;
