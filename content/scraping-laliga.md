@@ -391,7 +391,7 @@ df = pd.DataFrame(all_matches, columns=cols)
 
 Now we can play around with this data and find insights. I am a huge fan of Barcelona so I decided to explore their different statistics and how they perform against other teams. 
 
-Here is my Tableau dashboad summarizing Barcelona's LaLiga season in 2018/19. Tableau Link: https://tabsoft.co/2LnRcBZ
+Here is my Tableau dashboad summarizing Barcelona's LaLiga season in 2018/19. [Click here](https://tabsoft.co/2LnRcBZ) to view in Tableau.
 
 <img src="images/Barca.png" width="750", height="3400">
 
