@@ -3,7 +3,7 @@ date: 09/13/2019
 author: Parth Shah
 category: Blog
 
-This Fall I started my masters in data science at Rutgers University. In one of our Time Series and Regression class we were asked to analyze two datasets *teengamb* and *prostate* using R. This was my first time experimenting with R and it turned out to be a great learning experience.
+This Fall I started my masters in data science at Rutgers University. During one of my *Time Series and Regression* class, we were asked to analyze two datasets: *teengamb* and *prostate* using R. This was my first time experimenting with R and it turned out to be a great learning experience.
 
 ## Problem 1: Analyzing dataset teengamb
 
