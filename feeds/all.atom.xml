@@ -1,5 +1,511 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Parth Shah</title><link href="/" rel="alternate"></link><link href="/feeds/all.atom.xml" rel="self"></link><id>/</id><updated>2019-08-19T00:00:00-04:00</updated><entry><title>Scraping LaLiga Statistics 2018/19</title><link href="/scraping-laliga-statistics-201819.html" rel="alternate"></link><published>2019-08-19T00:00:00-04:00</published><updated>2019-08-19T00:00:00-04:00</updated><author><name>Parth Shah</name></author><id>tag:None,2019-08-19:/scraping-laliga-statistics-201819.html</id><summary type="html">&lt;p&gt;&lt;img alt="image" src="images/laliga.png"&gt;&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Parth Shah</title><link href="/" rel="alternate"></link><link href="/feeds/all.atom.xml" rel="self"></link><id>/</id><updated>2019-09-13T00:00:00-04:00</updated><entry><title>Analyzing Teen Gambling and Prostate Cancer dataset using R</title><link href="/analyzing-teen-gambling-and-prostate-cancer-dataset-using-r.html" rel="alternate"></link><published>2019-09-13T00:00:00-04:00</published><updated>2019-09-13T00:00:00-04:00</updated><author><name>Parth Shah</name></author><id>tag:None,2019-09-13:/analyzing-teen-gambling-and-prostate-cancer-dataset-using-r.html</id><summary type="html">&lt;p&gt;This Fall I started my masters in data science at Rutgers University. In one of our Time Series and Regression class we were asked to analyze two datasets &lt;em&gt;teengamb&lt;/em&gt; and &lt;em&gt;prostate&lt;/em&gt; using R. This was my first time experimenting with R and it turned out to be a great learning …&lt;/p&gt;</summary><content type="html">&lt;p&gt;This Fall I started my masters in data science at Rutgers University. In one of our Time Series and Regression class we were asked to analyze two datasets &lt;em&gt;teengamb&lt;/em&gt; and &lt;em&gt;prostate&lt;/em&gt; using R. This was my first time experimenting with R and it turned out to be a great learning experience.&lt;/p&gt;
+&lt;h2&gt;Problem 1: Analyzing dataset teengamb&lt;/h2&gt;
+&lt;h3&gt;Loading data &amp;amp; libraries&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;library&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;faraway&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="kn"&gt;library&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;tidyr&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="kn"&gt;library&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;purrr&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="kn"&gt;library&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;ggplot2&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="kn"&gt;library&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;ggpubr&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="kn"&gt;library&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;repr&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="kn"&gt;library&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;reshape2&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;Attaching package: &amp;#39;tidyr&amp;#39;
+
+The following object is masked from &amp;#39;package:reshape2&amp;#39;:
+
+    smiths
+
+The following object is masked from &amp;#39;package:magrittr&amp;#39;:
+
+    extract
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;data&lt;span class="p"&gt;(&lt;/span&gt;teengamb&lt;span class="p"&gt;)&lt;/span&gt;
+df &lt;span class="o"&gt;=&lt;/span&gt; teengamb
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kp"&gt;head&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;df&lt;span class="p"&gt;);&lt;/span&gt; &lt;span class="kp"&gt;tail&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;df&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;table&gt;
+&lt;thead&gt;&lt;tr&gt;&lt;th scope=col&gt;sex&lt;/th&gt;&lt;th scope=col&gt;status&lt;/th&gt;&lt;th scope=col&gt;income&lt;/th&gt;&lt;th scope=col&gt;verbal&lt;/th&gt;&lt;th scope=col&gt;gamble&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;
+&lt;tbody&gt;
+    &lt;tr&gt;&lt;td&gt;1   &lt;/td&gt;&lt;td&gt;51  &lt;/td&gt;&lt;td&gt;2.00&lt;/td&gt;&lt;td&gt;8   &lt;/td&gt;&lt;td&gt; 0.0&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td&gt;1   &lt;/td&gt;&lt;td&gt;28  &lt;/td&gt;&lt;td&gt;2.50&lt;/td&gt;&lt;td&gt;8   &lt;/td&gt;&lt;td&gt; 0.0&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td&gt;1   &lt;/td&gt;&lt;td&gt;37  &lt;/td&gt;&lt;td&gt;2.00&lt;/td&gt;&lt;td&gt;6   &lt;/td&gt;&lt;td&gt; 0.0&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td&gt;1   &lt;/td&gt;&lt;td&gt;28  &lt;/td&gt;&lt;td&gt;7.00&lt;/td&gt;&lt;td&gt;4   &lt;/td&gt;&lt;td&gt; 7.3&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td&gt;1   &lt;/td&gt;&lt;td&gt;65  &lt;/td&gt;&lt;td&gt;2.00&lt;/td&gt;&lt;td&gt;8   &lt;/td&gt;&lt;td&gt;19.6&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td&gt;1   &lt;/td&gt;&lt;td&gt;61  &lt;/td&gt;&lt;td&gt;3.47&lt;/td&gt;&lt;td&gt;6   &lt;/td&gt;&lt;td&gt; 0.1&lt;/td&gt;&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;table&gt;
+&lt;thead&gt;&lt;tr&gt;&lt;th&gt;&lt;/th&gt;&lt;th scope=col&gt;sex&lt;/th&gt;&lt;th scope=col&gt;status&lt;/th&gt;&lt;th scope=col&gt;income&lt;/th&gt;&lt;th scope=col&gt;verbal&lt;/th&gt;&lt;th scope=col&gt;gamble&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;
+&lt;tbody&gt;
+    &lt;tr&gt;&lt;th scope=row&gt;42&lt;/th&gt;&lt;td&gt;0    &lt;/td&gt;&lt;td&gt;61   &lt;/td&gt;&lt;td&gt;15.00&lt;/td&gt;&lt;td&gt;9    &lt;/td&gt;&lt;td&gt;69.7 &lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;th scope=row&gt;43&lt;/th&gt;&lt;td&gt;0    &lt;/td&gt;&lt;td&gt;75   &lt;/td&gt;&lt;td&gt; 3.00&lt;/td&gt;&lt;td&gt;8    &lt;/td&gt;&lt;td&gt;13.3 &lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;th scope=row&gt;44&lt;/th&gt;&lt;td&gt;0    &lt;/td&gt;&lt;td&gt;66   &lt;/td&gt;&lt;td&gt; 3.25&lt;/td&gt;&lt;td&gt;9    &lt;/td&gt;&lt;td&gt; 0.6 &lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;th scope=row&gt;45&lt;/th&gt;&lt;td&gt;0    &lt;/td&gt;&lt;td&gt;62   &lt;/td&gt;&lt;td&gt; 4.94&lt;/td&gt;&lt;td&gt;6    &lt;/td&gt;&lt;td&gt;38.0 &lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;th scope=row&gt;46&lt;/th&gt;&lt;td&gt;0    &lt;/td&gt;&lt;td&gt;71   &lt;/td&gt;&lt;td&gt; 1.50&lt;/td&gt;&lt;td&gt;7    &lt;/td&gt;&lt;td&gt;14.4 &lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;th scope=row&gt;47&lt;/th&gt;&lt;td&gt;0    &lt;/td&gt;&lt;td&gt;71   &lt;/td&gt;&lt;td&gt; 2.50&lt;/td&gt;&lt;td&gt;9    &lt;/td&gt;&lt;td&gt;19.2 &lt;/td&gt;&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;h3&gt;Numerical analysis&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kp"&gt;summary&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;df&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;      sex             status          income           verbal     
+ Min.   :0.0000   Min.   :18.00   Min.   : 0.600   Min.   : 1.00  
+ 1st Qu.:0.0000   1st Qu.:28.00   1st Qu.: 2.000   1st Qu.: 6.00  
+ Median :0.0000   Median :43.00   Median : 3.250   Median : 7.00  
+ Mean   :0.4043   Mean   :45.23   Mean   : 4.642   Mean   : 6.66  
+ 3rd Qu.:1.0000   3rd Qu.:61.50   3rd Qu.: 6.210   3rd Qu.: 8.00  
+ Max.   :1.0000   Max.   :75.00   Max.   :15.000   Max.   :10.00  
+     gamble     
+ Min.   :  0.0  
+ 1st Qu.:  1.1  
+ Median :  6.0  
+ Mean   : 19.3  
+ 3rd Qu.: 19.4  
+ Max.   :156.0
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;ul&gt;
+&lt;li&gt;&lt;em&gt;sex&lt;/em&gt; - It is considered as numeric here. So it needs to be converted to a categorical attribute.&lt;/li&gt;
+&lt;li&gt;&lt;em&gt;status&lt;/em&gt; - Seems like a normal distribution as the mean and median is concentrated in the center.&lt;/li&gt;
+&lt;li&gt;&lt;em&gt;income&lt;/em&gt; - Here the mean and median is closer to the minimum. So this might represent a right-skewed distribution.&lt;/li&gt;
+&lt;li&gt;&lt;em&gt;verbal&lt;/em&gt; - Mean, median is slightly closer to the maximum. So it could be slightly left-skewed.&lt;/li&gt;
+&lt;li&gt;&lt;em&gt;gamble&lt;/em&gt; - With mean(19.3) &amp;gt; median(6.0), this is heavily skewed to the right.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;df&lt;span class="o"&gt;$&lt;/span&gt;sex &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kp"&gt;factor&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;df&lt;span class="o"&gt;$&lt;/span&gt;sex&lt;span class="p"&gt;,&lt;/span&gt; levels&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="kt"&gt;c&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="m"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="m"&gt;1&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; labels&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="kt"&gt;c&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;male&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;female&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;));&lt;/span&gt; &lt;span class="kp"&gt;summary&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;df&lt;span class="o"&gt;$&lt;/span&gt;sex&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;dl class=dl-horizontal&gt;
+    &lt;dt&gt;male&lt;/dt&gt;
+        &lt;dd&gt;28&lt;/dd&gt;
+    &lt;dt&gt;female&lt;/dt&gt;
+        &lt;dd&gt;19&lt;/dd&gt;
+&lt;/dl&gt;
+
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# Check for NAs&lt;/span&gt;
+&lt;span class="kp"&gt;apply&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;df&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="m"&gt;2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="kr"&gt;function&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;x&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="kp"&gt;any&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kp"&gt;is.na&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;x&lt;span class="p"&gt;)))&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;dl class=dl-horizontal&gt;
+    &lt;dt&gt;sex&lt;/dt&gt;
+        &lt;dd&gt;FALSE&lt;/dd&gt;
+    &lt;dt&gt;status&lt;/dt&gt;
+        &lt;dd&gt;FALSE&lt;/dd&gt;
+    &lt;dt&gt;income&lt;/dt&gt;
+        &lt;dd&gt;FALSE&lt;/dd&gt;
+    &lt;dt&gt;verbal&lt;/dt&gt;
+        &lt;dd&gt;FALSE&lt;/dd&gt;
+    &lt;dt&gt;gamble&lt;/dt&gt;
+        &lt;dd&gt;FALSE&lt;/dd&gt;
+&lt;/dl&gt;
+
+&lt;p&gt;None of the columns in the dataset have null values.&lt;/p&gt;
+&lt;h3&gt;Univariate Analysis&lt;/h3&gt;
+&lt;h4&gt;Status&lt;/h4&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kp"&gt;options&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;repr.plot.width&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;4&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; repr.plot.height&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;3&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+ggplot&lt;span class="p"&gt;(&lt;/span&gt;data &lt;span class="o"&gt;=&lt;/span&gt; df&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; geom_histogram&lt;span class="p"&gt;(&lt;/span&gt;aes&lt;span class="p"&gt;(&lt;/span&gt;x&lt;span class="o"&gt;=&lt;/span&gt;status&lt;span class="p"&gt;,&lt;/span&gt; y&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;..&lt;/span&gt;density..&lt;span class="p"&gt;),&lt;/span&gt; bins&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;10&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; 
+                    geom_density&lt;span class="p"&gt;(&lt;/span&gt;aes&lt;span class="p"&gt;(&lt;/span&gt;x&lt;span class="o"&gt;=&lt;/span&gt;status&lt;span class="p"&gt;,&lt;/span&gt; y&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;..&lt;/span&gt;density..&lt;span class="p"&gt;),&lt;/span&gt; color&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;black&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt;
+                    ggtitle&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;Histogram of Status&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt;
+                    theme&lt;span class="p"&gt;(&lt;/span&gt;panel.grid.major &lt;span class="o"&gt;=&lt;/span&gt; element_blank&lt;span class="p"&gt;(),&lt;/span&gt; panel.grid.minor &lt;span class="o"&gt;=&lt;/span&gt; element_blank&lt;span class="p"&gt;(),&lt;/span&gt;
+                        panel.background &lt;span class="o"&gt;=&lt;/span&gt; element_blank&lt;span class="p"&gt;(),&lt;/span&gt; axis.line &lt;span class="o"&gt;=&lt;/span&gt; element_line&lt;span class="p"&gt;(&lt;/span&gt;colour &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;black&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;img alt="png" src="output_11_0.png"&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;As per the numerical analysis it was assumed that &lt;em&gt;status&lt;/em&gt; follows a normal distribution. But the histogram above shows a slight bimodal distribution instead. This depicts that the social economic status is almost equally distributed across the entire dataset.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4&gt;Income&lt;/h4&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kp"&gt;options&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;repr.plot.width&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;4&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; repr.plot.height&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;3&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+ggplot&lt;span class="p"&gt;(&lt;/span&gt;data &lt;span class="o"&gt;=&lt;/span&gt; df&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; geom_histogram&lt;span class="p"&gt;(&lt;/span&gt;aes&lt;span class="p"&gt;(&lt;/span&gt;x&lt;span class="o"&gt;=&lt;/span&gt;income&lt;span class="p"&gt;,&lt;/span&gt; y&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;..&lt;/span&gt;density..&lt;span class="p"&gt;),&lt;/span&gt; bins&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;15&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; 
+                    geom_density&lt;span class="p"&gt;(&lt;/span&gt;aes&lt;span class="p"&gt;(&lt;/span&gt;x&lt;span class="o"&gt;=&lt;/span&gt;income&lt;span class="p"&gt;,&lt;/span&gt; y&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;..&lt;/span&gt;density..&lt;span class="p"&gt;),&lt;/span&gt; color&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;black&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt;
+                    ggtitle&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;Histogram of Income&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt;
+                    theme&lt;span class="p"&gt;(&lt;/span&gt;panel.grid.major &lt;span class="o"&gt;=&lt;/span&gt; element_blank&lt;span class="p"&gt;(),&lt;/span&gt; panel.grid.minor &lt;span class="o"&gt;=&lt;/span&gt; element_blank&lt;span class="p"&gt;(),&lt;/span&gt;
+                        panel.background &lt;span class="o"&gt;=&lt;/span&gt; element_blank&lt;span class="p"&gt;(),&lt;/span&gt; axis.line &lt;span class="o"&gt;=&lt;/span&gt; element_line&lt;span class="p"&gt;(&lt;/span&gt;colour &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;black&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;img alt="png" src="output_14_0.png"&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;As assumed the distribution is right-skewed which shows that most of the people in the dataset have a low-mid range income per week.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4&gt;Verbal&lt;/h4&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kp"&gt;options&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;repr.plot.width&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;4&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; repr.plot.height&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;3&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+ggplot&lt;span class="p"&gt;(&lt;/span&gt;data &lt;span class="o"&gt;=&lt;/span&gt; df&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; geom_histogram&lt;span class="p"&gt;(&lt;/span&gt;aes&lt;span class="p"&gt;(&lt;/span&gt;x&lt;span class="o"&gt;=&lt;/span&gt;verbal&lt;span class="p"&gt;,&lt;/span&gt; y&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;..&lt;/span&gt;density..&lt;span class="p"&gt;),&lt;/span&gt; bins&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;10&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; 
+                    geom_density&lt;span class="p"&gt;(&lt;/span&gt;aes&lt;span class="p"&gt;(&lt;/span&gt;x&lt;span class="o"&gt;=&lt;/span&gt;verbal&lt;span class="p"&gt;,&lt;/span&gt; y&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;..&lt;/span&gt;density..&lt;span class="p"&gt;),&lt;/span&gt; color&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;black&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt;
+                    ggtitle&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;Histogram of Verbal&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt;
+                    theme&lt;span class="p"&gt;(&lt;/span&gt;panel.grid.major &lt;span class="o"&gt;=&lt;/span&gt; element_blank&lt;span class="p"&gt;(),&lt;/span&gt; panel.grid.minor &lt;span class="o"&gt;=&lt;/span&gt; element_blank&lt;span class="p"&gt;(),&lt;/span&gt;
+                        panel.background &lt;span class="o"&gt;=&lt;/span&gt; element_blank&lt;span class="p"&gt;(),&lt;/span&gt; axis.line &lt;span class="o"&gt;=&lt;/span&gt; element_line&lt;span class="p"&gt;(&lt;/span&gt;colour &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;black&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;img alt="png" src="output_17_0.png"&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;The histogram of &lt;em&gt;verbal&lt;/em&gt; is slightly left skewed showing that there are very few people with low verbal scores.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4&gt;Gamble&lt;/h4&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kp"&gt;options&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;repr.plot.width&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;4&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; repr.plot.height&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;3&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+ggplot&lt;span class="p"&gt;(&lt;/span&gt;data &lt;span class="o"&gt;=&lt;/span&gt; df&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; geom_histogram&lt;span class="p"&gt;(&lt;/span&gt;aes&lt;span class="p"&gt;(&lt;/span&gt;x&lt;span class="o"&gt;=&lt;/span&gt;gamble&lt;span class="p"&gt;,&lt;/span&gt; y&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;..&lt;/span&gt;density..&lt;span class="p"&gt;),&lt;/span&gt; bins&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;15&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; 
+                    geom_density&lt;span class="p"&gt;(&lt;/span&gt;aes&lt;span class="p"&gt;(&lt;/span&gt;x&lt;span class="o"&gt;=&lt;/span&gt;gamble&lt;span class="p"&gt;,&lt;/span&gt; y&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;..&lt;/span&gt;density..&lt;span class="p"&gt;),&lt;/span&gt; color&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;black&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt;
+                    ggtitle&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;Histogram of Gamble&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt;
+                    theme&lt;span class="p"&gt;(&lt;/span&gt;panel.grid.major &lt;span class="o"&gt;=&lt;/span&gt; element_blank&lt;span class="p"&gt;(),&lt;/span&gt; panel.grid.minor &lt;span class="o"&gt;=&lt;/span&gt; element_blank&lt;span class="p"&gt;(),&lt;/span&gt;
+                        panel.background &lt;span class="o"&gt;=&lt;/span&gt; element_blank&lt;span class="p"&gt;(),&lt;/span&gt; axis.line &lt;span class="o"&gt;=&lt;/span&gt; element_line&lt;span class="p"&gt;(&lt;/span&gt;colour &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;black&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;img alt="png" src="output_20_0.png"&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;As per the assumption in numerical analysis, the histogram of &lt;em&gt;gamble&lt;/em&gt; is heavily skewed to the right. It represents that most of the people gamble less money while there are some who gamble over 80.00 pounds per year.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Also there seems to be a huge gap at the far end of the distribution.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kp"&gt;options&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;repr.plot.width&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;5&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; repr.plot.height&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;4&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+plot&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kp"&gt;sort&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;df&lt;span class="o"&gt;$&lt;/span&gt;gamble&lt;span class="p"&gt;),&lt;/span&gt; ylab&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;Gamble&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; main &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;Index plot Gamble&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;img alt="png" src="output_22_0.png"&gt;&lt;/p&gt;
+&lt;p&gt;The linear model would be more accurate without this outlier, hence it is removed.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;df&lt;span class="o"&gt;$&lt;/span&gt;gamble&lt;span class="p"&gt;[&lt;/span&gt;df&lt;span class="o"&gt;$&lt;/span&gt;gamble &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="kp"&gt;max&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;df&lt;span class="o"&gt;$&lt;/span&gt;gamble&lt;span class="p"&gt;)]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kc"&gt;NA&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# removing NAs&lt;/span&gt;
+na_rows &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kp"&gt;apply&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;df&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="m"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="kr"&gt;function&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;x&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="kp"&gt;any&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kp"&gt;is.na&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;x&lt;span class="p"&gt;)))&lt;/span&gt;
+df &lt;span class="o"&gt;&amp;lt;-&lt;/span&gt; df&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="o"&gt;!&lt;/span&gt;na_rows&lt;span class="p"&gt;,]&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h3&gt;Bivariate Analysis&lt;/h3&gt;
+&lt;h4&gt;Sex vs Gamble&lt;/h4&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;fill &lt;span class="o"&gt;&amp;lt;-&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;#4271AE&amp;quot;&lt;/span&gt;
+line &lt;span class="o"&gt;&amp;lt;-&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;#1F3552&amp;quot;&lt;/span&gt;
+
+&lt;span class="kp"&gt;options&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;repr.plot.width&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;4&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; repr.plot.height&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;3&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+ggplot&lt;span class="p"&gt;(&lt;/span&gt;data &lt;span class="o"&gt;=&lt;/span&gt; df&lt;span class="p"&gt;,&lt;/span&gt; aes&lt;span class="p"&gt;(&lt;/span&gt;x&lt;span class="o"&gt;=&lt;/span&gt;sex&lt;span class="p"&gt;,&lt;/span&gt; y&lt;span class="o"&gt;=&lt;/span&gt;gamble&lt;span class="p"&gt;))&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; geom_boxplot&lt;span class="p"&gt;(&lt;/span&gt;fill&lt;span class="o"&gt;=&lt;/span&gt;fill&lt;span class="p"&gt;,&lt;/span&gt; colour&lt;span class="o"&gt;=&lt;/span&gt;line&lt;span class="p"&gt;,&lt;/span&gt; alpha&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;0.7&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt;
+                    ggtitle&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;Sex vs Gamble&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt;
+                    theme&lt;span class="p"&gt;(&lt;/span&gt;axis.line &lt;span class="o"&gt;=&lt;/span&gt; element_line&lt;span class="p"&gt;(&lt;/span&gt;colour &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;black&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;img alt="png" src="output_28_0.png"&gt;&lt;/p&gt;
+&lt;p&gt;We can observe how the median for males is very separated from that of the females, which shows that males tend to spend more on gambling than females. Also the median for males is leaned towards &lt;strong&gt;Q1&lt;/strong&gt; representing that most of the males spend between 0 to 15 pounds per year on gambling. While there are very few of them who spend above 25 pounds per year, hence skewed to the right.&lt;/p&gt;
+&lt;h4&gt;Status vs Gamble&lt;/h4&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kp"&gt;options&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;repr.plot.width&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;4&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; repr.plot.height&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;3&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+ggplot&lt;span class="p"&gt;(&lt;/span&gt;data &lt;span class="o"&gt;=&lt;/span&gt; df&lt;span class="p"&gt;,&lt;/span&gt; aes&lt;span class="p"&gt;(&lt;/span&gt;x&lt;span class="o"&gt;=&lt;/span&gt;status&lt;span class="p"&gt;,&lt;/span&gt; y&lt;span class="o"&gt;=&lt;/span&gt;gamble&lt;span class="p"&gt;))&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; geom_point&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; geom_smooth&lt;span class="p"&gt;(&lt;/span&gt;method &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;&amp;#39;lm&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt;
+                    ggtitle&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;Status vs Gamble&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt;
+                    theme&lt;span class="p"&gt;(&lt;/span&gt;axis.line &lt;span class="o"&gt;=&lt;/span&gt; element_line&lt;span class="p"&gt;(&lt;/span&gt;colour &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;black&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;img alt="png" src="output_31_0.png"&gt;&lt;/p&gt;
+&lt;p&gt;While an upward trend is observed depicting that people with higher status tend to gamble more, however, there are few people within low status that spend considerably more in gambling. In fact, most of the highest expenditure on gambling are from people within the low status.&lt;/p&gt;
+&lt;h4&gt;Income vs Gamble&lt;/h4&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kp"&gt;options&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;repr.plot.width&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;4&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; repr.plot.height&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;3&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+ggplot&lt;span class="p"&gt;(&lt;/span&gt;data &lt;span class="o"&gt;=&lt;/span&gt; df&lt;span class="p"&gt;,&lt;/span&gt; aes&lt;span class="p"&gt;(&lt;/span&gt;x&lt;span class="o"&gt;=&lt;/span&gt;income&lt;span class="p"&gt;,&lt;/span&gt; y&lt;span class="o"&gt;=&lt;/span&gt;gamble&lt;span class="p"&gt;))&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; geom_point&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; geom_smooth&lt;span class="p"&gt;(&lt;/span&gt;method &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;&amp;#39;lm&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt;
+                    ggtitle&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;Income vs Gamble&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt;
+                    theme&lt;span class="p"&gt;(&lt;/span&gt;axis.line &lt;span class="o"&gt;=&lt;/span&gt; element_line&lt;span class="p"&gt;(&lt;/span&gt;colour &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;black&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;img alt="png" src="output_34_0.png"&gt;&lt;/p&gt;
+&lt;p&gt;A nice upward trend is observed showing that people with higher income tend to spend more on gambling. Also we can observe below that even though males and females approximately have the same income, males tend to spend considerably more on gambling.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kp"&gt;options&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;repr.plot.width&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;5&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; repr.plot.height&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;4&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+ggscatterhist&lt;span class="p"&gt;(&lt;/span&gt;
+  df&lt;span class="p"&gt;,&lt;/span&gt; x &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;income&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; y &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;gamble&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+  color &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;sex&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; size &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="m"&gt;3&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; alpha &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="m"&gt;0.6&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+  palette &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kt"&gt;c&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;#00AFBB&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;#E7B800&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;#FC4E07&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt;
+  margin.plot &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;boxplot&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+  ggtheme &lt;span class="o"&gt;=&lt;/span&gt; theme_bw&lt;span class="p"&gt;()&lt;/span&gt;
+  &lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;img alt="png" src="output_36_0.png"&gt;&lt;/p&gt;
+&lt;h4&gt;Verbal vs Gamble&lt;/h4&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kp"&gt;options&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;repr.plot.width&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;4&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; repr.plot.height&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;3&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+ggplot&lt;span class="p"&gt;(&lt;/span&gt;data &lt;span class="o"&gt;=&lt;/span&gt; df&lt;span class="p"&gt;,&lt;/span&gt; aes&lt;span class="p"&gt;(&lt;/span&gt;x&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="kp"&gt;factor&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;df&lt;span class="o"&gt;$&lt;/span&gt;verbal&lt;span class="p"&gt;),&lt;/span&gt; y&lt;span class="o"&gt;=&lt;/span&gt;gamble&lt;span class="p"&gt;,&lt;/span&gt; color&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="kp"&gt;factor&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;df&lt;span class="o"&gt;$&lt;/span&gt;verbal&lt;span class="p"&gt;)))&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; geom_boxplot&lt;span class="p"&gt;(&lt;/span&gt;alpha&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;0.7&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt;
+                    ggtitle&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;Verbal Score vs Gamble&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; xlab&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;Verbal Scores&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt;
+                    theme&lt;span class="p"&gt;(&lt;/span&gt;axis.line &lt;span class="o"&gt;=&lt;/span&gt; element_line&lt;span class="p"&gt;(&lt;/span&gt;colour &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;black&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; legend.position &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;none&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;img alt="png" src="output_38_0.png"&gt;&lt;/p&gt;
+&lt;p&gt;It can be observed that people with average verbal scores(5-8) tend to gamble more than the others. But this trend could also be because of the fact that most of the people in the dataset have above average verbal scores.&lt;/p&gt;
+&lt;h3&gt;Heatmap&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;corr &lt;span class="o"&gt;&amp;lt;-&lt;/span&gt; &lt;span class="kp"&gt;round&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;cor&lt;span class="p"&gt;(&lt;/span&gt;teengamb&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="m"&gt;2&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+melt_df &lt;span class="o"&gt;&amp;lt;-&lt;/span&gt; melt&lt;span class="p"&gt;(&lt;/span&gt;corr&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kp"&gt;options&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;repr.plot.width&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;6&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; repr.plot.height&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;3&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+ggplot&lt;span class="p"&gt;(&lt;/span&gt;data&lt;span class="o"&gt;=&lt;/span&gt;melt_df&lt;span class="p"&gt;,&lt;/span&gt; aes&lt;span class="p"&gt;(&lt;/span&gt;x&lt;span class="o"&gt;=&lt;/span&gt;Var1&lt;span class="p"&gt;,&lt;/span&gt; y&lt;span class="o"&gt;=&lt;/span&gt;Var2&lt;span class="p"&gt;,&lt;/span&gt; fill&lt;span class="o"&gt;=&lt;/span&gt;value&lt;span class="p"&gt;))&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; 
+            geom_tile&lt;span class="p"&gt;(&lt;/span&gt;color&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;white&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; 
+            scale_fill_gradient2&lt;span class="p"&gt;(&lt;/span&gt;low &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;blue&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; high &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;red&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; mid &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;white&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; midpoint &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="m"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; limit &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kt"&gt;c&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="m"&gt;-1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="m"&gt;1&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; space &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;Lab&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; 
+               name&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;Pearson\nCorrelation&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt;
+            theme_minimal&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt;
+            theme&lt;span class="p"&gt;(&lt;/span&gt;axis.text.x &lt;span class="o"&gt;=&lt;/span&gt; element_text&lt;span class="p"&gt;(&lt;/span&gt;angle &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="m"&gt;45&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; vjust &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="m"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; 
+                size &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="m"&gt;12&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; hjust &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="m"&gt;1&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;&lt;span class="o"&gt;+&lt;/span&gt;
+                coord_fixed&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;img alt="png" src="output_42_0.png"&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;As observed &lt;em&gt;income&lt;/em&gt; is positively correlated to &lt;em&gt;gamble&lt;/em&gt;, while other features doesn't seem to be well correlated to &lt;em&gt;gamble&lt;/em&gt;.&lt;/li&gt;
+&lt;li&gt;The other interesting feature is the positive correlation between &lt;em&gt;status&lt;/em&gt; and &lt;em&gt;verbal&lt;/em&gt;, showing that people with high status tend to have higher verbal scores.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;Fitting Linear Model&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kp"&gt;options&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;repr.plot.width&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;4&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; repr.plot.height&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;4&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+plot&lt;span class="p"&gt;(&lt;/span&gt;gamble &lt;span class="o"&gt;~&lt;/span&gt; income&lt;span class="p"&gt;,&lt;/span&gt; df&lt;span class="p"&gt;)&lt;/span&gt;
+abline&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="m"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="m"&gt;1&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+g &lt;span class="o"&gt;&amp;lt;-&lt;/span&gt; lm&lt;span class="p"&gt;(&lt;/span&gt;gamble &lt;span class="o"&gt;~&lt;/span&gt; income&lt;span class="p"&gt;,&lt;/span&gt; df&lt;span class="p"&gt;)&lt;/span&gt;
+abline&lt;span class="p"&gt;(&lt;/span&gt;coef&lt;span class="p"&gt;(&lt;/span&gt;g&lt;span class="p"&gt;),&lt;/span&gt; lty&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;5&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;img alt="png" src="output_45_0.png"&gt;&lt;/p&gt;
+&lt;h2&gt;Problem 2: Analyzing dataset prostate&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;data&lt;span class="p"&gt;(&lt;/span&gt;prostate&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kp"&gt;head&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;prostate&lt;span class="p"&gt;);&lt;/span&gt; &lt;span class="kp"&gt;tail&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;prostate&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;table&gt;
+&lt;thead&gt;&lt;tr&gt;&lt;th scope=col&gt;lcavol&lt;/th&gt;&lt;th scope=col&gt;lweight&lt;/th&gt;&lt;th scope=col&gt;age&lt;/th&gt;&lt;th scope=col&gt;lbph&lt;/th&gt;&lt;th scope=col&gt;svi&lt;/th&gt;&lt;th scope=col&gt;lcp&lt;/th&gt;&lt;th scope=col&gt;gleason&lt;/th&gt;&lt;th scope=col&gt;pgg45&lt;/th&gt;&lt;th scope=col&gt;lpsa&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;
+&lt;tbody&gt;
+    &lt;tr&gt;&lt;td&gt;-0.5798185&lt;/td&gt;&lt;td&gt;2.7695    &lt;/td&gt;&lt;td&gt;50        &lt;/td&gt;&lt;td&gt;-1.386294 &lt;/td&gt;&lt;td&gt;0         &lt;/td&gt;&lt;td&gt;-1.38629  &lt;/td&gt;&lt;td&gt;6         &lt;/td&gt;&lt;td&gt; 0        &lt;/td&gt;&lt;td&gt;-0.43078  &lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td&gt;-0.9942523&lt;/td&gt;&lt;td&gt;3.3196    &lt;/td&gt;&lt;td&gt;58        &lt;/td&gt;&lt;td&gt;-1.386294 &lt;/td&gt;&lt;td&gt;0         &lt;/td&gt;&lt;td&gt;-1.38629  &lt;/td&gt;&lt;td&gt;6         &lt;/td&gt;&lt;td&gt; 0        &lt;/td&gt;&lt;td&gt;-0.16252  &lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td&gt;-0.5108256&lt;/td&gt;&lt;td&gt;2.6912    &lt;/td&gt;&lt;td&gt;74        &lt;/td&gt;&lt;td&gt;-1.386294 &lt;/td&gt;&lt;td&gt;0         &lt;/td&gt;&lt;td&gt;-1.38629  &lt;/td&gt;&lt;td&gt;7         &lt;/td&gt;&lt;td&gt;20        &lt;/td&gt;&lt;td&gt;-0.16252  &lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td&gt;-1.2039728&lt;/td&gt;&lt;td&gt;3.2828    &lt;/td&gt;&lt;td&gt;58        &lt;/td&gt;&lt;td&gt;-1.386294 &lt;/td&gt;&lt;td&gt;0         &lt;/td&gt;&lt;td&gt;-1.38629  &lt;/td&gt;&lt;td&gt;6         &lt;/td&gt;&lt;td&gt; 0        &lt;/td&gt;&lt;td&gt;-0.16252  &lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td&gt; 0.7514161&lt;/td&gt;&lt;td&gt;3.4324    &lt;/td&gt;&lt;td&gt;62        &lt;/td&gt;&lt;td&gt;-1.386294 &lt;/td&gt;&lt;td&gt;0         &lt;/td&gt;&lt;td&gt;-1.38629  &lt;/td&gt;&lt;td&gt;6         &lt;/td&gt;&lt;td&gt; 0        &lt;/td&gt;&lt;td&gt; 0.37156  &lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td&gt;-1.0498221&lt;/td&gt;&lt;td&gt;3.2288    &lt;/td&gt;&lt;td&gt;50        &lt;/td&gt;&lt;td&gt;-1.386294 &lt;/td&gt;&lt;td&gt;0         &lt;/td&gt;&lt;td&gt;-1.38629  &lt;/td&gt;&lt;td&gt;6         &lt;/td&gt;&lt;td&gt; 0        &lt;/td&gt;&lt;td&gt; 0.76547  &lt;/td&gt;&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;table&gt;
+&lt;thead&gt;&lt;tr&gt;&lt;th&gt;&lt;/th&gt;&lt;th scope=col&gt;lcavol&lt;/th&gt;&lt;th scope=col&gt;lweight&lt;/th&gt;&lt;th scope=col&gt;age&lt;/th&gt;&lt;th scope=col&gt;lbph&lt;/th&gt;&lt;th scope=col&gt;svi&lt;/th&gt;&lt;th scope=col&gt;lcp&lt;/th&gt;&lt;th scope=col&gt;gleason&lt;/th&gt;&lt;th scope=col&gt;pgg45&lt;/th&gt;&lt;th scope=col&gt;lpsa&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;
+&lt;tbody&gt;
+    &lt;tr&gt;&lt;th scope=row&gt;92&lt;/th&gt;&lt;td&gt;2.532903 &lt;/td&gt;&lt;td&gt;3.6776   &lt;/td&gt;&lt;td&gt;61       &lt;/td&gt;&lt;td&gt; 1.348073&lt;/td&gt;&lt;td&gt;1        &lt;/td&gt;&lt;td&gt;-1.38629 &lt;/td&gt;&lt;td&gt;7        &lt;/td&gt;&lt;td&gt;15       &lt;/td&gt;&lt;td&gt;4.12955  &lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;th scope=row&gt;93&lt;/th&gt;&lt;td&gt;2.830268 &lt;/td&gt;&lt;td&gt;3.8764   &lt;/td&gt;&lt;td&gt;68       &lt;/td&gt;&lt;td&gt;-1.386294&lt;/td&gt;&lt;td&gt;1        &lt;/td&gt;&lt;td&gt; 1.32176 &lt;/td&gt;&lt;td&gt;7        &lt;/td&gt;&lt;td&gt;60       &lt;/td&gt;&lt;td&gt;4.38515  &lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;th scope=row&gt;94&lt;/th&gt;&lt;td&gt;3.821004 &lt;/td&gt;&lt;td&gt;3.8969   &lt;/td&gt;&lt;td&gt;44       &lt;/td&gt;&lt;td&gt;-1.386294&lt;/td&gt;&lt;td&gt;1        &lt;/td&gt;&lt;td&gt; 2.16905 &lt;/td&gt;&lt;td&gt;7        &lt;/td&gt;&lt;td&gt;40       &lt;/td&gt;&lt;td&gt;4.68444  &lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;th scope=row&gt;95&lt;/th&gt;&lt;td&gt;2.907447 &lt;/td&gt;&lt;td&gt;3.3962   &lt;/td&gt;&lt;td&gt;52       &lt;/td&gt;&lt;td&gt;-1.386294&lt;/td&gt;&lt;td&gt;1        &lt;/td&gt;&lt;td&gt; 2.46385 &lt;/td&gt;&lt;td&gt;7        &lt;/td&gt;&lt;td&gt;10       &lt;/td&gt;&lt;td&gt;5.14312  &lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;th scope=row&gt;96&lt;/th&gt;&lt;td&gt;2.882564 &lt;/td&gt;&lt;td&gt;3.7739   &lt;/td&gt;&lt;td&gt;68       &lt;/td&gt;&lt;td&gt; 1.558145&lt;/td&gt;&lt;td&gt;1        &lt;/td&gt;&lt;td&gt; 1.55814 &lt;/td&gt;&lt;td&gt;7        &lt;/td&gt;&lt;td&gt;80       &lt;/td&gt;&lt;td&gt;5.47751  &lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;th scope=row&gt;97&lt;/th&gt;&lt;td&gt;3.471967 &lt;/td&gt;&lt;td&gt;3.9750   &lt;/td&gt;&lt;td&gt;68       &lt;/td&gt;&lt;td&gt; 0.438255&lt;/td&gt;&lt;td&gt;1        &lt;/td&gt;&lt;td&gt; 2.90417 &lt;/td&gt;&lt;td&gt;7        &lt;/td&gt;&lt;td&gt;20       &lt;/td&gt;&lt;td&gt;5.58293  &lt;/td&gt;&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;h3&gt;Numerical Analysis&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kp"&gt;summary&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;prostate&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;     &lt;span class="s s-Atom"&gt;lcavol&lt;/span&gt;           &lt;span class="s s-Atom"&gt;lweight&lt;/span&gt;           &lt;span class="s s-Atom"&gt;age&lt;/span&gt;             &lt;span class="s s-Atom"&gt;lbph&lt;/span&gt;         &lt;span class="s s-Atom"&gt;svi&lt;/span&gt;   
+ &lt;span class="nv"&gt;Min&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;   &lt;span class="p"&gt;:-&lt;/span&gt;&lt;span class="mf"&gt;1.3471&lt;/span&gt;   &lt;span class="nv"&gt;Min&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;   &lt;span class="s s-Atom"&gt;:&lt;/span&gt;&lt;span class="mf"&gt;2.375&lt;/span&gt;   &lt;span class="nv"&gt;Min&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;   &lt;span class="s s-Atom"&gt;:&lt;/span&gt;&lt;span class="mf"&gt;41.00&lt;/span&gt;   &lt;span class="nv"&gt;Min&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;   &lt;span class="p"&gt;:-&lt;/span&gt;&lt;span class="mf"&gt;1.3863&lt;/span&gt;   &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="s s-Atom"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;76&lt;/span&gt;  
+ &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="s s-Atom"&gt;st&lt;/span&gt; &lt;span class="nv"&gt;Qu&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="s s-Atom"&gt;:&lt;/span&gt; &lt;span class="mf"&gt;0.5128&lt;/span&gt;   &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="s s-Atom"&gt;st&lt;/span&gt; &lt;span class="nv"&gt;Qu&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="s s-Atom"&gt;:&lt;/span&gt;&lt;span class="mf"&gt;3.376&lt;/span&gt;   &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="s s-Atom"&gt;st&lt;/span&gt; &lt;span class="nv"&gt;Qu&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="s s-Atom"&gt;:&lt;/span&gt;&lt;span class="mf"&gt;60.00&lt;/span&gt;   &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="s s-Atom"&gt;st&lt;/span&gt; &lt;span class="nv"&gt;Qu&lt;/span&gt;&lt;span class="p"&gt;.:-&lt;/span&gt;&lt;span class="mf"&gt;1.3863&lt;/span&gt;   &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="s s-Atom"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;21&lt;/span&gt;  
+ &lt;span class="nv"&gt;Median&lt;/span&gt; &lt;span class="s s-Atom"&gt;:&lt;/span&gt; &lt;span class="mf"&gt;1.4469&lt;/span&gt;   &lt;span class="nv"&gt;Median&lt;/span&gt; &lt;span class="s s-Atom"&gt;:&lt;/span&gt;&lt;span class="mf"&gt;3.623&lt;/span&gt;   &lt;span class="nv"&gt;Median&lt;/span&gt; &lt;span class="s s-Atom"&gt;:&lt;/span&gt;&lt;span class="mf"&gt;65.00&lt;/span&gt;   &lt;span class="nv"&gt;Median&lt;/span&gt; &lt;span class="s s-Atom"&gt;:&lt;/span&gt; &lt;span class="mf"&gt;0.3001&lt;/span&gt;         
+ &lt;span class="nv"&gt;Mean&lt;/span&gt;   &lt;span class="s s-Atom"&gt;:&lt;/span&gt; &lt;span class="mf"&gt;1.3500&lt;/span&gt;   &lt;span class="nv"&gt;Mean&lt;/span&gt;   &lt;span class="s s-Atom"&gt;:&lt;/span&gt;&lt;span class="mf"&gt;3.653&lt;/span&gt;   &lt;span class="nv"&gt;Mean&lt;/span&gt;   &lt;span class="s s-Atom"&gt;:&lt;/span&gt;&lt;span class="mf"&gt;63.87&lt;/span&gt;   &lt;span class="nv"&gt;Mean&lt;/span&gt;   &lt;span class="s s-Atom"&gt;:&lt;/span&gt; &lt;span class="mf"&gt;0.1004&lt;/span&gt;         
+ &lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="s s-Atom"&gt;rd&lt;/span&gt; &lt;span class="nv"&gt;Qu&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="s s-Atom"&gt;:&lt;/span&gt; &lt;span class="mf"&gt;2.1270&lt;/span&gt;   &lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="s s-Atom"&gt;rd&lt;/span&gt; &lt;span class="nv"&gt;Qu&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="s s-Atom"&gt;:&lt;/span&gt;&lt;span class="mf"&gt;3.878&lt;/span&gt;   &lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="s s-Atom"&gt;rd&lt;/span&gt; &lt;span class="nv"&gt;Qu&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="s s-Atom"&gt;:&lt;/span&gt;&lt;span class="mf"&gt;68.00&lt;/span&gt;   &lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="s s-Atom"&gt;rd&lt;/span&gt; &lt;span class="nv"&gt;Qu&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="s s-Atom"&gt;:&lt;/span&gt; &lt;span class="mf"&gt;1.5581&lt;/span&gt;         
+ &lt;span class="nv"&gt;Max&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;   &lt;span class="s s-Atom"&gt;:&lt;/span&gt; &lt;span class="mf"&gt;3.8210&lt;/span&gt;   &lt;span class="nv"&gt;Max&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;   &lt;span class="s s-Atom"&gt;:&lt;/span&gt;&lt;span class="mf"&gt;6.108&lt;/span&gt;   &lt;span class="nv"&gt;Max&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;   &lt;span class="s s-Atom"&gt;:&lt;/span&gt;&lt;span class="mf"&gt;79.00&lt;/span&gt;   &lt;span class="nv"&gt;Max&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;   &lt;span class="s s-Atom"&gt;:&lt;/span&gt; &lt;span class="mf"&gt;2.3263&lt;/span&gt;         
+      &lt;span class="s s-Atom"&gt;lcp&lt;/span&gt;          &lt;span class="s s-Atom"&gt;gleason&lt;/span&gt;     &lt;span class="s s-Atom"&gt;pgg45&lt;/span&gt;             &lt;span class="s s-Atom"&gt;lpsa&lt;/span&gt;        
+ &lt;span class="nv"&gt;Min&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;   &lt;span class="p"&gt;:-&lt;/span&gt;&lt;span class="mf"&gt;1.3863&lt;/span&gt;   &lt;span class="mi"&gt;6&lt;/span&gt;&lt;span class="s s-Atom"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;35&lt;/span&gt;    &lt;span class="nv"&gt;Min&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;   &lt;span class="s s-Atom"&gt;:&lt;/span&gt;  &lt;span class="mf"&gt;0.00&lt;/span&gt;   &lt;span class="nv"&gt;Min&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;   &lt;span class="p"&gt;:-&lt;/span&gt;&lt;span class="mf"&gt;0.4308&lt;/span&gt;  
+ &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="s s-Atom"&gt;st&lt;/span&gt; &lt;span class="nv"&gt;Qu&lt;/span&gt;&lt;span class="p"&gt;.:-&lt;/span&gt;&lt;span class="mf"&gt;1.3863&lt;/span&gt;   &lt;span class="mi"&gt;7&lt;/span&gt;&lt;span class="s s-Atom"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;56&lt;/span&gt;    &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="s s-Atom"&gt;st&lt;/span&gt; &lt;span class="nv"&gt;Qu&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="s s-Atom"&gt;:&lt;/span&gt;  &lt;span class="mf"&gt;0.00&lt;/span&gt;   &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="s s-Atom"&gt;st&lt;/span&gt; &lt;span class="nv"&gt;Qu&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="s s-Atom"&gt;:&lt;/span&gt; &lt;span class="mf"&gt;1.7317&lt;/span&gt;  
+ &lt;span class="nv"&gt;Median&lt;/span&gt; &lt;span class="p"&gt;:-&lt;/span&gt;&lt;span class="mf"&gt;0.7985&lt;/span&gt;   &lt;span class="mi"&gt;8&lt;/span&gt;&lt;span class="s s-Atom"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;    &lt;span class="nv"&gt;Median&lt;/span&gt; &lt;span class="s s-Atom"&gt;:&lt;/span&gt; &lt;span class="mf"&gt;15.00&lt;/span&gt;   &lt;span class="nv"&gt;Median&lt;/span&gt; &lt;span class="s s-Atom"&gt;:&lt;/span&gt; &lt;span class="mf"&gt;2.5915&lt;/span&gt;  
+ &lt;span class="nv"&gt;Mean&lt;/span&gt;   &lt;span class="p"&gt;:-&lt;/span&gt;&lt;span class="mf"&gt;0.1794&lt;/span&gt;   &lt;span class="mi"&gt;9&lt;/span&gt;&lt;span class="s s-Atom"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;5&lt;/span&gt;    &lt;span class="nv"&gt;Mean&lt;/span&gt;   &lt;span class="s s-Atom"&gt;:&lt;/span&gt; &lt;span class="mf"&gt;24.38&lt;/span&gt;   &lt;span class="nv"&gt;Mean&lt;/span&gt;   &lt;span class="s s-Atom"&gt;:&lt;/span&gt; &lt;span class="mf"&gt;2.4784&lt;/span&gt;  
+ &lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="s s-Atom"&gt;rd&lt;/span&gt; &lt;span class="nv"&gt;Qu&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="s s-Atom"&gt;:&lt;/span&gt; &lt;span class="mf"&gt;1.1786&lt;/span&gt;           &lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="s s-Atom"&gt;rd&lt;/span&gt; &lt;span class="nv"&gt;Qu&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="s s-Atom"&gt;:&lt;/span&gt; &lt;span class="mf"&gt;40.00&lt;/span&gt;   &lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="s s-Atom"&gt;rd&lt;/span&gt; &lt;span class="nv"&gt;Qu&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="s s-Atom"&gt;:&lt;/span&gt; &lt;span class="mf"&gt;3.0564&lt;/span&gt;  
+ &lt;span class="nv"&gt;Max&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;   &lt;span class="s s-Atom"&gt;:&lt;/span&gt; &lt;span class="mf"&gt;2.9042&lt;/span&gt;           &lt;span class="nv"&gt;Max&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;   &lt;span class="s s-Atom"&gt;:&lt;/span&gt;&lt;span class="mf"&gt;100.00&lt;/span&gt;   &lt;span class="nv"&gt;Max&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;   &lt;span class="s s-Atom"&gt;:&lt;/span&gt; &lt;span class="mf"&gt;5.5829&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;ul&gt;
+&lt;li&gt;&lt;em&gt;svi&lt;/em&gt;, &lt;em&gt;gleason&lt;/em&gt; seems to be categorical variables, so they are converted to categories using &lt;code&gt;factor&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;em&gt;pgg45&lt;/em&gt; seems to be heavily skewed to the right, while other features have their mean and median concentrated at the center.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;prostate&lt;span class="o"&gt;$&lt;/span&gt;svi &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kp"&gt;factor&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;prostate&lt;span class="o"&gt;$&lt;/span&gt;svi&lt;span class="p"&gt;)&lt;/span&gt;
+prostate&lt;span class="o"&gt;$&lt;/span&gt;gleason &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kp"&gt;factor&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;prostate&lt;span class="o"&gt;$&lt;/span&gt;gleason&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h3&gt;Univariate Analysis&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# creating common ggplot function&lt;/span&gt;
+prostate_histogram &lt;span class="o"&gt;&amp;lt;-&lt;/span&gt; &lt;span class="kr"&gt;function&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;data&lt;span class="p"&gt;,&lt;/span&gt; x&lt;span class="p"&gt;,&lt;/span&gt; plot_title&lt;span class="p"&gt;,&lt;/span&gt; bins&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="p"&gt;{&lt;/span&gt;
+        &lt;span class="kp"&gt;options&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;repr.plot.width&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;4&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; repr.plot.height&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;3&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        p &lt;span class="o"&gt;&amp;lt;-&lt;/span&gt; ggplot&lt;span class="p"&gt;(&lt;/span&gt;data &lt;span class="o"&gt;=&lt;/span&gt; data&lt;span class="p"&gt;)&lt;/span&gt;
+        p &lt;span class="o"&gt;+&lt;/span&gt; geom_histogram&lt;span class="p"&gt;(&lt;/span&gt;aes&lt;span class="p"&gt;(&lt;/span&gt;x&lt;span class="o"&gt;=&lt;/span&gt;x&lt;span class="p"&gt;,&lt;/span&gt; y&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;..&lt;/span&gt;density..&lt;span class="p"&gt;),&lt;/span&gt; bins&lt;span class="o"&gt;=&lt;/span&gt;bins&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; 
+            geom_density&lt;span class="p"&gt;(&lt;/span&gt;aes&lt;span class="p"&gt;(&lt;/span&gt;x&lt;span class="o"&gt;=&lt;/span&gt;x&lt;span class="p"&gt;,&lt;/span&gt; y&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;..&lt;/span&gt;density..&lt;span class="p"&gt;),&lt;/span&gt; color&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;black&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt;
+            ggtitle&lt;span class="p"&gt;(&lt;/span&gt;plot_title&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt;
+            theme&lt;span class="p"&gt;(&lt;/span&gt;panel.grid.major &lt;span class="o"&gt;=&lt;/span&gt; element_blank&lt;span class="p"&gt;(),&lt;/span&gt; panel.grid.minor &lt;span class="o"&gt;=&lt;/span&gt; element_blank&lt;span class="p"&gt;(),&lt;/span&gt;
+                panel.background &lt;span class="o"&gt;=&lt;/span&gt; element_blank&lt;span class="p"&gt;(),&lt;/span&gt; axis.line &lt;span class="o"&gt;=&lt;/span&gt; element_line&lt;span class="p"&gt;(&lt;/span&gt;colour &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;black&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;       
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# plotting histograms of all numeric features&lt;/span&gt;
+d &lt;span class="o"&gt;&amp;lt;-&lt;/span&gt; prostate
+&lt;span class="kp"&gt;options&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;repr.plot.width&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;6&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; repr.plot.height&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;4&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+d &lt;span class="o"&gt;%&amp;gt;%&lt;/span&gt;
+  keep&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kp"&gt;is.numeric&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;%&amp;gt;%&lt;/span&gt;                     &lt;span class="c1"&gt;# Keep only numeric columns&lt;/span&gt;
+  gather&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="o"&gt;%&amp;gt;%&lt;/span&gt;                             &lt;span class="c1"&gt;# Convert to key-value pairs&lt;/span&gt;
+  ggplot&lt;span class="p"&gt;(&lt;/span&gt;aes&lt;span class="p"&gt;(&lt;/span&gt;value&lt;span class="p"&gt;))&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt;                     &lt;span class="c1"&gt;# Plot the values&lt;/span&gt;
+    facet_wrap&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;~&lt;/span&gt; key&lt;span class="p"&gt;,&lt;/span&gt; scales &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;free&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt;
+    geom_histogram&lt;span class="p"&gt;(&lt;/span&gt;bins&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;12&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; 
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;img alt="png" src="output_55_0.png"&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;em&gt;lbph&lt;/em&gt; - Seems to have many features capped at $-1.386294$. Maybe it is the default value placed just in case it's missing.&lt;/li&gt;
+&lt;li&gt;&lt;em&gt;lcp&lt;/em&gt; - Just like &lt;em&gt;lbph&lt;/em&gt;, it has many features capped at $-1.38629$ as well.&lt;/li&gt;
+&lt;li&gt;&lt;em&gt;lweight&lt;/em&gt; - Follows a normal distribution except for an outlier at $6.1076$.&lt;/li&gt;
+&lt;li&gt;&lt;em&gt;pgg45&lt;/em&gt; - As assumed it is heavily skewed to the right.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kp"&gt;options&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;repr.plot.width&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;5&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; repr.plot.height&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;4&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+plot&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kp"&gt;sort&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;prostate&lt;span class="o"&gt;$&lt;/span&gt;lweight&lt;span class="p"&gt;),&lt;/span&gt; ylab&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;lweight&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; main &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;Index plot lweight&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;img alt="png" src="output_57_0.png"&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;The outlier may be removed if it correlates well with the response feature &lt;em&gt;lpsa&lt;/em&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;Bivariate Analysis&lt;/h3&gt;
+&lt;h4&gt;Log(Cancer Volume) vs Log(Prostate Specific Antigen)&lt;/h4&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kp"&gt;options&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;repr.plot.width&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;5&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; repr.plot.height&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;4&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+ggplot&lt;span class="p"&gt;(&lt;/span&gt;data &lt;span class="o"&gt;=&lt;/span&gt; prostate&lt;span class="p"&gt;,&lt;/span&gt; aes&lt;span class="p"&gt;(&lt;/span&gt;x&lt;span class="o"&gt;=&lt;/span&gt;lcavol&lt;span class="p"&gt;,&lt;/span&gt; y&lt;span class="o"&gt;=&lt;/span&gt;lpsa&lt;span class="p"&gt;))&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; geom_point&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; geom_smooth&lt;span class="p"&gt;(&lt;/span&gt;method &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;&amp;#39;lm&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt;
+                    ggtitle&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;Log(Cancer Volume) vs Log(Prostate Specific Antigen)&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt;
+                    theme&lt;span class="p"&gt;(&lt;/span&gt;axis.line &lt;span class="o"&gt;=&lt;/span&gt; element_line&lt;span class="p"&gt;(&lt;/span&gt;colour &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;black&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;img alt="png" src="output_61_0.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;lcavol&lt;/em&gt; and &lt;em&gt;lpsa&lt;/em&gt; are highly positively correlated. It shows that increase in the Log(Cancer Volume) leads to increase in the Log(Prostate Specific Antigen)&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kp"&gt;options&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;repr.plot.width&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;5&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; repr.plot.height&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;4&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+ggscatterhist&lt;span class="p"&gt;(&lt;/span&gt;
+  prostate&lt;span class="p"&gt;,&lt;/span&gt; x &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;lcavol&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; y &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;lpsa&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+  color &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;svi&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; size &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="m"&gt;3&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; alpha &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="m"&gt;0.6&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+  palette &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kt"&gt;c&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;#00AFBB&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;#E7B800&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;#FC4E07&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt;
+  margin.plot &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;boxplot&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+  ggtheme &lt;span class="o"&gt;=&lt;/span&gt; theme_bw&lt;span class="p"&gt;()&lt;/span&gt;
+  &lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;img alt="png" src="output_63_0.png"&gt;&lt;/p&gt;
+&lt;p&gt;Patients with &lt;em&gt;seminal vesicle invasion&lt;/em&gt; have higher &lt;em&gt;Log(Cancer Volume)&lt;/em&gt;. Also those patients with &lt;em&gt;svi&lt;/em&gt; and higher &lt;em&gt;Log(Cancer Volume)&lt;/em&gt; also seem to have higher Log(Prostate Specific Antigen).&lt;/p&gt;
+&lt;h4&gt;Log(Capsular Penetration) vs Log(Prostate Specific Antigen)&lt;/h4&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kp"&gt;options&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;repr.plot.width&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;5&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; repr.plot.height&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;4&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+ggplot&lt;span class="p"&gt;(&lt;/span&gt;data &lt;span class="o"&gt;=&lt;/span&gt; prostate&lt;span class="p"&gt;,&lt;/span&gt; aes&lt;span class="p"&gt;(&lt;/span&gt;x&lt;span class="o"&gt;=&lt;/span&gt;lcp&lt;span class="p"&gt;,&lt;/span&gt; y&lt;span class="o"&gt;=&lt;/span&gt;lpsa&lt;span class="p"&gt;))&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; geom_point&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; geom_smooth&lt;span class="p"&gt;(&lt;/span&gt;method &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;&amp;#39;lm&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt;
+                    ggtitle&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;Log(Capsular Penetration) vs Log(Prostate Specific Antigen)&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt;
+                    theme&lt;span class="p"&gt;(&lt;/span&gt;axis.line &lt;span class="o"&gt;=&lt;/span&gt; element_line&lt;span class="p"&gt;(&lt;/span&gt;colour &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;black&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;img alt="png" src="output_66_0.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Log(Capsular Penetration)&lt;/em&gt; and &lt;em&gt;Log(Prostate Specific Antigen)&lt;/em&gt; seems to be positively correlated as well. However as most of the features in &lt;em&gt;lcp&lt;/em&gt; are capped at $-1.38629$, it needs more information.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kp"&gt;options&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;repr.plot.width&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;5&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; repr.plot.height&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;4&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+ggscatterhist&lt;span class="p"&gt;(&lt;/span&gt;
+  prostate&lt;span class="p"&gt;,&lt;/span&gt; x &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;lcp&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; y &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;lpsa&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+  color &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;svi&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; size &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="m"&gt;3&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; alpha &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="m"&gt;0.6&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+  palette &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kt"&gt;c&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;#00AFBB&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;#E7B800&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;#FC4E07&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt;
+  margin.plot &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;boxplot&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+  ggtheme &lt;span class="o"&gt;=&lt;/span&gt; theme_bw&lt;span class="p"&gt;()&lt;/span&gt;
+  &lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;img alt="png" src="output_68_0.png"&gt;&lt;/p&gt;
+&lt;p&gt;Patients with &lt;em&gt;svi&lt;/em&gt; do seem to have higher &lt;em&gt;Log(Capsular Penetration)&lt;/em&gt;. Just as &lt;em&gt;lcavol&lt;/em&gt;, if patients have both &lt;em&gt;svi&lt;/em&gt; and higher &lt;em&gt;lcp&lt;/em&gt;, then they are likely to have higher &lt;em&gt;lpsa&lt;/em&gt;.&lt;/p&gt;
+&lt;h4&gt;svi vs lpsa&lt;/h4&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kp"&gt;options&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;repr.plot.width&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;4&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; repr.plot.height&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;3&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+ggplot&lt;span class="p"&gt;(&lt;/span&gt;data &lt;span class="o"&gt;=&lt;/span&gt; prostate&lt;span class="p"&gt;,&lt;/span&gt; aes&lt;span class="p"&gt;(&lt;/span&gt;x&lt;span class="o"&gt;=&lt;/span&gt;prostate&lt;span class="o"&gt;$&lt;/span&gt;svi&lt;span class="p"&gt;,&lt;/span&gt; y&lt;span class="o"&gt;=&lt;/span&gt;lpsa&lt;span class="p"&gt;,&lt;/span&gt; color&lt;span class="o"&gt;=&lt;/span&gt;prostate&lt;span class="o"&gt;$&lt;/span&gt;svi&lt;span class="p"&gt;))&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; geom_boxplot&lt;span class="p"&gt;(&lt;/span&gt;alpha&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;0.7&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt;
+                    ggtitle&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;SVI vs LPSA&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; xlab&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;SVI&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt;
+                    theme&lt;span class="p"&gt;(&lt;/span&gt;axis.line &lt;span class="o"&gt;=&lt;/span&gt; element_line&lt;span class="p"&gt;(&lt;/span&gt;colour &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;black&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; legend.position &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;none&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;img alt="png" src="output_71_0.png"&gt;&lt;/p&gt;
+&lt;p&gt;The median of patients with and without &lt;em&gt;svi&lt;/em&gt; are well separated. Patients with &lt;em&gt;svi&lt;/em&gt; are likely to have higher &lt;em&gt;lpsa&lt;/em&gt;.&lt;/p&gt;
+&lt;h4&gt;Percentage Gleason Scores vs LPSA&lt;/h4&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kp"&gt;options&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;repr.plot.width&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;5&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; repr.plot.height&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;4&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+ggscatterhist&lt;span class="p"&gt;(&lt;/span&gt;
+  prostate&lt;span class="p"&gt;,&lt;/span&gt; x &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;pgg45&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; y &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;lpsa&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+  color &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;gleason&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; size &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="m"&gt;3&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; alpha &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="m"&gt;0.6&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+  palette &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kt"&gt;c&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;#00AFBB&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;#E7B800&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;#FC4E07&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;#11BC11&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt;
+  margin.plot &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;boxplot&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+  ggtheme &lt;span class="o"&gt;=&lt;/span&gt; theme_bw&lt;span class="p"&gt;()&lt;/span&gt;
+  &lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;img alt="png" src="output_74_0.png"&gt;&lt;/p&gt;
+&lt;p&gt;As &lt;em&gt;pgg45&lt;/em&gt; is the percentage score of &lt;em&gt;gleason&lt;/em&gt;, it increases as &lt;em&gt;gleason&lt;/em&gt; increases. Also &lt;em&gt;gleason&lt;/em&gt; score of 7,8,9 seems to have a slightly higher &lt;em&gt;lpsa&lt;/em&gt; in comparison to that of 6.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h3&gt;Heatmap&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;df2 &lt;span class="o"&gt;&amp;lt;-&lt;/span&gt; data&lt;span class="p"&gt;(&lt;/span&gt;prostate&lt;span class="p"&gt;)&lt;/span&gt;
+corr &lt;span class="o"&gt;&amp;lt;-&lt;/span&gt; &lt;span class="kp"&gt;round&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;cor&lt;span class="p"&gt;(&lt;/span&gt;prostate&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="m"&gt;2&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+melt_df &lt;span class="o"&gt;&amp;lt;-&lt;/span&gt; melt&lt;span class="p"&gt;(&lt;/span&gt;corr&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kp"&gt;options&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;repr.plot.width&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;6&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; repr.plot.height&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;3&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+ggplot&lt;span class="p"&gt;(&lt;/span&gt;data&lt;span class="o"&gt;=&lt;/span&gt;melt_df&lt;span class="p"&gt;,&lt;/span&gt; aes&lt;span class="p"&gt;(&lt;/span&gt;x&lt;span class="o"&gt;=&lt;/span&gt;Var1&lt;span class="p"&gt;,&lt;/span&gt; y&lt;span class="o"&gt;=&lt;/span&gt;Var2&lt;span class="p"&gt;,&lt;/span&gt; fill&lt;span class="o"&gt;=&lt;/span&gt;value&lt;span class="p"&gt;))&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; 
+            geom_tile&lt;span class="p"&gt;(&lt;/span&gt;color&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;white&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; 
+            scale_fill_gradient2&lt;span class="p"&gt;(&lt;/span&gt;low &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;blue&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; high &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;red&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; mid &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;white&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; midpoint &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="m"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; limit &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kt"&gt;c&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="m"&gt;-1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="m"&gt;1&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; space &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;Lab&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; 
+               name&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;Pearson\nCorrelation&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt;
+            theme_minimal&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt;
+            theme&lt;span class="p"&gt;(&lt;/span&gt;axis.text.x &lt;span class="o"&gt;=&lt;/span&gt; element_text&lt;span class="p"&gt;(&lt;/span&gt;angle &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="m"&gt;45&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; vjust &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="m"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; 
+                size &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="m"&gt;12&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; hjust &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="m"&gt;1&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;&lt;span class="o"&gt;+&lt;/span&gt;
+                coord_fixed&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;img alt="png" src="output_79_0.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;lcavol, svi, lcp&lt;/em&gt; are positively correlated to &lt;em&gt;lpsa&lt;/em&gt;.&lt;/p&gt;
+&lt;h3&gt;Fitting linear model&lt;/h3&gt;
+&lt;h4&gt;lpsa ~ lcavol&lt;/h4&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kp"&gt;options&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;repr.plot.width&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;4&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; repr.plot.height&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;4&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+plot&lt;span class="p"&gt;(&lt;/span&gt;lpsa &lt;span class="o"&gt;~&lt;/span&gt; lcavol&lt;span class="p"&gt;,&lt;/span&gt; prostate&lt;span class="p"&gt;)&lt;/span&gt;
+abline&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="m"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="m"&gt;1&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+g &lt;span class="o"&gt;&amp;lt;-&lt;/span&gt; lm&lt;span class="p"&gt;(&lt;/span&gt;lpsa &lt;span class="o"&gt;~&lt;/span&gt; lcavol&lt;span class="p"&gt;,&lt;/span&gt; prostate&lt;span class="p"&gt;)&lt;/span&gt;
+abline&lt;span class="p"&gt;(&lt;/span&gt;coef&lt;span class="p"&gt;(&lt;/span&gt;g&lt;span class="p"&gt;),&lt;/span&gt; lty&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;5&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;img alt="png" src="output_83_0.png"&gt;&lt;/p&gt;
+&lt;p&gt;The dotted regression line seems to fit very well.&lt;/p&gt;
+&lt;h4&gt;lcp ~ lspa&lt;/h4&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kp"&gt;options&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;repr.plot.width&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;4&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; repr.plot.height&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;4&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+plot&lt;span class="p"&gt;(&lt;/span&gt;lpsa &lt;span class="o"&gt;~&lt;/span&gt; lcp&lt;span class="p"&gt;,&lt;/span&gt; prostate&lt;span class="p"&gt;)&lt;/span&gt;
+abline&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="m"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="m"&gt;1&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+g &lt;span class="o"&gt;&amp;lt;-&lt;/span&gt; lm&lt;span class="p"&gt;(&lt;/span&gt;lpsa &lt;span class="o"&gt;~&lt;/span&gt; lcp&lt;span class="p"&gt;,&lt;/span&gt; prostate&lt;span class="p"&gt;)&lt;/span&gt;
+abline&lt;span class="p"&gt;(&lt;/span&gt;coef&lt;span class="p"&gt;(&lt;/span&gt;g&lt;span class="p"&gt;),&lt;/span&gt; lty&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;5&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;img alt="png" src="output_86_0.png"&gt;&lt;/p&gt;
+&lt;p&gt;Even though the dotted line seems to be fitted very well, but inaccurate predictions could be made if the value of &lt;em&gt;lcp&lt;/em&gt; is $-1.38629$&lt;/p&gt;</content></entry><entry><title>Scraping LaLiga Statistics 2018/19</title><link href="/scraping-laliga-statistics-201819.html" rel="alternate"></link><published>2019-08-19T00:00:00-04:00</published><updated>2019-08-19T00:00:00-04:00</updated><author><name>Parth Shah</name></author><id>tag:None,2019-08-19:/scraping-laliga-statistics-201819.html</id><summary type="html">&lt;p&gt;&lt;img alt="image" src="images/laliga.png"&gt;&lt;/p&gt;
 &lt;p&gt;If there's anythin I do besides data science, then it's definitely watching soccer--especially LaLiga. You might hear me scream for a goal if you pass by my house on a weekend. Lately I realized that just watching LaLiga wasn't enough for me, I wanted to explore how each and every …&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;img alt="image" src="images/laliga.png"&gt;&lt;/p&gt;
 &lt;p&gt;If there's anythin I do besides data science, then it's definitely watching soccer--especially LaLiga. You might hear me scream for a goal if you pass by my house on a weekend. Lately I realized that just watching LaLiga wasn't enough for me, I wanted to explore how each and every team is performing time-wise as well as against other teams. Questions such as "what team plays most aggressively?" "what team dominates the posession of the ball?" have been running through my mind.&lt;/p&gt;
 &lt;p&gt;After a lot of research I wasn't able to find the exact data I was looking for, so I decided to scrape it by myself. In this article with the help of Python, I will show how I scraped the match results along with game statistics for each team in LaLiga 2018/19 season. &lt;/p&gt;

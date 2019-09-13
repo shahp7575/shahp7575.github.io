@@ -18,7 +18,537 @@
 
             <aside id="featured" class="body">
                 <article>
-                    <h1 class="entry-title"><a href="/scraping-laliga-statistics-201819.html">Scraping LaLiga Statistics 2018/19</a></h1>
+                    <h1 class="entry-title"><a href="/analyzing-teen-gambling-and-prostate-cancer-dataset-using-r.html">Analyzing Teen Gambling and Prostate Cancer dataset using R</a></h1>
+<footer class="post-info">
+        <abbr class="published" title="2019-09-13T00:00:00-04:00">
+                Published: Fri 13 September 2019
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="/author/parth-shah.html">Parth Shah</a>
+        </address>
+<p>In <a href="/category/blog.html">Blog</a>.</p>
+
+</footer><!-- /.post-info --><p>This Fall I started my masters in data science at Rutgers University. In one of our Time Series and Regression class we were asked to analyze two datasets <em>teengamb</em> and <em>prostate</em> using R. This was my first time experimenting with R and it turned out to be a great learning experience.</p>
+<h2>Problem 1: Analyzing dataset teengamb</h2>
+<h3>Loading data &amp; libraries</h3>
+<div class="highlight"><pre><span></span><span class="kn">library</span><span class="p">(</span>faraway<span class="p">)</span>
+<span class="kn">library</span><span class="p">(</span>tidyr<span class="p">)</span>
+<span class="kn">library</span><span class="p">(</span>purrr<span class="p">)</span>
+<span class="kn">library</span><span class="p">(</span>ggplot2<span class="p">)</span>
+<span class="kn">library</span><span class="p">(</span>ggpubr<span class="p">)</span>
+<span class="kn">library</span><span class="p">(</span>repr<span class="p">)</span>
+<span class="kn">library</span><span class="p">(</span>reshape2<span class="p">)</span>
+</pre></div>
+
+
+<div class="highlight"><pre><span></span>Attaching package: &#39;tidyr&#39;
+
+The following object is masked from &#39;package:reshape2&#39;:
+
+    smiths
+
+The following object is masked from &#39;package:magrittr&#39;:
+
+    extract
+</pre></div>
+
+
+<div class="highlight"><pre><span></span>data<span class="p">(</span>teengamb<span class="p">)</span>
+df <span class="o">=</span> teengamb
+</pre></div>
+
+
+<div class="highlight"><pre><span></span><span class="kp">head</span><span class="p">(</span>df<span class="p">);</span> <span class="kp">tail</span><span class="p">(</span>df<span class="p">)</span>
+</pre></div>
+
+
+<table>
+<thead><tr><th scope=col>sex</th><th scope=col>status</th><th scope=col>income</th><th scope=col>verbal</th><th scope=col>gamble</th></tr></thead>
+<tbody>
+    <tr><td>1   </td><td>51  </td><td>2.00</td><td>8   </td><td> 0.0</td></tr>
+    <tr><td>1   </td><td>28  </td><td>2.50</td><td>8   </td><td> 0.0</td></tr>
+    <tr><td>1   </td><td>37  </td><td>2.00</td><td>6   </td><td> 0.0</td></tr>
+    <tr><td>1   </td><td>28  </td><td>7.00</td><td>4   </td><td> 7.3</td></tr>
+    <tr><td>1   </td><td>65  </td><td>2.00</td><td>8   </td><td>19.6</td></tr>
+    <tr><td>1   </td><td>61  </td><td>3.47</td><td>6   </td><td> 0.1</td></tr>
+</tbody>
+</table>
+
+<table>
+<thead><tr><th></th><th scope=col>sex</th><th scope=col>status</th><th scope=col>income</th><th scope=col>verbal</th><th scope=col>gamble</th></tr></thead>
+<tbody>
+    <tr><th scope=row>42</th><td>0    </td><td>61   </td><td>15.00</td><td>9    </td><td>69.7 </td></tr>
+    <tr><th scope=row>43</th><td>0    </td><td>75   </td><td> 3.00</td><td>8    </td><td>13.3 </td></tr>
+    <tr><th scope=row>44</th><td>0    </td><td>66   </td><td> 3.25</td><td>9    </td><td> 0.6 </td></tr>
+    <tr><th scope=row>45</th><td>0    </td><td>62   </td><td> 4.94</td><td>6    </td><td>38.0 </td></tr>
+    <tr><th scope=row>46</th><td>0    </td><td>71   </td><td> 1.50</td><td>7    </td><td>14.4 </td></tr>
+    <tr><th scope=row>47</th><td>0    </td><td>71   </td><td> 2.50</td><td>9    </td><td>19.2 </td></tr>
+</tbody>
+</table>
+
+<h3>Numerical analysis</h3>
+<div class="highlight"><pre><span></span><span class="kp">summary</span><span class="p">(</span>df<span class="p">)</span>
+</pre></div>
+
+
+<div class="highlight"><pre><span></span>      sex             status          income           verbal     
+ Min.   :0.0000   Min.   :18.00   Min.   : 0.600   Min.   : 1.00  
+ 1st Qu.:0.0000   1st Qu.:28.00   1st Qu.: 2.000   1st Qu.: 6.00  
+ Median :0.0000   Median :43.00   Median : 3.250   Median : 7.00  
+ Mean   :0.4043   Mean   :45.23   Mean   : 4.642   Mean   : 6.66  
+ 3rd Qu.:1.0000   3rd Qu.:61.50   3rd Qu.: 6.210   3rd Qu.: 8.00  
+ Max.   :1.0000   Max.   :75.00   Max.   :15.000   Max.   :10.00  
+     gamble     
+ Min.   :  0.0  
+ 1st Qu.:  1.1  
+ Median :  6.0  
+ Mean   : 19.3  
+ 3rd Qu.: 19.4  
+ Max.   :156.0
+</pre></div>
+
+
+<ul>
+<li><em>sex</em> - It is considered as numeric here. So it needs to be converted to a categorical attribute.</li>
+<li><em>status</em> - Seems like a normal distribution as the mean and median is concentrated in the center.</li>
+<li><em>income</em> - Here the mean and median is closer to the minimum. So this might represent a right-skewed distribution.</li>
+<li><em>verbal</em> - Mean, median is slightly closer to the maximum. So it could be slightly left-skewed.</li>
+<li><em>gamble</em> - With mean(19.3) &gt; median(6.0), this is heavily skewed to the right.</li>
+</ul>
+<div class="highlight"><pre><span></span>df<span class="o">$</span>sex <span class="o">=</span> <span class="kp">factor</span><span class="p">(</span>df<span class="o">$</span>sex<span class="p">,</span> levels<span class="o">=</span><span class="kt">c</span><span class="p">(</span><span class="m">0</span><span class="p">,</span> <span class="m">1</span><span class="p">),</span> labels<span class="o">=</span><span class="kt">c</span><span class="p">(</span><span class="s">&quot;male&quot;</span><span class="p">,</span> <span class="s">&quot;female&quot;</span><span class="p">));</span> <span class="kp">summary</span><span class="p">(</span>df<span class="o">$</span>sex<span class="p">)</span>
+</pre></div>
+
+
+<dl class=dl-horizontal>
+    <dt>male</dt>
+        <dd>28</dd>
+    <dt>female</dt>
+        <dd>19</dd>
+</dl>
+
+<div class="highlight"><pre><span></span><span class="c1"># Check for NAs</span>
+<span class="kp">apply</span><span class="p">(</span>df<span class="p">,</span> <span class="m">2</span><span class="p">,</span> <span class="kr">function</span><span class="p">(</span>x<span class="p">)</span> <span class="kp">any</span><span class="p">(</span><span class="kp">is.na</span><span class="p">(</span>x<span class="p">)))</span>
+</pre></div>
+
+
+<dl class=dl-horizontal>
+    <dt>sex</dt>
+        <dd>FALSE</dd>
+    <dt>status</dt>
+        <dd>FALSE</dd>
+    <dt>income</dt>
+        <dd>FALSE</dd>
+    <dt>verbal</dt>
+        <dd>FALSE</dd>
+    <dt>gamble</dt>
+        <dd>FALSE</dd>
+</dl>
+
+<p>None of the columns in the dataset have null values.</p>
+<h3>Univariate Analysis</h3>
+<h4>Status</h4>
+<div class="highlight"><pre><span></span><span class="kp">options</span><span class="p">(</span>repr.plot.width<span class="o">=</span><span class="m">4</span><span class="p">,</span> repr.plot.height<span class="o">=</span><span class="m">3</span><span class="p">)</span>
+ggplot<span class="p">(</span>data <span class="o">=</span> df<span class="p">)</span> <span class="o">+</span> geom_histogram<span class="p">(</span>aes<span class="p">(</span>x<span class="o">=</span>status<span class="p">,</span> y<span class="o">=</span><span class="m">..</span>density..<span class="p">),</span> bins<span class="o">=</span><span class="m">10</span><span class="p">)</span> <span class="o">+</span> 
+                    geom_density<span class="p">(</span>aes<span class="p">(</span>x<span class="o">=</span>status<span class="p">,</span> y<span class="o">=</span><span class="m">..</span>density..<span class="p">),</span> color<span class="o">=</span><span class="s">&#39;black&#39;</span><span class="p">)</span> <span class="o">+</span>
+                    ggtitle<span class="p">(</span><span class="s">&quot;Histogram of Status&quot;</span><span class="p">)</span> <span class="o">+</span>
+                    theme<span class="p">(</span>panel.grid.major <span class="o">=</span> element_blank<span class="p">(),</span> panel.grid.minor <span class="o">=</span> element_blank<span class="p">(),</span>
+                        panel.background <span class="o">=</span> element_blank<span class="p">(),</span> axis.line <span class="o">=</span> element_line<span class="p">(</span>colour <span class="o">=</span> <span class="s">&quot;black&quot;</span><span class="p">))</span>
+</pre></div>
+
+
+<p><img alt="png" src="output_11_0.png"></p>
+<ul>
+<li>As per the numerical analysis it was assumed that <em>status</em> follows a normal distribution. But the histogram above shows a slight bimodal distribution instead. This depicts that the social economic status is almost equally distributed across the entire dataset.</li>
+</ul>
+<h4>Income</h4>
+<div class="highlight"><pre><span></span><span class="kp">options</span><span class="p">(</span>repr.plot.width<span class="o">=</span><span class="m">4</span><span class="p">,</span> repr.plot.height<span class="o">=</span><span class="m">3</span><span class="p">)</span>
+ggplot<span class="p">(</span>data <span class="o">=</span> df<span class="p">)</span> <span class="o">+</span> geom_histogram<span class="p">(</span>aes<span class="p">(</span>x<span class="o">=</span>income<span class="p">,</span> y<span class="o">=</span><span class="m">..</span>density..<span class="p">),</span> bins<span class="o">=</span><span class="m">15</span><span class="p">)</span> <span class="o">+</span> 
+                    geom_density<span class="p">(</span>aes<span class="p">(</span>x<span class="o">=</span>income<span class="p">,</span> y<span class="o">=</span><span class="m">..</span>density..<span class="p">),</span> color<span class="o">=</span><span class="s">&#39;black&#39;</span><span class="p">)</span> <span class="o">+</span>
+                    ggtitle<span class="p">(</span><span class="s">&quot;Histogram of Income&quot;</span><span class="p">)</span> <span class="o">+</span>
+                    theme<span class="p">(</span>panel.grid.major <span class="o">=</span> element_blank<span class="p">(),</span> panel.grid.minor <span class="o">=</span> element_blank<span class="p">(),</span>
+                        panel.background <span class="o">=</span> element_blank<span class="p">(),</span> axis.line <span class="o">=</span> element_line<span class="p">(</span>colour <span class="o">=</span> <span class="s">&quot;black&quot;</span><span class="p">))</span>
+</pre></div>
+
+
+<p><img alt="png" src="output_14_0.png"></p>
+<ul>
+<li>As assumed the distribution is right-skewed which shows that most of the people in the dataset have a low-mid range income per week.</li>
+</ul>
+<h4>Verbal</h4>
+<div class="highlight"><pre><span></span><span class="kp">options</span><span class="p">(</span>repr.plot.width<span class="o">=</span><span class="m">4</span><span class="p">,</span> repr.plot.height<span class="o">=</span><span class="m">3</span><span class="p">)</span>
+ggplot<span class="p">(</span>data <span class="o">=</span> df<span class="p">)</span> <span class="o">+</span> geom_histogram<span class="p">(</span>aes<span class="p">(</span>x<span class="o">=</span>verbal<span class="p">,</span> y<span class="o">=</span><span class="m">..</span>density..<span class="p">),</span> bins<span class="o">=</span><span class="m">10</span><span class="p">)</span> <span class="o">+</span> 
+                    geom_density<span class="p">(</span>aes<span class="p">(</span>x<span class="o">=</span>verbal<span class="p">,</span> y<span class="o">=</span><span class="m">..</span>density..<span class="p">),</span> color<span class="o">=</span><span class="s">&#39;black&#39;</span><span class="p">)</span> <span class="o">+</span>
+                    ggtitle<span class="p">(</span><span class="s">&quot;Histogram of Verbal&quot;</span><span class="p">)</span> <span class="o">+</span>
+                    theme<span class="p">(</span>panel.grid.major <span class="o">=</span> element_blank<span class="p">(),</span> panel.grid.minor <span class="o">=</span> element_blank<span class="p">(),</span>
+                        panel.background <span class="o">=</span> element_blank<span class="p">(),</span> axis.line <span class="o">=</span> element_line<span class="p">(</span>colour <span class="o">=</span> <span class="s">&quot;black&quot;</span><span class="p">))</span>
+</pre></div>
+
+
+<p><img alt="png" src="output_17_0.png"></p>
+<ul>
+<li>The histogram of <em>verbal</em> is slightly left skewed showing that there are very few people with low verbal scores.</li>
+</ul>
+<h4>Gamble</h4>
+<div class="highlight"><pre><span></span><span class="kp">options</span><span class="p">(</span>repr.plot.width<span class="o">=</span><span class="m">4</span><span class="p">,</span> repr.plot.height<span class="o">=</span><span class="m">3</span><span class="p">)</span>
+ggplot<span class="p">(</span>data <span class="o">=</span> df<span class="p">)</span> <span class="o">+</span> geom_histogram<span class="p">(</span>aes<span class="p">(</span>x<span class="o">=</span>gamble<span class="p">,</span> y<span class="o">=</span><span class="m">..</span>density..<span class="p">),</span> bins<span class="o">=</span><span class="m">15</span><span class="p">)</span> <span class="o">+</span> 
+                    geom_density<span class="p">(</span>aes<span class="p">(</span>x<span class="o">=</span>gamble<span class="p">,</span> y<span class="o">=</span><span class="m">..</span>density..<span class="p">),</span> color<span class="o">=</span><span class="s">&#39;black&#39;</span><span class="p">)</span> <span class="o">+</span>
+                    ggtitle<span class="p">(</span><span class="s">&quot;Histogram of Gamble&quot;</span><span class="p">)</span> <span class="o">+</span>
+                    theme<span class="p">(</span>panel.grid.major <span class="o">=</span> element_blank<span class="p">(),</span> panel.grid.minor <span class="o">=</span> element_blank<span class="p">(),</span>
+                        panel.background <span class="o">=</span> element_blank<span class="p">(),</span> axis.line <span class="o">=</span> element_line<span class="p">(</span>colour <span class="o">=</span> <span class="s">&quot;black&quot;</span><span class="p">))</span>
+</pre></div>
+
+
+<p><img alt="png" src="output_20_0.png"></p>
+<ul>
+<li>As per the assumption in numerical analysis, the histogram of <em>gamble</em> is heavily skewed to the right. It represents that most of the people gamble less money while there are some who gamble over 80.00 pounds per year.</li>
+</ul>
+<p>Also there seems to be a huge gap at the far end of the distribution.</p>
+<div class="highlight"><pre><span></span><span class="kp">options</span><span class="p">(</span>repr.plot.width<span class="o">=</span><span class="m">5</span><span class="p">,</span> repr.plot.height<span class="o">=</span><span class="m">4</span><span class="p">)</span>
+plot<span class="p">(</span><span class="kp">sort</span><span class="p">(</span>df<span class="o">$</span>gamble<span class="p">),</span> ylab<span class="o">=</span><span class="s">&quot;Gamble&quot;</span><span class="p">,</span> main <span class="o">=</span> <span class="s">&quot;Index plot Gamble&quot;</span><span class="p">)</span>
+</pre></div>
+
+
+<p><img alt="png" src="output_22_0.png"></p>
+<p>The linear model would be more accurate without this outlier, hence it is removed.</p>
+<div class="highlight"><pre><span></span>df<span class="o">$</span>gamble<span class="p">[</span>df<span class="o">$</span>gamble <span class="o">==</span> <span class="kp">max</span><span class="p">(</span>df<span class="o">$</span>gamble<span class="p">)]</span> <span class="o">=</span> <span class="kc">NA</span>
+</pre></div>
+
+
+<div class="highlight"><pre><span></span><span class="c1"># removing NAs</span>
+na_rows <span class="o">=</span> <span class="kp">apply</span><span class="p">(</span>df<span class="p">,</span> <span class="m">1</span><span class="p">,</span> <span class="kr">function</span><span class="p">(</span>x<span class="p">)</span> <span class="kp">any</span><span class="p">(</span><span class="kp">is.na</span><span class="p">(</span>x<span class="p">)))</span>
+df <span class="o">&lt;-</span> df<span class="p">[</span><span class="o">!</span>na_rows<span class="p">,]</span>
+</pre></div>
+
+
+<h3>Bivariate Analysis</h3>
+<h4>Sex vs Gamble</h4>
+<div class="highlight"><pre><span></span>fill <span class="o">&lt;-</span> <span class="s">&quot;#4271AE&quot;</span>
+line <span class="o">&lt;-</span> <span class="s">&quot;#1F3552&quot;</span>
+
+<span class="kp">options</span><span class="p">(</span>repr.plot.width<span class="o">=</span><span class="m">4</span><span class="p">,</span> repr.plot.height<span class="o">=</span><span class="m">3</span><span class="p">)</span>
+ggplot<span class="p">(</span>data <span class="o">=</span> df<span class="p">,</span> aes<span class="p">(</span>x<span class="o">=</span>sex<span class="p">,</span> y<span class="o">=</span>gamble<span class="p">))</span> <span class="o">+</span> geom_boxplot<span class="p">(</span>fill<span class="o">=</span>fill<span class="p">,</span> colour<span class="o">=</span>line<span class="p">,</span> alpha<span class="o">=</span><span class="m">0.7</span><span class="p">)</span> <span class="o">+</span>
+                    ggtitle<span class="p">(</span><span class="s">&quot;Sex vs Gamble&quot;</span><span class="p">)</span> <span class="o">+</span>
+                    theme<span class="p">(</span>axis.line <span class="o">=</span> element_line<span class="p">(</span>colour <span class="o">=</span> <span class="s">&quot;black&quot;</span><span class="p">))</span>
+</pre></div>
+
+
+<p><img alt="png" src="output_28_0.png"></p>
+<p>We can observe how the median for males is very separated from that of the females, which shows that males tend to spend more on gambling than females. Also the median for males is leaned towards <strong>Q1</strong> representing that most of the males spend between 0 to 15 pounds per year on gambling. While there are very few of them who spend above 25 pounds per year, hence skewed to the right.</p>
+<h4>Status vs Gamble</h4>
+<div class="highlight"><pre><span></span><span class="kp">options</span><span class="p">(</span>repr.plot.width<span class="o">=</span><span class="m">4</span><span class="p">,</span> repr.plot.height<span class="o">=</span><span class="m">3</span><span class="p">)</span>
+ggplot<span class="p">(</span>data <span class="o">=</span> df<span class="p">,</span> aes<span class="p">(</span>x<span class="o">=</span>status<span class="p">,</span> y<span class="o">=</span>gamble<span class="p">))</span> <span class="o">+</span> geom_point<span class="p">()</span> <span class="o">+</span> geom_smooth<span class="p">(</span>method <span class="o">=</span> <span class="s">&#39;lm&#39;</span><span class="p">)</span> <span class="o">+</span>
+                    ggtitle<span class="p">(</span><span class="s">&quot;Status vs Gamble&quot;</span><span class="p">)</span> <span class="o">+</span>
+                    theme<span class="p">(</span>axis.line <span class="o">=</span> element_line<span class="p">(</span>colour <span class="o">=</span> <span class="s">&quot;black&quot;</span><span class="p">))</span>
+</pre></div>
+
+
+<p><img alt="png" src="output_31_0.png"></p>
+<p>While an upward trend is observed depicting that people with higher status tend to gamble more, however, there are few people within low status that spend considerably more in gambling. In fact, most of the highest expenditure on gambling are from people within the low status.</p>
+<h4>Income vs Gamble</h4>
+<div class="highlight"><pre><span></span><span class="kp">options</span><span class="p">(</span>repr.plot.width<span class="o">=</span><span class="m">4</span><span class="p">,</span> repr.plot.height<span class="o">=</span><span class="m">3</span><span class="p">)</span>
+ggplot<span class="p">(</span>data <span class="o">=</span> df<span class="p">,</span> aes<span class="p">(</span>x<span class="o">=</span>income<span class="p">,</span> y<span class="o">=</span>gamble<span class="p">))</span> <span class="o">+</span> geom_point<span class="p">()</span> <span class="o">+</span> geom_smooth<span class="p">(</span>method <span class="o">=</span> <span class="s">&#39;lm&#39;</span><span class="p">)</span> <span class="o">+</span>
+                    ggtitle<span class="p">(</span><span class="s">&quot;Income vs Gamble&quot;</span><span class="p">)</span> <span class="o">+</span>
+                    theme<span class="p">(</span>axis.line <span class="o">=</span> element_line<span class="p">(</span>colour <span class="o">=</span> <span class="s">&quot;black&quot;</span><span class="p">))</span>
+</pre></div>
+
+
+<p><img alt="png" src="output_34_0.png"></p>
+<p>A nice upward trend is observed showing that people with higher income tend to spend more on gambling. Also we can observe below that even though males and females approximately have the same income, males tend to spend considerably more on gambling.</p>
+<div class="highlight"><pre><span></span><span class="kp">options</span><span class="p">(</span>repr.plot.width<span class="o">=</span><span class="m">5</span><span class="p">,</span> repr.plot.height<span class="o">=</span><span class="m">4</span><span class="p">)</span>
+ggscatterhist<span class="p">(</span>
+  df<span class="p">,</span> x <span class="o">=</span> <span class="s">&quot;income&quot;</span><span class="p">,</span> y <span class="o">=</span> <span class="s">&quot;gamble&quot;</span><span class="p">,</span>
+  color <span class="o">=</span> <span class="s">&quot;sex&quot;</span><span class="p">,</span> size <span class="o">=</span> <span class="m">3</span><span class="p">,</span> alpha <span class="o">=</span> <span class="m">0.6</span><span class="p">,</span>
+  palette <span class="o">=</span> <span class="kt">c</span><span class="p">(</span><span class="s">&quot;#00AFBB&quot;</span><span class="p">,</span> <span class="s">&quot;#E7B800&quot;</span><span class="p">,</span> <span class="s">&quot;#FC4E07&quot;</span><span class="p">),</span>
+  margin.plot <span class="o">=</span> <span class="s">&quot;boxplot&quot;</span><span class="p">,</span>
+  ggtheme <span class="o">=</span> theme_bw<span class="p">()</span>
+  <span class="p">)</span>
+</pre></div>
+
+
+<p><img alt="png" src="output_36_0.png"></p>
+<h4>Verbal vs Gamble</h4>
+<div class="highlight"><pre><span></span><span class="kp">options</span><span class="p">(</span>repr.plot.width<span class="o">=</span><span class="m">4</span><span class="p">,</span> repr.plot.height<span class="o">=</span><span class="m">3</span><span class="p">)</span>
+ggplot<span class="p">(</span>data <span class="o">=</span> df<span class="p">,</span> aes<span class="p">(</span>x<span class="o">=</span><span class="kp">factor</span><span class="p">(</span>df<span class="o">$</span>verbal<span class="p">),</span> y<span class="o">=</span>gamble<span class="p">,</span> color<span class="o">=</span><span class="kp">factor</span><span class="p">(</span>df<span class="o">$</span>verbal<span class="p">)))</span> <span class="o">+</span> geom_boxplot<span class="p">(</span>alpha<span class="o">=</span><span class="m">0.7</span><span class="p">)</span> <span class="o">+</span>
+                    ggtitle<span class="p">(</span><span class="s">&quot;Verbal Score vs Gamble&quot;</span><span class="p">)</span> <span class="o">+</span> xlab<span class="p">(</span><span class="s">&#39;Verbal Scores&#39;</span><span class="p">)</span> <span class="o">+</span>
+                    theme<span class="p">(</span>axis.line <span class="o">=</span> element_line<span class="p">(</span>colour <span class="o">=</span> <span class="s">&quot;black&quot;</span><span class="p">),</span> legend.position <span class="o">=</span> <span class="s">&quot;none&quot;</span><span class="p">)</span>
+</pre></div>
+
+
+<p><img alt="png" src="output_38_0.png"></p>
+<p>It can be observed that people with average verbal scores(5-8) tend to gamble more than the others. But this trend could also be because of the fact that most of the people in the dataset have above average verbal scores.</p>
+<h3>Heatmap</h3>
+<div class="highlight"><pre><span></span>corr <span class="o">&lt;-</span> <span class="kp">round</span><span class="p">(</span>cor<span class="p">(</span>teengamb<span class="p">),</span> <span class="m">2</span><span class="p">)</span>
+melt_df <span class="o">&lt;-</span> melt<span class="p">(</span>corr<span class="p">)</span>
+</pre></div>
+
+
+<div class="highlight"><pre><span></span><span class="kp">options</span><span class="p">(</span>repr.plot.width<span class="o">=</span><span class="m">6</span><span class="p">,</span> repr.plot.height<span class="o">=</span><span class="m">3</span><span class="p">)</span>
+ggplot<span class="p">(</span>data<span class="o">=</span>melt_df<span class="p">,</span> aes<span class="p">(</span>x<span class="o">=</span>Var1<span class="p">,</span> y<span class="o">=</span>Var2<span class="p">,</span> fill<span class="o">=</span>value<span class="p">))</span> <span class="o">+</span> 
+            geom_tile<span class="p">(</span>color<span class="o">=</span><span class="s">&#39;white&#39;</span><span class="p">)</span> <span class="o">+</span> 
+            scale_fill_gradient2<span class="p">(</span>low <span class="o">=</span> <span class="s">&quot;blue&quot;</span><span class="p">,</span> high <span class="o">=</span> <span class="s">&quot;red&quot;</span><span class="p">,</span> mid <span class="o">=</span> <span class="s">&quot;white&quot;</span><span class="p">,</span> midpoint <span class="o">=</span> <span class="m">0</span><span class="p">,</span> limit <span class="o">=</span> <span class="kt">c</span><span class="p">(</span><span class="m">-1</span><span class="p">,</span><span class="m">1</span><span class="p">),</span> space <span class="o">=</span> <span class="s">&quot;Lab&quot;</span><span class="p">,</span> 
+               name<span class="o">=</span><span class="s">&quot;Pearson\nCorrelation&quot;</span><span class="p">)</span> <span class="o">+</span>
+            theme_minimal<span class="p">()</span> <span class="o">+</span>
+            theme<span class="p">(</span>axis.text.x <span class="o">=</span> element_text<span class="p">(</span>angle <span class="o">=</span> <span class="m">45</span><span class="p">,</span> vjust <span class="o">=</span> <span class="m">1</span><span class="p">,</span> 
+                size <span class="o">=</span> <span class="m">12</span><span class="p">,</span> hjust <span class="o">=</span> <span class="m">1</span><span class="p">))</span><span class="o">+</span>
+                coord_fixed<span class="p">()</span>
+</pre></div>
+
+
+<p><img alt="png" src="output_42_0.png"></p>
+<ul>
+<li>As observed <em>income</em> is positively correlated to <em>gamble</em>, while other features doesn't seem to be well correlated to <em>gamble</em>.</li>
+<li>The other interesting feature is the positive correlation between <em>status</em> and <em>verbal</em>, showing that people with high status tend to have higher verbal scores.</li>
+</ul>
+<h3>Fitting Linear Model</h3>
+<div class="highlight"><pre><span></span><span class="kp">options</span><span class="p">(</span>repr.plot.width<span class="o">=</span><span class="m">4</span><span class="p">,</span> repr.plot.height<span class="o">=</span><span class="m">4</span><span class="p">)</span>
+plot<span class="p">(</span>gamble <span class="o">~</span> income<span class="p">,</span> df<span class="p">)</span>
+abline<span class="p">(</span><span class="m">0</span><span class="p">,</span> <span class="m">1</span><span class="p">)</span>
+g <span class="o">&lt;-</span> lm<span class="p">(</span>gamble <span class="o">~</span> income<span class="p">,</span> df<span class="p">)</span>
+abline<span class="p">(</span>coef<span class="p">(</span>g<span class="p">),</span> lty<span class="o">=</span><span class="m">5</span><span class="p">)</span>
+</pre></div>
+
+
+<p><img alt="png" src="output_45_0.png"></p>
+<h2>Problem 2: Analyzing dataset prostate</h2>
+<div class="highlight"><pre><span></span>data<span class="p">(</span>prostate<span class="p">)</span>
+</pre></div>
+
+
+<div class="highlight"><pre><span></span><span class="kp">head</span><span class="p">(</span>prostate<span class="p">);</span> <span class="kp">tail</span><span class="p">(</span>prostate<span class="p">)</span>
+</pre></div>
+
+
+<table>
+<thead><tr><th scope=col>lcavol</th><th scope=col>lweight</th><th scope=col>age</th><th scope=col>lbph</th><th scope=col>svi</th><th scope=col>lcp</th><th scope=col>gleason</th><th scope=col>pgg45</th><th scope=col>lpsa</th></tr></thead>
+<tbody>
+    <tr><td>-0.5798185</td><td>2.7695    </td><td>50        </td><td>-1.386294 </td><td>0         </td><td>-1.38629  </td><td>6         </td><td> 0        </td><td>-0.43078  </td></tr>
+    <tr><td>-0.9942523</td><td>3.3196    </td><td>58        </td><td>-1.386294 </td><td>0         </td><td>-1.38629  </td><td>6         </td><td> 0        </td><td>-0.16252  </td></tr>
+    <tr><td>-0.5108256</td><td>2.6912    </td><td>74        </td><td>-1.386294 </td><td>0         </td><td>-1.38629  </td><td>7         </td><td>20        </td><td>-0.16252  </td></tr>
+    <tr><td>-1.2039728</td><td>3.2828    </td><td>58        </td><td>-1.386294 </td><td>0         </td><td>-1.38629  </td><td>6         </td><td> 0        </td><td>-0.16252  </td></tr>
+    <tr><td> 0.7514161</td><td>3.4324    </td><td>62        </td><td>-1.386294 </td><td>0         </td><td>-1.38629  </td><td>6         </td><td> 0        </td><td> 0.37156  </td></tr>
+    <tr><td>-1.0498221</td><td>3.2288    </td><td>50        </td><td>-1.386294 </td><td>0         </td><td>-1.38629  </td><td>6         </td><td> 0        </td><td> 0.76547  </td></tr>
+</tbody>
+</table>
+
+<table>
+<thead><tr><th></th><th scope=col>lcavol</th><th scope=col>lweight</th><th scope=col>age</th><th scope=col>lbph</th><th scope=col>svi</th><th scope=col>lcp</th><th scope=col>gleason</th><th scope=col>pgg45</th><th scope=col>lpsa</th></tr></thead>
+<tbody>
+    <tr><th scope=row>92</th><td>2.532903 </td><td>3.6776   </td><td>61       </td><td> 1.348073</td><td>1        </td><td>-1.38629 </td><td>7        </td><td>15       </td><td>4.12955  </td></tr>
+    <tr><th scope=row>93</th><td>2.830268 </td><td>3.8764   </td><td>68       </td><td>-1.386294</td><td>1        </td><td> 1.32176 </td><td>7        </td><td>60       </td><td>4.38515  </td></tr>
+    <tr><th scope=row>94</th><td>3.821004 </td><td>3.8969   </td><td>44       </td><td>-1.386294</td><td>1        </td><td> 2.16905 </td><td>7        </td><td>40       </td><td>4.68444  </td></tr>
+    <tr><th scope=row>95</th><td>2.907447 </td><td>3.3962   </td><td>52       </td><td>-1.386294</td><td>1        </td><td> 2.46385 </td><td>7        </td><td>10       </td><td>5.14312  </td></tr>
+    <tr><th scope=row>96</th><td>2.882564 </td><td>3.7739   </td><td>68       </td><td> 1.558145</td><td>1        </td><td> 1.55814 </td><td>7        </td><td>80       </td><td>5.47751  </td></tr>
+    <tr><th scope=row>97</th><td>3.471967 </td><td>3.9750   </td><td>68       </td><td> 0.438255</td><td>1        </td><td> 2.90417 </td><td>7        </td><td>20       </td><td>5.58293  </td></tr>
+</tbody>
+</table>
+
+<h3>Numerical Analysis</h3>
+<div class="highlight"><pre><span></span><span class="kp">summary</span><span class="p">(</span>prostate<span class="p">)</span>
+</pre></div>
+
+
+<div class="highlight"><pre><span></span>     <span class="s s-Atom">lcavol</span>           <span class="s s-Atom">lweight</span>           <span class="s s-Atom">age</span>             <span class="s s-Atom">lbph</span>         <span class="s s-Atom">svi</span>   
+ <span class="nv">Min</span><span class="p">.</span>   <span class="p">:-</span><span class="mf">1.3471</span>   <span class="nv">Min</span><span class="p">.</span>   <span class="s s-Atom">:</span><span class="mf">2.375</span>   <span class="nv">Min</span><span class="p">.</span>   <span class="s s-Atom">:</span><span class="mf">41.00</span>   <span class="nv">Min</span><span class="p">.</span>   <span class="p">:-</span><span class="mf">1.3863</span>   <span class="mi">0</span><span class="s s-Atom">:</span><span class="mi">76</span>  
+ <span class="mi">1</span><span class="s s-Atom">st</span> <span class="nv">Qu</span><span class="p">.</span><span class="s s-Atom">:</span> <span class="mf">0.5128</span>   <span class="mi">1</span><span class="s s-Atom">st</span> <span class="nv">Qu</span><span class="p">.</span><span class="s s-Atom">:</span><span class="mf">3.376</span>   <span class="mi">1</span><span class="s s-Atom">st</span> <span class="nv">Qu</span><span class="p">.</span><span class="s s-Atom">:</span><span class="mf">60.00</span>   <span class="mi">1</span><span class="s s-Atom">st</span> <span class="nv">Qu</span><span class="p">.:-</span><span class="mf">1.3863</span>   <span class="mi">1</span><span class="s s-Atom">:</span><span class="mi">21</span>  
+ <span class="nv">Median</span> <span class="s s-Atom">:</span> <span class="mf">1.4469</span>   <span class="nv">Median</span> <span class="s s-Atom">:</span><span class="mf">3.623</span>   <span class="nv">Median</span> <span class="s s-Atom">:</span><span class="mf">65.00</span>   <span class="nv">Median</span> <span class="s s-Atom">:</span> <span class="mf">0.3001</span>         
+ <span class="nv">Mean</span>   <span class="s s-Atom">:</span> <span class="mf">1.3500</span>   <span class="nv">Mean</span>   <span class="s s-Atom">:</span><span class="mf">3.653</span>   <span class="nv">Mean</span>   <span class="s s-Atom">:</span><span class="mf">63.87</span>   <span class="nv">Mean</span>   <span class="s s-Atom">:</span> <span class="mf">0.1004</span>         
+ <span class="mi">3</span><span class="s s-Atom">rd</span> <span class="nv">Qu</span><span class="p">.</span><span class="s s-Atom">:</span> <span class="mf">2.1270</span>   <span class="mi">3</span><span class="s s-Atom">rd</span> <span class="nv">Qu</span><span class="p">.</span><span class="s s-Atom">:</span><span class="mf">3.878</span>   <span class="mi">3</span><span class="s s-Atom">rd</span> <span class="nv">Qu</span><span class="p">.</span><span class="s s-Atom">:</span><span class="mf">68.00</span>   <span class="mi">3</span><span class="s s-Atom">rd</span> <span class="nv">Qu</span><span class="p">.</span><span class="s s-Atom">:</span> <span class="mf">1.5581</span>         
+ <span class="nv">Max</span><span class="p">.</span>   <span class="s s-Atom">:</span> <span class="mf">3.8210</span>   <span class="nv">Max</span><span class="p">.</span>   <span class="s s-Atom">:</span><span class="mf">6.108</span>   <span class="nv">Max</span><span class="p">.</span>   <span class="s s-Atom">:</span><span class="mf">79.00</span>   <span class="nv">Max</span><span class="p">.</span>   <span class="s s-Atom">:</span> <span class="mf">2.3263</span>         
+      <span class="s s-Atom">lcp</span>          <span class="s s-Atom">gleason</span>     <span class="s s-Atom">pgg45</span>             <span class="s s-Atom">lpsa</span>        
+ <span class="nv">Min</span><span class="p">.</span>   <span class="p">:-</span><span class="mf">1.3863</span>   <span class="mi">6</span><span class="s s-Atom">:</span><span class="mi">35</span>    <span class="nv">Min</span><span class="p">.</span>   <span class="s s-Atom">:</span>  <span class="mf">0.00</span>   <span class="nv">Min</span><span class="p">.</span>   <span class="p">:-</span><span class="mf">0.4308</span>  
+ <span class="mi">1</span><span class="s s-Atom">st</span> <span class="nv">Qu</span><span class="p">.:-</span><span class="mf">1.3863</span>   <span class="mi">7</span><span class="s s-Atom">:</span><span class="mi">56</span>    <span class="mi">1</span><span class="s s-Atom">st</span> <span class="nv">Qu</span><span class="p">.</span><span class="s s-Atom">:</span>  <span class="mf">0.00</span>   <span class="mi">1</span><span class="s s-Atom">st</span> <span class="nv">Qu</span><span class="p">.</span><span class="s s-Atom">:</span> <span class="mf">1.7317</span>  
+ <span class="nv">Median</span> <span class="p">:-</span><span class="mf">0.7985</span>   <span class="mi">8</span><span class="s s-Atom">:</span> <span class="mi">1</span>    <span class="nv">Median</span> <span class="s s-Atom">:</span> <span class="mf">15.00</span>   <span class="nv">Median</span> <span class="s s-Atom">:</span> <span class="mf">2.5915</span>  
+ <span class="nv">Mean</span>   <span class="p">:-</span><span class="mf">0.1794</span>   <span class="mi">9</span><span class="s s-Atom">:</span> <span class="mi">5</span>    <span class="nv">Mean</span>   <span class="s s-Atom">:</span> <span class="mf">24.38</span>   <span class="nv">Mean</span>   <span class="s s-Atom">:</span> <span class="mf">2.4784</span>  
+ <span class="mi">3</span><span class="s s-Atom">rd</span> <span class="nv">Qu</span><span class="p">.</span><span class="s s-Atom">:</span> <span class="mf">1.1786</span>           <span class="mi">3</span><span class="s s-Atom">rd</span> <span class="nv">Qu</span><span class="p">.</span><span class="s s-Atom">:</span> <span class="mf">40.00</span>   <span class="mi">3</span><span class="s s-Atom">rd</span> <span class="nv">Qu</span><span class="p">.</span><span class="s s-Atom">:</span> <span class="mf">3.0564</span>  
+ <span class="nv">Max</span><span class="p">.</span>   <span class="s s-Atom">:</span> <span class="mf">2.9042</span>           <span class="nv">Max</span><span class="p">.</span>   <span class="s s-Atom">:</span><span class="mf">100.00</span>   <span class="nv">Max</span><span class="p">.</span>   <span class="s s-Atom">:</span> <span class="mf">5.5829</span>
+</pre></div>
+
+
+<ul>
+<li><em>svi</em>, <em>gleason</em> seems to be categorical variables, so they are converted to categories using <code>factor</code>.</li>
+<li><em>pgg45</em> seems to be heavily skewed to the right, while other features have their mean and median concentrated at the center.</li>
+</ul>
+<div class="highlight"><pre><span></span>prostate<span class="o">$</span>svi <span class="o">=</span> <span class="kp">factor</span><span class="p">(</span>prostate<span class="o">$</span>svi<span class="p">)</span>
+prostate<span class="o">$</span>gleason <span class="o">=</span> <span class="kp">factor</span><span class="p">(</span>prostate<span class="o">$</span>gleason<span class="p">)</span>
+</pre></div>
+
+
+<h3>Univariate Analysis</h3>
+<div class="highlight"><pre><span></span><span class="c1"># creating common ggplot function</span>
+prostate_histogram <span class="o">&lt;-</span> <span class="kr">function</span><span class="p">(</span>data<span class="p">,</span> x<span class="p">,</span> plot_title<span class="p">,</span> bins<span class="p">)</span>
+    <span class="p">{</span>
+        <span class="kp">options</span><span class="p">(</span>repr.plot.width<span class="o">=</span><span class="m">4</span><span class="p">,</span> repr.plot.height<span class="o">=</span><span class="m">3</span><span class="p">)</span>
+        p <span class="o">&lt;-</span> ggplot<span class="p">(</span>data <span class="o">=</span> data<span class="p">)</span>
+        p <span class="o">+</span> geom_histogram<span class="p">(</span>aes<span class="p">(</span>x<span class="o">=</span>x<span class="p">,</span> y<span class="o">=</span><span class="m">..</span>density..<span class="p">),</span> bins<span class="o">=</span>bins<span class="p">)</span> <span class="o">+</span> 
+            geom_density<span class="p">(</span>aes<span class="p">(</span>x<span class="o">=</span>x<span class="p">,</span> y<span class="o">=</span><span class="m">..</span>density..<span class="p">),</span> color<span class="o">=</span><span class="s">&#39;black&#39;</span><span class="p">)</span> <span class="o">+</span>
+            ggtitle<span class="p">(</span>plot_title<span class="p">)</span> <span class="o">+</span>
+            theme<span class="p">(</span>panel.grid.major <span class="o">=</span> element_blank<span class="p">(),</span> panel.grid.minor <span class="o">=</span> element_blank<span class="p">(),</span>
+                panel.background <span class="o">=</span> element_blank<span class="p">(),</span> axis.line <span class="o">=</span> element_line<span class="p">(</span>colour <span class="o">=</span> <span class="s">&quot;black&quot;</span><span class="p">))</span>       
+<span class="p">}</span>
+</pre></div>
+
+
+<div class="highlight"><pre><span></span><span class="c1"># plotting histograms of all numeric features</span>
+d <span class="o">&lt;-</span> prostate
+<span class="kp">options</span><span class="p">(</span>repr.plot.width<span class="o">=</span><span class="m">6</span><span class="p">,</span> repr.plot.height<span class="o">=</span><span class="m">4</span><span class="p">)</span>
+d <span class="o">%&gt;%</span>
+  keep<span class="p">(</span><span class="kp">is.numeric</span><span class="p">)</span> <span class="o">%&gt;%</span>                     <span class="c1"># Keep only numeric columns</span>
+  gather<span class="p">()</span> <span class="o">%&gt;%</span>                             <span class="c1"># Convert to key-value pairs</span>
+  ggplot<span class="p">(</span>aes<span class="p">(</span>value<span class="p">))</span> <span class="o">+</span>                     <span class="c1"># Plot the values</span>
+    facet_wrap<span class="p">(</span><span class="o">~</span> key<span class="p">,</span> scales <span class="o">=</span> <span class="s">&quot;free&quot;</span><span class="p">)</span> <span class="o">+</span>
+    geom_histogram<span class="p">(</span>bins<span class="o">=</span><span class="m">12</span><span class="p">)</span> 
+</pre></div>
+
+
+<p><img alt="png" src="output_55_0.png"></p>
+<ul>
+<li><em>lbph</em> - Seems to have many features capped at $-1.386294$. Maybe it is the default value placed just in case it's missing.</li>
+<li><em>lcp</em> - Just like <em>lbph</em>, it has many features capped at $-1.38629$ as well.</li>
+<li><em>lweight</em> - Follows a normal distribution except for an outlier at $6.1076$.</li>
+<li><em>pgg45</em> - As assumed it is heavily skewed to the right.</li>
+</ul>
+<div class="highlight"><pre><span></span><span class="kp">options</span><span class="p">(</span>repr.plot.width<span class="o">=</span><span class="m">5</span><span class="p">,</span> repr.plot.height<span class="o">=</span><span class="m">4</span><span class="p">)</span>
+plot<span class="p">(</span><span class="kp">sort</span><span class="p">(</span>prostate<span class="o">$</span>lweight<span class="p">),</span> ylab<span class="o">=</span><span class="s">&quot;lweight&quot;</span><span class="p">,</span> main <span class="o">=</span> <span class="s">&quot;Index plot lweight&quot;</span><span class="p">)</span>
+</pre></div>
+
+
+<p><img alt="png" src="output_57_0.png"></p>
+<ul>
+<li>The outlier may be removed if it correlates well with the response feature <em>lpsa</em></li>
+</ul>
+<h3>Bivariate Analysis</h3>
+<h4>Log(Cancer Volume) vs Log(Prostate Specific Antigen)</h4>
+<div class="highlight"><pre><span></span><span class="kp">options</span><span class="p">(</span>repr.plot.width<span class="o">=</span><span class="m">5</span><span class="p">,</span> repr.plot.height<span class="o">=</span><span class="m">4</span><span class="p">)</span>
+ggplot<span class="p">(</span>data <span class="o">=</span> prostate<span class="p">,</span> aes<span class="p">(</span>x<span class="o">=</span>lcavol<span class="p">,</span> y<span class="o">=</span>lpsa<span class="p">))</span> <span class="o">+</span> geom_point<span class="p">()</span> <span class="o">+</span> geom_smooth<span class="p">(</span>method <span class="o">=</span> <span class="s">&#39;lm&#39;</span><span class="p">)</span> <span class="o">+</span>
+                    ggtitle<span class="p">(</span><span class="s">&quot;Log(Cancer Volume) vs Log(Prostate Specific Antigen)&quot;</span><span class="p">)</span> <span class="o">+</span>
+                    theme<span class="p">(</span>axis.line <span class="o">=</span> element_line<span class="p">(</span>colour <span class="o">=</span> <span class="s">&quot;black&quot;</span><span class="p">))</span>
+</pre></div>
+
+
+<p><img alt="png" src="output_61_0.png"></p>
+<p><em>lcavol</em> and <em>lpsa</em> are highly positively correlated. It shows that increase in the Log(Cancer Volume) leads to increase in the Log(Prostate Specific Antigen)</p>
+<div class="highlight"><pre><span></span><span class="kp">options</span><span class="p">(</span>repr.plot.width<span class="o">=</span><span class="m">5</span><span class="p">,</span> repr.plot.height<span class="o">=</span><span class="m">4</span><span class="p">)</span>
+ggscatterhist<span class="p">(</span>
+  prostate<span class="p">,</span> x <span class="o">=</span> <span class="s">&quot;lcavol&quot;</span><span class="p">,</span> y <span class="o">=</span> <span class="s">&quot;lpsa&quot;</span><span class="p">,</span>
+  color <span class="o">=</span> <span class="s">&quot;svi&quot;</span><span class="p">,</span> size <span class="o">=</span> <span class="m">3</span><span class="p">,</span> alpha <span class="o">=</span> <span class="m">0.6</span><span class="p">,</span>
+  palette <span class="o">=</span> <span class="kt">c</span><span class="p">(</span><span class="s">&quot;#00AFBB&quot;</span><span class="p">,</span> <span class="s">&quot;#E7B800&quot;</span><span class="p">,</span> <span class="s">&quot;#FC4E07&quot;</span><span class="p">),</span>
+  margin.plot <span class="o">=</span> <span class="s">&quot;boxplot&quot;</span><span class="p">,</span>
+  ggtheme <span class="o">=</span> theme_bw<span class="p">()</span>
+  <span class="p">)</span>
+</pre></div>
+
+
+<p><img alt="png" src="output_63_0.png"></p>
+<p>Patients with <em>seminal vesicle invasion</em> have higher <em>Log(Cancer Volume)</em>. Also those patients with <em>svi</em> and higher <em>Log(Cancer Volume)</em> also seem to have higher Log(Prostate Specific Antigen).</p>
+<h4>Log(Capsular Penetration) vs Log(Prostate Specific Antigen)</h4>
+<div class="highlight"><pre><span></span><span class="kp">options</span><span class="p">(</span>repr.plot.width<span class="o">=</span><span class="m">5</span><span class="p">,</span> repr.plot.height<span class="o">=</span><span class="m">4</span><span class="p">)</span>
+ggplot<span class="p">(</span>data <span class="o">=</span> prostate<span class="p">,</span> aes<span class="p">(</span>x<span class="o">=</span>lcp<span class="p">,</span> y<span class="o">=</span>lpsa<span class="p">))</span> <span class="o">+</span> geom_point<span class="p">()</span> <span class="o">+</span> geom_smooth<span class="p">(</span>method <span class="o">=</span> <span class="s">&#39;lm&#39;</span><span class="p">)</span> <span class="o">+</span>
+                    ggtitle<span class="p">(</span><span class="s">&quot;Log(Capsular Penetration) vs Log(Prostate Specific Antigen)&quot;</span><span class="p">)</span> <span class="o">+</span>
+                    theme<span class="p">(</span>axis.line <span class="o">=</span> element_line<span class="p">(</span>colour <span class="o">=</span> <span class="s">&quot;black&quot;</span><span class="p">))</span>
+</pre></div>
+
+
+<p><img alt="png" src="output_66_0.png"></p>
+<p><em>Log(Capsular Penetration)</em> and <em>Log(Prostate Specific Antigen)</em> seems to be positively correlated as well. However as most of the features in <em>lcp</em> are capped at $-1.38629$, it needs more information.</p>
+<div class="highlight"><pre><span></span><span class="kp">options</span><span class="p">(</span>repr.plot.width<span class="o">=</span><span class="m">5</span><span class="p">,</span> repr.plot.height<span class="o">=</span><span class="m">4</span><span class="p">)</span>
+ggscatterhist<span class="p">(</span>
+  prostate<span class="p">,</span> x <span class="o">=</span> <span class="s">&quot;lcp&quot;</span><span class="p">,</span> y <span class="o">=</span> <span class="s">&quot;lpsa&quot;</span><span class="p">,</span>
+  color <span class="o">=</span> <span class="s">&quot;svi&quot;</span><span class="p">,</span> size <span class="o">=</span> <span class="m">3</span><span class="p">,</span> alpha <span class="o">=</span> <span class="m">0.6</span><span class="p">,</span>
+  palette <span class="o">=</span> <span class="kt">c</span><span class="p">(</span><span class="s">&quot;#00AFBB&quot;</span><span class="p">,</span> <span class="s">&quot;#E7B800&quot;</span><span class="p">,</span> <span class="s">&quot;#FC4E07&quot;</span><span class="p">),</span>
+  margin.plot <span class="o">=</span> <span class="s">&quot;boxplot&quot;</span><span class="p">,</span>
+  ggtheme <span class="o">=</span> theme_bw<span class="p">()</span>
+  <span class="p">)</span>
+</pre></div>
+
+
+<p><img alt="png" src="output_68_0.png"></p>
+<p>Patients with <em>svi</em> do seem to have higher <em>Log(Capsular Penetration)</em>. Just as <em>lcavol</em>, if patients have both <em>svi</em> and higher <em>lcp</em>, then they are likely to have higher <em>lpsa</em>.</p>
+<h4>svi vs lpsa</h4>
+<div class="highlight"><pre><span></span><span class="kp">options</span><span class="p">(</span>repr.plot.width<span class="o">=</span><span class="m">4</span><span class="p">,</span> repr.plot.height<span class="o">=</span><span class="m">3</span><span class="p">)</span>
+ggplot<span class="p">(</span>data <span class="o">=</span> prostate<span class="p">,</span> aes<span class="p">(</span>x<span class="o">=</span>prostate<span class="o">$</span>svi<span class="p">,</span> y<span class="o">=</span>lpsa<span class="p">,</span> color<span class="o">=</span>prostate<span class="o">$</span>svi<span class="p">))</span> <span class="o">+</span> geom_boxplot<span class="p">(</span>alpha<span class="o">=</span><span class="m">0.7</span><span class="p">)</span> <span class="o">+</span>
+                    ggtitle<span class="p">(</span><span class="s">&quot;SVI vs LPSA&quot;</span><span class="p">)</span> <span class="o">+</span> xlab<span class="p">(</span><span class="s">&#39;SVI&#39;</span><span class="p">)</span> <span class="o">+</span>
+                    theme<span class="p">(</span>axis.line <span class="o">=</span> element_line<span class="p">(</span>colour <span class="o">=</span> <span class="s">&quot;black&quot;</span><span class="p">),</span> legend.position <span class="o">=</span> <span class="s">&quot;none&quot;</span><span class="p">)</span>
+</pre></div>
+
+
+<p><img alt="png" src="output_71_0.png"></p>
+<p>The median of patients with and without <em>svi</em> are well separated. Patients with <em>svi</em> are likely to have higher <em>lpsa</em>.</p>
+<h4>Percentage Gleason Scores vs LPSA</h4>
+<div class="highlight"><pre><span></span><span class="kp">options</span><span class="p">(</span>repr.plot.width<span class="o">=</span><span class="m">5</span><span class="p">,</span> repr.plot.height<span class="o">=</span><span class="m">4</span><span class="p">)</span>
+ggscatterhist<span class="p">(</span>
+  prostate<span class="p">,</span> x <span class="o">=</span> <span class="s">&quot;pgg45&quot;</span><span class="p">,</span> y <span class="o">=</span> <span class="s">&quot;lpsa&quot;</span><span class="p">,</span>
+  color <span class="o">=</span> <span class="s">&quot;gleason&quot;</span><span class="p">,</span> size <span class="o">=</span> <span class="m">3</span><span class="p">,</span> alpha <span class="o">=</span> <span class="m">0.6</span><span class="p">,</span>
+  palette <span class="o">=</span> <span class="kt">c</span><span class="p">(</span><span class="s">&quot;#00AFBB&quot;</span><span class="p">,</span> <span class="s">&quot;#E7B800&quot;</span><span class="p">,</span> <span class="s">&quot;#FC4E07&quot;</span><span class="p">,</span> <span class="s">&quot;#11BC11&quot;</span><span class="p">),</span>
+  margin.plot <span class="o">=</span> <span class="s">&quot;boxplot&quot;</span><span class="p">,</span>
+  ggtheme <span class="o">=</span> theme_bw<span class="p">()</span>
+  <span class="p">)</span>
+</pre></div>
+
+
+<p><img alt="png" src="output_74_0.png"></p>
+<p>As <em>pgg45</em> is the percentage score of <em>gleason</em>, it increases as <em>gleason</em> increases. Also <em>gleason</em> score of 7,8,9 seems to have a slightly higher <em>lpsa</em> in comparison to that of 6.</p>
+<div class="highlight"><pre><span></span>
+</pre></div>
+
+
+<h3>Heatmap</h3>
+<div class="highlight"><pre><span></span>df2 <span class="o">&lt;-</span> data<span class="p">(</span>prostate<span class="p">)</span>
+corr <span class="o">&lt;-</span> <span class="kp">round</span><span class="p">(</span>cor<span class="p">(</span>prostate<span class="p">),</span> <span class="m">2</span><span class="p">)</span>
+melt_df <span class="o">&lt;-</span> melt<span class="p">(</span>corr<span class="p">)</span>
+</pre></div>
+
+
+<div class="highlight"><pre><span></span><span class="kp">options</span><span class="p">(</span>repr.plot.width<span class="o">=</span><span class="m">6</span><span class="p">,</span> repr.plot.height<span class="o">=</span><span class="m">3</span><span class="p">)</span>
+ggplot<span class="p">(</span>data<span class="o">=</span>melt_df<span class="p">,</span> aes<span class="p">(</span>x<span class="o">=</span>Var1<span class="p">,</span> y<span class="o">=</span>Var2<span class="p">,</span> fill<span class="o">=</span>value<span class="p">))</span> <span class="o">+</span> 
+            geom_tile<span class="p">(</span>color<span class="o">=</span><span class="s">&#39;white&#39;</span><span class="p">)</span> <span class="o">+</span> 
+            scale_fill_gradient2<span class="p">(</span>low <span class="o">=</span> <span class="s">&quot;blue&quot;</span><span class="p">,</span> high <span class="o">=</span> <span class="s">&quot;red&quot;</span><span class="p">,</span> mid <span class="o">=</span> <span class="s">&quot;white&quot;</span><span class="p">,</span> midpoint <span class="o">=</span> <span class="m">0</span><span class="p">,</span> limit <span class="o">=</span> <span class="kt">c</span><span class="p">(</span><span class="m">-1</span><span class="p">,</span><span class="m">1</span><span class="p">),</span> space <span class="o">=</span> <span class="s">&quot;Lab&quot;</span><span class="p">,</span> 
+               name<span class="o">=</span><span class="s">&quot;Pearson\nCorrelation&quot;</span><span class="p">)</span> <span class="o">+</span>
+            theme_minimal<span class="p">()</span> <span class="o">+</span>
+            theme<span class="p">(</span>axis.text.x <span class="o">=</span> element_text<span class="p">(</span>angle <span class="o">=</span> <span class="m">45</span><span class="p">,</span> vjust <span class="o">=</span> <span class="m">1</span><span class="p">,</span> 
+                size <span class="o">=</span> <span class="m">12</span><span class="p">,</span> hjust <span class="o">=</span> <span class="m">1</span><span class="p">))</span><span class="o">+</span>
+                coord_fixed<span class="p">()</span>
+</pre></div>
+
+
+<p><img alt="png" src="output_79_0.png"></p>
+<p><em>lcavol, svi, lcp</em> are positively correlated to <em>lpsa</em>.</p>
+<h3>Fitting linear model</h3>
+<h4>lpsa ~ lcavol</h4>
+<div class="highlight"><pre><span></span><span class="kp">options</span><span class="p">(</span>repr.plot.width<span class="o">=</span><span class="m">4</span><span class="p">,</span> repr.plot.height<span class="o">=</span><span class="m">4</span><span class="p">)</span>
+plot<span class="p">(</span>lpsa <span class="o">~</span> lcavol<span class="p">,</span> prostate<span class="p">)</span>
+abline<span class="p">(</span><span class="m">0</span><span class="p">,</span> <span class="m">1</span><span class="p">)</span>
+g <span class="o">&lt;-</span> lm<span class="p">(</span>lpsa <span class="o">~</span> lcavol<span class="p">,</span> prostate<span class="p">)</span>
+abline<span class="p">(</span>coef<span class="p">(</span>g<span class="p">),</span> lty<span class="o">=</span><span class="m">5</span><span class="p">)</span>
+</pre></div>
+
+
+<p><img alt="png" src="output_83_0.png"></p>
+<p>The dotted regression line seems to fit very well.</p>
+<h4>lcp ~ lspa</h4>
+<div class="highlight"><pre><span></span><span class="kp">options</span><span class="p">(</span>repr.plot.width<span class="o">=</span><span class="m">4</span><span class="p">,</span> repr.plot.height<span class="o">=</span><span class="m">4</span><span class="p">)</span>
+plot<span class="p">(</span>lpsa <span class="o">~</span> lcp<span class="p">,</span> prostate<span class="p">)</span>
+abline<span class="p">(</span><span class="m">0</span><span class="p">,</span> <span class="m">1</span><span class="p">)</span>
+g <span class="o">&lt;-</span> lm<span class="p">(</span>lpsa <span class="o">~</span> lcp<span class="p">,</span> prostate<span class="p">)</span>
+abline<span class="p">(</span>coef<span class="p">(</span>g<span class="p">),</span> lty<span class="o">=</span><span class="m">5</span><span class="p">)</span>
+</pre></div>
+
+
+<p><img alt="png" src="output_86_0.png"></p>
+<p>Even though the dotted line seems to be fitted very well, but inaccurate predictions could be made if the value of <em>lcp</em> is $-1.38629$</p>                </article>
+            </aside><!-- /#featured -->
+                <section id="content" class="body">
+                    <h1>Other articles</h1>
+                    <hr />
+                    <ol id="posts-list" class="hfeed">
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="/scraping-laliga-statistics-201819.html" rel="bookmark"
+                           title="Permalink to Scraping LaLiga Statistics 2018/19">Scraping LaLiga Statistics 2018/19</a></h1>
+                </header>
+
+                <div class="entry-content">
 <footer class="post-info">
         <abbr class="published" title="2019-08-19T00:00:00-04:00">
                 Published: Mon 19 August 2019
@@ -29,371 +559,11 @@
         </address>
 <p>In <a href="/category/blog.html">Blog</a>.</p>
 
-</footer><!-- /.post-info --><p><img alt="image" src="images/laliga.png"></p>
-<p>If there's anythin I do besides data science, then it's definitely watching soccer--especially LaLiga. You might hear me scream for a goal if you pass by my house on a weekend. Lately I realized that just watching LaLiga wasn't enough for me, I wanted to explore how each and every team is performing time-wise as well as against other teams. Questions such as "what team plays most aggressively?" "what team dominates the posession of the ball?" have been running through my mind.</p>
-<p>After a lot of research I wasn't able to find the exact data I was looking for, so I decided to scrape it by myself. In this article with the help of Python, I will show how I scraped the match results along with game statistics for each team in LaLiga 2018/19 season. </p>
-<h2>Environment Setup</h2>
-<p>I have used Python 3.6 for this tutorial. The required libraries are as follows:</p>
-<ul>
-<li>numpy</li>
-<li>pandas</li>
-<li>bs4 (BeautifulSoup)</li>
-<li>urllib (Module for working with URLs)</li>
-</ul>
-<h2>Web Scraping from <a href="https://www.msn.com/en-us/sports/soccer/la-liga/scores/">MSN</a></h2>
-<p><img alt="image" src="images/laliga-home.png"></p>
-<p>The website lists the scores for each month on a separate page and it follows this pattern: </p>
-<p><em>https://www.msn.com/en-us/sports/soccer/la-liga/scores/</em></p>
-<p><em>https://www.msn.com/en-us/sports/soccer/la-liga/scores/sp-d-20190428</em></p>
-<p><em>https://www.msn.com/en-us/sports/soccer/la-liga/scores/sp-d-20190428-d-20190331</em></p>
-<p><em>https://www.msn.com/en-us/sports/soccer/la-liga/scores/sp-d-20190428-d-20190331-d-20190303</em></p>
-<p>As we can notice the pattern here:(<em>I</em>)</p>
-<p>http://............./sp-d-(<em>new-match-date</em>)-d-(<em>past-date</em>)-d-(<em>past-date</em>).</p>
-<p>I recorded those dates in a list and created a function that gives me all the links.</p>
-<div class="highlight"><pre><span></span><span class="n">links</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;20190428&#39;</span><span class="p">,</span> <span class="s1">&#39;20190331&#39;</span><span class="p">,</span> <span class="s1">&#39;20190303&#39;</span><span class="p">,</span> <span class="s1">&#39;20190203&#39;</span><span class="p">,</span> <span class="s1">&#39;20190106&#39;</span><span class="p">,</span> <span class="s1">&#39;20181209&#39;</span><span class="p">,</span> <span class="s1">&#39;20181111&#39;</span><span class="p">,</span> <span class="s1">&#39;20181014&#39;</span><span class="p">,</span> <span class="s1">&#39;20180916&#39;</span><span class="p">,</span> <span class="s1">&#39;20180819&#39;</span><span class="p">]</span>
-
-<span class="k">def</span> <span class="nf">fetch_website</span><span class="p">(</span><span class="n">links</span><span class="p">):</span>
-    <span class="n">urls</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;https://www.msn.com/en-us/sports/soccer/la-liga/scores/&#39;</span>
-    <span class="n">urls</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
-    <span class="n">url</span> <span class="o">+=</span> <span class="s1">&#39;sp&#39;</span>
-    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">l</span> <span class="ow">in</span>  <span class="nb">enumerate</span><span class="p">(</span><span class="n">links</span><span class="p">):</span>
-        <span class="n">url</span> <span class="o">+=</span> <span class="s1">&#39;-d-&#39;</span> <span class="o">+</span> <span class="n">links</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-        <span class="n">urls</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">urls</span>
-
-<span class="n">urls</span> <span class="o">=</span> <span class="n">fetch_website</span><span class="p">(</span><span class="n">links</span><span class="p">)</span>
-</pre></div>
-
-
-<p><code>['https://www.msn.com/en-us/sports/soccer/la-liga/scores/',
- 'https://www.msn.com/en-us/sports/soccer/la-liga/scores/sp-d-20190428',
- 'https://www.msn.com/en-us/sports/soccer/la-liga/scores/sp-d-20190428-d-20190331',
- 'https://www.msn.com/en-us/sports/soccer/la-liga/scores/sp-d-20190428-d-20190331-d-20190303'...]</code></p>
-<p>Once we have the links, all we have to do is create a script that runs through all the links and gives us the desired output. The page source of the web page looks like this:</p>
-<p><img alt="image" src="images/laliga-pagesource.jpg"></p>
-<p>Our scores are listed in the <em>sectionsgroup</em> container. Each team scores are in a <em>tbody</em> tag distributed by <em>even rowlink</em> and <em>odd rownlink</em> classes. Now we can use the power of BeautifulSoup to scrape the contents with just two functions:</p>
-<ul>
-<li><em>find</em>: This function takes the name of the tag as string input and returns the first found match from the webpage. <ul>
-<li>Here we will find the <em>div</em> container with class <em>sectionsgroup</em> that contains all the score results.</li>
-</ul>
-</li>
-<li><em>findAll</em>: to extract all the occurrences of a particular tag from the page.<ul>
-<li>Here we will <em>findAll</em> the <em>tbody</em> tags with classes <em>even rowlink</em> &amp; <em>odd rowlink</em> and then loop through each of them to get the contents.</li>
-</ul>
-</li>
-</ul>
-<p>The following is the code to scrape just one webpage:</p>
-<div class="highlight"><pre><span></span><span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;https://www.msn.com/en-us/sports/soccer/la-liga/scores/&#39;</span>
-<span class="n">html</span> <span class="o">=</span> <span class="n">urllib</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="n">url</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
-<span class="n">raw</span> <span class="o">=</span> <span class="n">bs4</span><span class="o">.</span><span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">html</span><span class="p">,</span> <span class="s1">&#39;lxml&#39;</span><span class="p">)</span>
-<span class="n">results</span> <span class="o">=</span> <span class="n">raw</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;div&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;class&#39;</span><span class="p">:</span> <span class="s1">&#39;sectionsgroup&#39;</span><span class="p">})</span><span class="o">.</span><span class="n">findAll</span><span class="p">(</span><span class="s1">&#39;tbody&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;class&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;even rowlink&#39;</span><span class="p">,</span> <span class="s1">&#39;odd rowlink&#39;</span><span class="p">]})</span>
-<span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
-    <span class="n">home_team</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;td&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;class&#39;</span><span class="p">:</span> <span class="s1">&#39;teamname teaminline alignright size23&#39;</span><span class="p">})</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-    <span class="n">away_team</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;td&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;class&#39;</span><span class="p">:</span> <span class="s1">&#39;teamname size23&#39;</span><span class="p">})</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-    <span class="n">match_date</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;td&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;class&#39;</span><span class="p">:</span> <span class="s1">&#39;groupingcolumn paddingleft&#39;</span><span class="p">})</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;div&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;class&#39;</span><span class="p">:</span> <span class="s1">&#39;matchdate&#39;</span><span class="p">})</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-    <span class="n">scores</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">findAll</span><span class="p">(</span><span class="s1">&#39;td&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;class&#39;</span><span class="p">:</span> <span class="s1">&#39;teamscore&#39;</span><span class="p">})</span>
-
-    <span class="n">home_team_score</span> <span class="o">=</span> <span class="n">scores</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-    <span class="n">away_team_score</span> <span class="o">=</span> <span class="n">scores</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-
-    <span class="n">data_link</span> <span class="o">=</span> <span class="s1">&#39;https://www.msn.com&#39;</span> <span class="o">+</span> <span class="n">r</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;href&#39;</span><span class="p">)</span>
-</pre></div>
-
-
-<p>This gives us the team names, match date, their scores and the <em>data_link</em>(link that takes us to a separate page for detailed statistics of each match) using just <em>find</em> and <em>findAll</em> tags. Now to run through all pages we just have to run this for each and every link and append the results to a list.</p>
-<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">get_html</span><span class="p">(</span><span class="n">urls</span><span class="p">):</span>
-    <span class="n">teams</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">for</span> <span class="n">url</span> <span class="ow">in</span> <span class="n">urls</span><span class="p">:</span>
-        <span class="n">html</span> <span class="o">=</span> <span class="n">urllib</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="n">url</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
-        <span class="n">raw</span> <span class="o">=</span> <span class="n">bs4</span><span class="o">.</span><span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">html</span><span class="p">,</span> <span class="s1">&#39;lxml&#39;</span><span class="p">)</span>
-        <span class="n">results</span> <span class="o">=</span> <span class="n">raw</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;div&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;class&#39;</span><span class="p">:</span> <span class="s1">&#39;sectionsgroup&#39;</span><span class="p">})</span><span class="o">.</span><span class="n">findAll</span><span class="p">(</span><span class="s1">&#39;tbody&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;class&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;even rowlink&#39;</span><span class="p">,</span> <span class="s1">&#39;odd rowlink&#39;</span><span class="p">]})</span>
-        <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
-            <span class="n">home_team</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;td&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;class&#39;</span><span class="p">:</span> <span class="s1">&#39;teamname teaminline alignright size23&#39;</span><span class="p">})</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-            <span class="n">away_team</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;td&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;class&#39;</span><span class="p">:</span> <span class="s1">&#39;teamname size23&#39;</span><span class="p">})</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-            <span class="n">match_date</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;td&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;class&#39;</span><span class="p">:</span> <span class="s1">&#39;groupingcolumn paddingleft&#39;</span><span class="p">})</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;div&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;class&#39;</span><span class="p">:</span> <span class="s1">&#39;matchdate&#39;</span><span class="p">})</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-            <span class="n">scores</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">findAll</span><span class="p">(</span><span class="s1">&#39;td&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;class&#39;</span><span class="p">:</span> <span class="s1">&#39;teamscore&#39;</span><span class="p">})</span>
-
-            <span class="n">home_team_score</span> <span class="o">=</span> <span class="n">scores</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-            <span class="n">away_team_score</span> <span class="o">=</span> <span class="n">scores</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-
-            <span class="n">data_link</span> <span class="o">=</span> <span class="s1">&#39;https://www.msn.com&#39;</span> <span class="o">+</span> <span class="n">r</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;href&#39;</span><span class="p">)</span>
-
-            <span class="n">teams</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">match_date</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span> <span class="n">match_date</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">:],</span> <span class="n">home_team</span><span class="p">,</span> <span class="n">away_team</span><span class="p">,</span>
-                          <span class="n">home_team_score</span><span class="p">,</span> <span class="n">away_team_score</span><span class="p">,</span> <span class="n">data_link</span><span class="p">])</span>
-        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">teams</span>
-</pre></div>
-
-
-<p><code>[['Sun',
-  'May 19',
-  'Eibar',
-  'Barça',
-  '2',
-  '2',
-  'https://www.msn.com/en-us/sports/soccer/la-liga/eibar-v-barcelona/game-center/sp-id-80402000001009693'],
- ['Sun',
-  'May 19',
-  'Real Madrid',
-  'Betis',
-  '0',
-  '2',
-  'https://www.msn.com/en-us/sports/soccer/la-liga/real-madrid-v-real-betis/game-center/sp-id-80402000001009694'],
-  ...
- ]</code></p>
-<p>Now I don't only want the scores, I want the detailed statistics for each and every match such as team's posession, offsides, fouls, etc. This can be obtained by following the same scraping process we did above, but now for each <em>data_link</em> that we obtain from each match.</p>
-<p><img alt="image" src="images/laliga-stats.jpg"></p>
-<p><strong>Note</strong>: This image is from the 2019/20 season as msn have updated it to the current season.</p>
-<p>The following is the page source for one of the matches:</p>
-<p><img alt="image" src="images/laliga-statsdetail.jpg"></p>
-<p>The information of detailed stats is in the <em>div</em> container with id <em>matchupgamestatsmodule</em>. And all the individual statistics is present in the <em>div</em> container with class <em>statsitem</em>.</p>
-<div class="highlight"><pre><span></span><span class="n">html_link</span> <span class="o">=</span> <span class="n">urllib</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="n">data_link</span><span class="p">)</span>
-<span class="n">raw_link</span> <span class="o">=</span> <span class="n">bs4</span><span class="o">.</span><span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">html_link</span><span class="p">,</span> <span class="s1">&#39;lxml&#39;</span><span class="p">)</span>
-<span class="n">result_link</span> <span class="o">=</span> <span class="n">raw_link</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;div&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="s1">&#39;main&#39;</span><span class="p">})</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;div&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="s1">&#39;matchupgamestatsmodule&#39;</span><span class="p">})</span><span class="o">.</span><span class="n">findAll</span><span class="p">(</span><span class="s1">&#39;div&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;class&#39;</span><span class="p">:</span> <span class="s1">&#39;statsitem&#39;</span><span class="p">})</span>
-</pre></div>
-
-
-<div class="highlight"><pre><span></span>[<span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;statsitem&quot;</span><span class="p">&gt;</span> 
- <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;statsvalue clearfix&quot;</span><span class="p">&gt;</span> 
- <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;firstteamstats&quot;</span><span class="p">&gt;</span>28<span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span> 
- <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;label&quot;</span><span class="p">&gt;</span> BALL POSSESSION % <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span> 
- <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;secondteamstats&quot;</span><span class="p">&gt;</span>72<span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span> <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span> 
- ...
- <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;firstteamstats&quot;</span><span class="p">&gt;</span>11<span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span> 
- <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;label&quot;</span><span class="p">&gt;</span> SHOTS <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span> <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;secondteamstats&quot;</span><span class="p">&gt;</span>11<span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span> 
- ...]
-</pre></div>
-
-
-<p>Here there is no way to separate out individual statistics as all the class labels have been named the same for each statistics. The only way to separate them out is the text of the <em>div</em> tag with class <em>label</em>. So instead of fetching each stats through html elements, I simply converted them into a list which is simply looping through each <em>statsitem</em> container and get the textual data.</p>
-<div class="highlight"><pre><span></span><span class="n">stats</span> <span class="o">=</span> <span class="p">[]</span>
-<span class="k">for</span> <span class="n">rl</span> <span class="ow">in</span> <span class="n">result_link</span><span class="p">:</span>
-  <span class="n">stats</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">rl</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
-</pre></div>
-
-
-<p>Now we have a nice list with individual statistics. The first and the last value in the list represent the stats of home team and away team respectively. </p>
-<p>[['28', 'BALL', 'POSSESSION', '%', '72'], 
-['11', 'SHOTS', '11'], 
-['5', 'SHOTS', 'ON', 'GOAL', '2'], 
-['14', 'FOULS', '9'], 
-['3', 'CORNERS', '8'], 
-['2', 'SAVES', '4'], 
-['2', 'OFFSIDES', '1'], 
-['1', 'YELLOW', 'CARDS', '1'], 
-['0', 'RED', 'CARDS', '0']]</p>
-<p>The second element in each list would be an identifier for each type of stats. I created a separate function <em>get_stats(stats)</em> for that. The <em>stats</em> parameter in the function is the list we obtained above which can be passed through our main <em>get_html()</em> function.</p>
-<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">get_stats</span><span class="p">(</span><span class="n">stats</span><span class="p">):</span>
-    <span class="n">stat_list</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;BALL&#39;</span><span class="p">,</span> <span class="s1">&#39;SHOTS&#39;</span><span class="p">,</span> <span class="s1">&#39;FOULS&#39;</span><span class="p">,</span> <span class="s1">&#39;CORNERS&#39;</span><span class="p">,</span> <span class="s1">&#39;SAVES&#39;</span><span class="p">,</span> <span class="s1">&#39;OFFSIDES&#39;</span><span class="p">,</span> <span class="s1">&#39;YELLOW&#39;</span><span class="p">,</span> <span class="s1">&#39;RED&#39;</span><span class="p">]</span>
-    <span class="n">len_stats</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">stats</span><span class="p">)</span>
-    <span class="n">home_shots_og</span> <span class="o">=</span> <span class="bp">None</span>
-    <span class="n">away_shots_og</span> <span class="o">=</span> <span class="bp">None</span>
-    <span class="n">home_saves</span> <span class="o">=</span> <span class="bp">None</span>
-    <span class="n">away_saves</span> <span class="o">=</span> <span class="bp">None</span>
-    <span class="n">home_offsides</span> <span class="o">=</span> <span class="bp">None</span>
-    <span class="n">away_offsides</span> <span class="o">=</span> <span class="bp">None</span>
-    <span class="n">home_poss</span> <span class="o">=</span> <span class="bp">None</span>
-    <span class="n">away_poss</span> <span class="o">=</span> <span class="bp">None</span>
-    <span class="n">home_fouls</span> <span class="o">=</span> <span class="bp">None</span>
-    <span class="n">away_fouls</span> <span class="o">=</span> <span class="bp">None</span>
-    <span class="n">home_shots</span> <span class="o">=</span> <span class="bp">None</span>
-    <span class="n">away_shots</span> <span class="o">=</span> <span class="bp">None</span>
-    <span class="n">home_corners</span> <span class="o">=</span> <span class="bp">None</span>
-    <span class="n">away_corners</span> <span class="o">=</span> <span class="bp">None</span>
-    <span class="n">home_yellow</span> <span class="o">=</span> <span class="bp">None</span>
-    <span class="n">away_yellow</span> <span class="o">=</span> <span class="bp">None</span>
-    <span class="n">home_red</span> <span class="o">=</span> <span class="bp">None</span>
-    <span class="n">away_red</span> <span class="o">=</span> <span class="bp">None</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">len_stats</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">stats</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="ow">in</span> <span class="n">stat_list</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">stats</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;BALL&#39;</span><span class="p">:</span>
-                <span class="n">home_poss</span> <span class="o">=</span> <span class="n">stats</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
-                <span class="n">away_poss</span> <span class="o">=</span> <span class="n">stats</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-            <span class="k">if</span> <span class="n">stats</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;FOULS&#39;</span><span class="p">:</span>
-                <span class="n">home_fouls</span> <span class="o">=</span> <span class="n">stats</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
-                <span class="n">away_fouls</span> <span class="o">=</span> <span class="n">stats</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-            <span class="k">if</span> <span class="n">stats</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;CORNERS&#39;</span><span class="p">:</span>
-                <span class="n">home_corners</span> <span class="o">=</span> <span class="n">stats</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
-                <span class="n">away_corners</span> <span class="o">=</span> <span class="n">stats</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-            <span class="k">if</span> <span class="n">stats</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;SAVES&#39;</span><span class="p">:</span>
-                <span class="n">home_saves</span> <span class="o">=</span> <span class="n">stats</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
-                <span class="n">away_saves</span> <span class="o">=</span> <span class="n">stats</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-            <span class="k">if</span> <span class="n">stats</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;OFFSIDES&#39;</span><span class="p">:</span>
-                <span class="n">home_offsides</span> <span class="o">=</span> <span class="n">stats</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
-                <span class="n">away_offsides</span> <span class="o">=</span> <span class="n">stats</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-            <span class="k">if</span> <span class="n">stats</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;YELLOW&#39;</span><span class="p">:</span>
-                <span class="n">home_yellow</span> <span class="o">=</span> <span class="n">stats</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
-                <span class="n">away_yellow</span> <span class="o">=</span> <span class="n">stats</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-            <span class="k">if</span> <span class="n">stats</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;RED&#39;</span><span class="p">:</span>
-                <span class="n">home_red</span> <span class="o">=</span> <span class="n">stats</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
-                <span class="n">away_red</span> <span class="o">=</span> <span class="n">stats</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-            <span class="k">if</span> <span class="n">stats</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;SHOTS&#39;</span><span class="p">:</span>
-                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">stats</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
-                    <span class="n">home_shots</span> <span class="o">=</span> <span class="n">stats</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
-                    <span class="n">away_shots</span> <span class="o">=</span> <span class="n">stats</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">home_shots_og</span> <span class="o">=</span> <span class="n">stats</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
-                    <span class="n">away_shots_og</span> <span class="o">=</span> <span class="n">stats</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-    <span class="k">return</span><span class="p">(</span><span class="n">home_poss</span><span class="p">,</span> <span class="n">away_poss</span><span class="p">,</span> <span class="n">home_shots</span><span class="p">,</span> <span class="n">away_shots</span><span class="p">,</span> <span class="n">home_shots_og</span><span class="p">,</span> <span class="n">away_shots_og</span><span class="p">,</span> <span class="n">home_fouls</span><span class="p">,</span> <span class="n">away_fouls</span><span class="p">,</span> <span class="n">home_corners</span><span class="p">,</span> 
-           <span class="n">away_corners</span><span class="p">,</span> <span class="n">home_saves</span><span class="p">,</span> <span class="n">away_saves</span><span class="p">,</span> <span class="n">home_offsides</span><span class="p">,</span> <span class="n">away_offsides</span><span class="p">,</span> <span class="n">home_yellow</span><span class="p">,</span> <span class="n">away_yellow</span><span class="p">,</span> <span class="n">home_red</span><span class="p">,</span> <span class="n">away_red</span><span class="p">)</span>
-
-<span class="k">def</span> <span class="nf">get_html</span><span class="p">(</span><span class="n">urls</span><span class="p">):</span>
-    <span class="n">teams</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">for</span> <span class="n">url</span> <span class="ow">in</span> <span class="n">urls</span><span class="p">:</span>
-        <span class="n">html</span> <span class="o">=</span> <span class="n">urllib</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="n">url</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
-        <span class="n">raw</span> <span class="o">=</span> <span class="n">bs4</span><span class="o">.</span><span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">html</span><span class="p">,</span> <span class="s1">&#39;lxml&#39;</span><span class="p">)</span>
-        <span class="o">........</span>
-        <span class="n">data_link</span> <span class="o">=</span> <span class="s1">&#39;https://www.msn.com&#39;</span> <span class="o">+</span> <span class="n">r</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;href&#39;</span><span class="p">)</span>
-
-            <span class="k">try</span><span class="p">:</span>
-                <span class="n">html_link</span> <span class="o">=</span> <span class="n">urllib</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="n">data_link</span><span class="p">)</span>
-            <span class="k">except</span> <span class="n">urllib</span><span class="o">.</span><span class="n">error</span><span class="o">.</span><span class="n">HTTPError</span><span class="p">:</span>
-                <span class="c1"># check this at the end. hard coded link</span>
-                <span class="n">html_link</span> <span class="o">=</span> <span class="n">urllib</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="s1">&#39;https://www.msn.com/en-us/sports/soccer/la-liga/eibar-v-barcelona/game-center/sp-id-80402000001009693&#39;</span><span class="p">)</span>
-            <span class="n">raw_link</span> <span class="o">=</span> <span class="n">bs4</span><span class="o">.</span><span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">html_link</span><span class="p">,</span> <span class="s1">&#39;lxml&#39;</span><span class="p">)</span>
-            <span class="n">result_link</span> <span class="o">=</span> <span class="n">raw_link</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;div&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="s1">&#39;main&#39;</span><span class="p">})</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;div&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="s1">&#39;matchupgamestatsmodule&#39;</span><span class="p">})</span><span class="o">.</span><span class="n">findAll</span><span class="p">(</span><span class="s1">&#39;div&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;class&#39;</span><span class="p">:</span> <span class="s1">&#39;statsitem&#39;</span><span class="p">})</span>
-
-            <span class="n">stats</span> <span class="o">=</span> <span class="p">[]</span>
-            <span class="k">for</span> <span class="n">rl</span> <span class="ow">in</span> <span class="n">result_link</span><span class="p">:</span>
-                <span class="n">stats</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">rl</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
-            <span class="n">res</span> <span class="o">=</span> <span class="n">get_stats</span><span class="p">(</span><span class="n">stats</span><span class="p">)</span>
-            <span class="n">teams</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">match_date</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span> <span class="n">match_date</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">:],</span> <span class="n">home_team</span><span class="p">,</span> <span class="n">away_team</span><span class="p">,</span>
-                          <span class="n">home_team_score</span><span class="p">,</span> <span class="n">away_team_score</span><span class="p">,</span> <span class="n">data_link</span><span class="p">,</span> <span class="n">res</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">res</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">res</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">res</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span>
-                          <span class="n">res</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span> <span class="n">res</span><span class="p">[</span><span class="mi">5</span><span class="p">],</span> <span class="n">res</span><span class="p">[</span><span class="mi">6</span><span class="p">],</span> <span class="n">res</span><span class="p">[</span><span class="mi">7</span><span class="p">],</span> <span class="n">res</span><span class="p">[</span><span class="mi">8</span><span class="p">],</span> <span class="n">res</span><span class="p">[</span><span class="mi">9</span><span class="p">],</span> <span class="n">res</span><span class="p">[</span><span class="mi">10</span><span class="p">],</span> <span class="n">res</span><span class="p">[</span><span class="mi">11</span><span class="p">],</span> <span class="n">res</span><span class="p">[</span><span class="mi">12</span><span class="p">],</span> <span class="n">res</span><span class="p">[</span><span class="mi">13</span><span class="p">],</span> <span class="n">res</span><span class="p">[</span><span class="mi">14</span><span class="p">],</span>
-                          <span class="n">res</span><span class="p">[</span><span class="mi">15</span><span class="p">],</span> <span class="n">res</span><span class="p">[</span><span class="mi">16</span><span class="p">],</span> <span class="n">res</span><span class="p">[</span><span class="mi">17</span><span class="p">]])</span>
-
-        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">teams</span>
-</pre></div>
-
-
-<p>This gives us all the match results with individual team statistics. We can also derive some statistics of our own from this. For example, I was curious to know if some teams are more likely to score in the first half or second half. So I created a separate function <em>get_score_count_perhalf(score_link)</em> to find number of goals scored by both home and away teams in each of the halves. </p>
-<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">get_score_count_perhalf</span><span class="p">(</span><span class="n">score_link</span><span class="p">):</span>
-    <span class="n">result_link</span> <span class="o">=</span> <span class="n">score_link</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;div&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="s1">&#39;main&#39;</span><span class="p">})</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;div&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;class&#39;</span><span class="p">:</span> <span class="s1">&#39;teamevent&#39;</span><span class="p">})</span>
-    <span class="n">home_team_scores</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="n">home_team_scores_firsthalf</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="n">home_team_scores_secondhalf</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="n">home_team_link</span> <span class="o">=</span> <span class="n">result_link</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;div&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;class&#39;</span><span class="p">:</span> <span class="s1">&#39;hometeamevent&#39;</span><span class="p">})</span><span class="o">.</span><span class="n">findAll</span><span class="p">(</span><span class="s1">&#39;span&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;class&#39;</span><span class="p">:</span> <span class="s1">&#39;scoremins&#39;</span><span class="p">})</span>
-        <span class="k">for</span> <span class="n">h</span> <span class="ow">in</span> <span class="n">home_team_link</span><span class="p">:</span>
-            <span class="n">score</span> <span class="o">=</span> <span class="n">h</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;&#39;&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-            <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">score</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">45</span><span class="p">:</span>
-                <span class="n">home_team_scores_firsthalf</span> <span class="o">+=</span> <span class="mi">1</span>
-            <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">score</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">45</span><span class="p">:</span>
-                <span class="n">home_team_scores_secondhalf</span> <span class="o">+=</span> <span class="mi">1</span>
-            <span class="n">home_team_scores</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">score</span><span class="p">)</span>
-    <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
-        <span class="c1"># check this later.(Leganes vs Celta: Apr 27)</span>
-        <span class="n">home_team_scores</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">99</span><span class="p">)</span>
-        <span class="n">home_team_scores_firsthalf</span> <span class="o">=</span> <span class="mi">99</span>
-        <span class="n">home_team_scores_secondhalf</span> <span class="o">=</span> <span class="mi">99</span>
-
-    <span class="n">away_team_scores</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="n">away_team_scores_firsthalf</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="n">away_team_scores_secondhalf</span> <span class="o">=</span> <span class="mi">0</span>
-
-    <span class="k">try</span><span class="p">:</span>
-        <span class="n">away_team_link</span> <span class="o">=</span> <span class="n">result_link</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;div&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;class&#39;</span><span class="p">:</span> <span class="s1">&#39;visitingteamevent&#39;</span><span class="p">})</span><span class="o">.</span><span class="n">findAll</span><span class="p">(</span><span class="s1">&#39;span&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;class&#39;</span><span class="p">:</span> <span class="s1">&#39;scoremins&#39;</span><span class="p">})</span>
-        <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">away_team_link</span><span class="p">:</span>
-            <span class="n">score</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;&#39;&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-            <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">score</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">45</span><span class="p">:</span>
-                <span class="n">away_team_scores_firsthalf</span> <span class="o">+=</span> <span class="mi">1</span>
-            <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">score</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">45</span><span class="p">:</span>
-                <span class="n">away_team_scores_secondhalf</span> <span class="o">+=</span> <span class="mi">1</span>
-            <span class="n">away_team_scores</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">score</span><span class="p">)</span>
-    <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
-        <span class="n">away_team_scores</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">99</span><span class="p">)</span>
-        <span class="n">away_team_scores_firsthalf</span> <span class="o">=</span> <span class="mi">99</span>
-        <span class="n">away_team_scores_secondhalf</span> <span class="o">=</span> <span class="mi">99</span>
-
-    <span class="k">return</span><span class="p">(</span><span class="n">home_team_scores_firsthalf</span><span class="p">,</span> <span class="n">home_team_scores_secondhalf</span><span class="p">,</span> <span class="n">away_team_scores_firsthalf</span><span class="p">,</span> <span class="n">away_team_scores_secondhalf</span><span class="p">)</span>
-</pre></div>
-
-
-<p>The <em>teams</em> list will now have all the information we needed. </p>
-<div class="highlight"><pre><span></span><span class="n">all_matches</span> <span class="o">=</span> <span class="n">get_html</span><span class="p">(</span><span class="n">urls</span><span class="p">)</span>
-</pre></div>
-
-
-<p><code>[['Sun',
-  'May 19',
-  'Eibar',
-  'Barça',
-  '2',
-  '2',
-  2,
-  0,
-  2,
-  0,
-  'https://www.msn.com/en-us/sports/soccer/la-liga/eibar-v-barcelona/game-center/sp-id-80402000001009693',
-  '39',
-  '61',
-  '18',
-  '8',
-  '8',
-  '3',
-  '17',
-  '5',
-  '5',
-  '2',
-  '1',
-  '6',
-  None,
-  None,
-  '4',
-  '2',
-  '0',
-  '0'],
- ['Sun',
-  'May 19',
-  'Real Madrid',
-  'Betis',
-  '0',
-  '2',
-  0,
-  0,
-  0,
-  2,
-  'https://www.msn.com/en-us/sports/soccer/la-liga/real-madrid-v-real-betis/game-center/sp-id-80402000001009694',
-  '47',
-  '53',
-  '9',
-  '9',
-  '2',
-  '7',
-  '18',
-  '10',
-  '1',
-  '5',
-  '5',
-  '2',
-  '1',
-  '4',
-  '4',
-  '1',
-  '0',
-  '0'],...]</code></p>
-<p>Now we can very simply convert into a dataframe and start analyzing!</p>
-<div class="highlight"><pre><span></span><span class="n">cols</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;match_day&#39;</span><span class="p">,</span> <span class="s1">&#39;match_date&#39;</span><span class="p">,</span> <span class="s1">&#39;home_team&#39;</span><span class="p">,</span> <span class="s1">&#39;away_team&#39;</span><span class="p">,</span> <span class="s1">&#39;home_team_score&#39;</span><span class="p">,</span> <span class="s1">&#39;away_team_score&#39;</span><span class="p">,</span> <span class="s1">&#39;HT_num_goals_firsthalf&#39;</span><span class="p">,</span> 
-            <span class="s1">&#39;HT_num_goals_secondhalf&#39;</span><span class="p">,</span> <span class="s1">&#39;AT_num_goals_firsthalf&#39;</span><span class="p">,</span> <span class="s1">&#39;AT_num_goals_secondhalf&#39;</span><span class="p">,</span> <span class="s1">&#39;match_link&#39;</span><span class="p">,</span> <span class="s1">&#39;home_posession&#39;</span><span class="p">,</span> 
-            <span class="s1">&#39;away_posession&#39;</span><span class="p">,</span> <span class="s1">&#39;home_shots&#39;</span><span class="p">,</span> <span class="s1">&#39;away_shots&#39;</span><span class="p">,</span> <span class="s1">&#39;home_shots_ontarget&#39;</span><span class="p">,</span> <span class="s1">&#39;away_shots_ontarget&#39;</span><span class="p">,</span> <span class="s1">&#39;home_fouls&#39;</span><span class="p">,</span> 
-            <span class="s1">&#39;away_fouls&#39;</span><span class="p">,</span> <span class="s1">&#39;home_corners&#39;</span><span class="p">,</span> <span class="s1">&#39;away_corners&#39;</span><span class="p">,</span> <span class="s1">&#39;home_saves&#39;</span><span class="p">,</span> <span class="s1">&#39;away_saves&#39;</span><span class="p">,</span> <span class="s1">&#39;home_offsides&#39;</span><span class="p">,</span> <span class="s1">&#39;away_offsides&#39;</span><span class="p">,</span> 
-            <span class="s1">&#39;home_yellow&#39;</span><span class="p">,</span> <span class="s1">&#39;away_yellow&#39;</span><span class="p">,</span> <span class="s1">&#39;home_red&#39;</span><span class="p">,</span> <span class="s1">&#39;away_red&#39;</span><span class="p">]</span>
-<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">all_matches</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">cols</span><span class="p">)</span>
-</pre></div>
-
-
-<p><img alt="image" src="images/laliga-df.jpg"></p>
-<p>Now we can play around with this data and find insights. I am a huge fan of Barcelona so I decided to explore their different statistics and how they perform against other teams. </p>
-<p>Here is my Tableau dashboad summarizing Barcelona's LaLiga season in 2018/19. <a href="https://tabsoft.co/2LnRcBZ">Click here</a> to view in Tableau.</p>
-<p><img src="images/Barca.png" width="750", height="3400"></p>
-<p>Thank you for reading! Don't hesitate to reach out to me if you have any suggestion or an improvement.</p>                </article>
-            </aside><!-- /#featured -->
-                <section id="content" class="body">
-                    <h1>Other articles</h1>
-                    <hr />
-                    <ol id="posts-list" class="hfeed">
+</footer><!-- /.post-info -->                <p><img alt="image" src="images/laliga.png"></p>
+<p>If there's anythin I do besides data science, then it's definitely watching soccer--especially LaLiga. You might hear me scream for a goal if you pass by my house on a weekend. Lately I realized that just watching LaLiga wasn't enough for me, I wanted to explore how each and every …</p>
+                <a class="readmore" href="/scraping-laliga-statistics-201819.html">read more</a>
+                </div><!-- /.entry-content -->
+            </article></li>
 
             <li><article class="hentry">
                 <header>
