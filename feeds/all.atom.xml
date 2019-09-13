@@ -127,7 +127,7 @@ ggplot&lt;span class="p"&gt;(&lt;/span&gt;data &lt;span class="o"&gt;=&lt;/span&
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;&lt;img alt="png" src="output_11_0.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="png" src="images/output_11_0.png"&gt;&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;As per the numerical analysis it was assumed that &lt;em&gt;status&lt;/em&gt; follows a normal distribution. But the histogram above shows a slight bimodal distribution instead. This depicts that the social economic status is almost equally distributed across the entire dataset.&lt;/li&gt;
 &lt;/ul&gt;
@@ -141,7 +141,7 @@ ggplot&lt;span class="p"&gt;(&lt;/span&gt;data &lt;span class="o"&gt;=&lt;/span&
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;&lt;img alt="png" src="output_14_0.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="png" src="images/output_14_0.png"&gt;&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;As assumed the distribution is right-skewed which shows that most of the people in the dataset have a low-mid range income per week.&lt;/li&gt;
 &lt;/ul&gt;
@@ -155,7 +155,7 @@ ggplot&lt;span class="p"&gt;(&lt;/span&gt;data &lt;span class="o"&gt;=&lt;/span&
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;&lt;img alt="png" src="output_17_0.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="png" src="images/output_17_0.png"&gt;&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;The histogram of &lt;em&gt;verbal&lt;/em&gt; is slightly left skewed showing that there are very few people with low verbal scores.&lt;/li&gt;
 &lt;/ul&gt;
@@ -169,7 +169,7 @@ ggplot&lt;span class="p"&gt;(&lt;/span&gt;data &lt;span class="o"&gt;=&lt;/span&
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;&lt;img alt="png" src="output_20_0.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="png" src="images/output_20_0.png"&gt;&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;As per the assumption in numerical analysis, the histogram of &lt;em&gt;gamble&lt;/em&gt; is heavily skewed to the right. It represents that most of the people gamble less money while there are some who gamble over 80.00 pounds per year.&lt;/li&gt;
 &lt;/ul&gt;
@@ -179,7 +179,7 @@ plot&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kp"&gt;sort&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;&lt;img alt="png" src="output_22_0.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="png" src="images/output_22_0.png"&gt;&lt;/p&gt;
 &lt;p&gt;The linear model would be more accurate without this outlier, hence it is removed.&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;df&lt;span class="o"&gt;$&lt;/span&gt;gamble&lt;span class="p"&gt;[&lt;/span&gt;df&lt;span class="o"&gt;$&lt;/span&gt;gamble &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="kp"&gt;max&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;df&lt;span class="o"&gt;$&lt;/span&gt;gamble&lt;span class="p"&gt;)]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kc"&gt;NA&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
@@ -203,7 +203,7 @@ ggplot&lt;span class="p"&gt;(&lt;/span&gt;data &lt;span class="o"&gt;=&lt;/span&
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;&lt;img alt="png" src="output_28_0.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="png" src="images/output_28_0.png"&gt;&lt;/p&gt;
 &lt;p&gt;We can observe how the median for males is very separated from that of the females, which shows that males tend to spend more on gambling than females. Also the median for males is leaned towards &lt;strong&gt;Q1&lt;/strong&gt; representing that most of the males spend between 0 to 15 pounds per year on gambling. While there are very few of them who spend above 25 pounds per year, hence skewed to the right.&lt;/p&gt;
 &lt;h4&gt;Status vs Gamble&lt;/h4&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kp"&gt;options&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;repr.plot.width&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;4&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; repr.plot.height&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;3&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
@@ -213,7 +213,7 @@ ggplot&lt;span class="p"&gt;(&lt;/span&gt;data &lt;span class="o"&gt;=&lt;/span&
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;&lt;img alt="png" src="output_31_0.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="png" src="images/output_31_0.png"&gt;&lt;/p&gt;
 &lt;p&gt;While an upward trend is observed depicting that people with higher status tend to gamble more, however, there are few people within low status that spend considerably more in gambling. In fact, most of the highest expenditure on gambling are from people within the low status.&lt;/p&gt;
 &lt;h4&gt;Income vs Gamble&lt;/h4&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kp"&gt;options&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;repr.plot.width&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;4&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; repr.plot.height&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;3&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
@@ -223,7 +223,7 @@ ggplot&lt;span class="p"&gt;(&lt;/span&gt;data &lt;span class="o"&gt;=&lt;/span&
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;&lt;img alt="png" src="output_34_0.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="png" src="images/output_34_0.png"&gt;&lt;/p&gt;
 &lt;p&gt;A nice upward trend is observed showing that people with higher income tend to spend more on gambling. Also we can observe below that even though males and females approximately have the same income, males tend to spend considerably more on gambling.&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kp"&gt;options&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;repr.plot.width&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;5&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; repr.plot.height&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;4&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 ggscatterhist&lt;span class="p"&gt;(&lt;/span&gt;
@@ -236,7 +236,7 @@ ggscatterhist&lt;span class="p"&gt;(&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;&lt;img alt="png" src="output_36_0.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="png" src="images/output_36_0.png"&gt;&lt;/p&gt;
 &lt;h4&gt;Verbal vs Gamble&lt;/h4&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kp"&gt;options&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;repr.plot.width&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;4&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; repr.plot.height&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;3&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 ggplot&lt;span class="p"&gt;(&lt;/span&gt;data &lt;span class="o"&gt;=&lt;/span&gt; df&lt;span class="p"&gt;,&lt;/span&gt; aes&lt;span class="p"&gt;(&lt;/span&gt;x&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="kp"&gt;factor&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;df&lt;span class="o"&gt;$&lt;/span&gt;verbal&lt;span class="p"&gt;),&lt;/span&gt; y&lt;span class="o"&gt;=&lt;/span&gt;gamble&lt;span class="p"&gt;,&lt;/span&gt; color&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="kp"&gt;factor&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;df&lt;span class="o"&gt;$&lt;/span&gt;verbal&lt;span class="p"&gt;)))&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; geom_boxplot&lt;span class="p"&gt;(&lt;/span&gt;alpha&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;0.7&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt;
@@ -245,7 +245,7 @@ ggplot&lt;span class="p"&gt;(&lt;/span&gt;data &lt;span class="o"&gt;=&lt;/span&
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;&lt;img alt="png" src="output_38_0.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="png" src="images/output_38_0.png"&gt;&lt;/p&gt;
 &lt;p&gt;It can be observed that people with average verbal scores(5-8) tend to gamble more than the others. But this trend could also be because of the fact that most of the people in the dataset have above average verbal scores.&lt;/p&gt;
 &lt;h3&gt;Heatmap&lt;/h3&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;corr &lt;span class="o"&gt;&amp;lt;-&lt;/span&gt; &lt;span class="kp"&gt;round&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;cor&lt;span class="p"&gt;(&lt;/span&gt;teengamb&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="m"&gt;2&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
@@ -265,7 +265,7 @@ ggplot&lt;span class="p"&gt;(&lt;/span&gt;data&lt;span class="o"&gt;=&lt;/span&g
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;&lt;img alt="png" src="output_42_0.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="png" src="images/output_42_0.png"&gt;&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;As observed &lt;em&gt;income&lt;/em&gt; is positively correlated to &lt;em&gt;gamble&lt;/em&gt;, while other features doesn't seem to be well correlated to &lt;em&gt;gamble&lt;/em&gt;.&lt;/li&gt;
 &lt;li&gt;The other interesting feature is the positive correlation between &lt;em&gt;status&lt;/em&gt; and &lt;em&gt;verbal&lt;/em&gt;, showing that people with high status tend to have higher verbal scores.&lt;/li&gt;
@@ -279,7 +279,7 @@ abline&lt;span class="p"&gt;(&lt;/span&gt;coef&lt;span class="p"&gt;(&lt;/span&g
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;&lt;img alt="png" src="output_45_0.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="png" src="images/output_45_0.png"&gt;&lt;/p&gt;
 &lt;h2&gt;Problem 2: Analyzing dataset prostate&lt;/h2&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;data&lt;span class="p"&gt;(&lt;/span&gt;prostate&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
@@ -371,7 +371,7 @@ d &lt;span class="o"&gt;%&amp;gt;%&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;&lt;img alt="png" src="output_55_0.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="png" src="images/output_55_0.png"&gt;&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;em&gt;lbph&lt;/em&gt; - Seems to have many features capped at $-1.386294$. Maybe it is the default value placed just in case it's missing.&lt;/li&gt;
 &lt;li&gt;&lt;em&gt;lcp&lt;/em&gt; - Just like &lt;em&gt;lbph&lt;/em&gt;, it has many features capped at $-1.38629$ as well.&lt;/li&gt;
@@ -383,7 +383,7 @@ plot&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kp"&gt;sort&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;&lt;img alt="png" src="output_57_0.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="png" src="images/output_57_0.png"&gt;&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;The outlier may be removed if it correlates well with the response feature &lt;em&gt;lpsa&lt;/em&gt;&lt;/li&gt;
 &lt;/ul&gt;
@@ -396,7 +396,7 @@ ggplot&lt;span class="p"&gt;(&lt;/span&gt;data &lt;span class="o"&gt;=&lt;/span&
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;&lt;img alt="png" src="output_61_0.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="png" src="images/output_61_0.png"&gt;&lt;/p&gt;
 &lt;p&gt;&lt;em&gt;lcavol&lt;/em&gt; and &lt;em&gt;lpsa&lt;/em&gt; are highly positively correlated. It shows that increase in the Log(Cancer Volume) leads to increase in the Log(Prostate Specific Antigen)&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kp"&gt;options&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;repr.plot.width&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;5&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; repr.plot.height&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;4&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 ggscatterhist&lt;span class="p"&gt;(&lt;/span&gt;
@@ -409,7 +409,7 @@ ggscatterhist&lt;span class="p"&gt;(&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;&lt;img alt="png" src="output_63_0.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="png" src="images/output_63_0.png"&gt;&lt;/p&gt;
 &lt;p&gt;Patients with &lt;em&gt;seminal vesicle invasion&lt;/em&gt; have higher &lt;em&gt;Log(Cancer Volume)&lt;/em&gt;. Also those patients with &lt;em&gt;svi&lt;/em&gt; and higher &lt;em&gt;Log(Cancer Volume)&lt;/em&gt; also seem to have higher Log(Prostate Specific Antigen).&lt;/p&gt;
 &lt;h4&gt;Log(Capsular Penetration) vs Log(Prostate Specific Antigen)&lt;/h4&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kp"&gt;options&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;repr.plot.width&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;5&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; repr.plot.height&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;4&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
@@ -419,7 +419,7 @@ ggplot&lt;span class="p"&gt;(&lt;/span&gt;data &lt;span class="o"&gt;=&lt;/span&
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;&lt;img alt="png" src="output_66_0.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="png" src="images/output_66_0.png"&gt;&lt;/p&gt;
 &lt;p&gt;&lt;em&gt;Log(Capsular Penetration)&lt;/em&gt; and &lt;em&gt;Log(Prostate Specific Antigen)&lt;/em&gt; seems to be positively correlated as well. However as most of the features in &lt;em&gt;lcp&lt;/em&gt; are capped at $-1.38629$, it needs more information.&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kp"&gt;options&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;repr.plot.width&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;5&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; repr.plot.height&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;4&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 ggscatterhist&lt;span class="p"&gt;(&lt;/span&gt;
@@ -432,7 +432,7 @@ ggscatterhist&lt;span class="p"&gt;(&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;&lt;img alt="png" src="output_68_0.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="png" src="images/output_68_0.png"&gt;&lt;/p&gt;
 &lt;p&gt;Patients with &lt;em&gt;svi&lt;/em&gt; do seem to have higher &lt;em&gt;Log(Capsular Penetration)&lt;/em&gt;. Just as &lt;em&gt;lcavol&lt;/em&gt;, if patients have both &lt;em&gt;svi&lt;/em&gt; and higher &lt;em&gt;lcp&lt;/em&gt;, then they are likely to have higher &lt;em&gt;lpsa&lt;/em&gt;.&lt;/p&gt;
 &lt;h4&gt;svi vs lpsa&lt;/h4&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kp"&gt;options&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;repr.plot.width&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;4&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; repr.plot.height&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;3&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
@@ -442,7 +442,7 @@ ggplot&lt;span class="p"&gt;(&lt;/span&gt;data &lt;span class="o"&gt;=&lt;/span&
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;&lt;img alt="png" src="output_71_0.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="png" src="images/output_71_0.png"&gt;&lt;/p&gt;
 &lt;p&gt;The median of patients with and without &lt;em&gt;svi&lt;/em&gt; are well separated. Patients with &lt;em&gt;svi&lt;/em&gt; are likely to have higher &lt;em&gt;lpsa&lt;/em&gt;.&lt;/p&gt;
 &lt;h4&gt;Percentage Gleason Scores vs LPSA&lt;/h4&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kp"&gt;options&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;repr.plot.width&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;5&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; repr.plot.height&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;4&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
@@ -456,7 +456,7 @@ ggscatterhist&lt;span class="p"&gt;(&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;&lt;img alt="png" src="output_74_0.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="png" src="images/output_74_0.png"&gt;&lt;/p&gt;
 &lt;p&gt;As &lt;em&gt;pgg45&lt;/em&gt; is the percentage score of &lt;em&gt;gleason&lt;/em&gt;, it increases as &lt;em&gt;gleason&lt;/em&gt; increases. Also &lt;em&gt;gleason&lt;/em&gt; score of 7,8,9 seems to have a slightly higher &lt;em&gt;lpsa&lt;/em&gt; in comparison to that of 6.&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
@@ -481,7 +481,7 @@ ggplot&lt;span class="p"&gt;(&lt;/span&gt;data&lt;span class="o"&gt;=&lt;/span&g
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;&lt;img alt="png" src="output_79_0.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="png" src="images/output_79_0.png"&gt;&lt;/p&gt;
 &lt;p&gt;&lt;em&gt;lcavol, svi, lcp&lt;/em&gt; are positively correlated to &lt;em&gt;lpsa&lt;/em&gt;.&lt;/p&gt;
 &lt;h3&gt;Fitting linear model&lt;/h3&gt;
 &lt;h4&gt;lpsa ~ lcavol&lt;/h4&gt;
@@ -493,7 +493,7 @@ abline&lt;span class="p"&gt;(&lt;/span&gt;coef&lt;span class="p"&gt;(&lt;/span&g
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;&lt;img alt="png" src="output_83_0.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="png" src="images/output_83_0.png"&gt;&lt;/p&gt;
 &lt;p&gt;The dotted regression line seems to fit very well.&lt;/p&gt;
 &lt;h4&gt;lcp ~ lspa&lt;/h4&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kp"&gt;options&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;repr.plot.width&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;4&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; repr.plot.height&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;4&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
@@ -504,7 +504,7 @@ abline&lt;span class="p"&gt;(&lt;/span&gt;coef&lt;span class="p"&gt;(&lt;/span&g
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;&lt;img alt="png" src="output_86_0.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="png" src="images/output_86_0.png"&gt;&lt;/p&gt;
 &lt;p&gt;Even though the dotted line seems to be fitted very well, but inaccurate predictions could be made if the value of &lt;em&gt;lcp&lt;/em&gt; is $-1.38629$&lt;/p&gt;</content></entry><entry><title>Scraping LaLiga Statistics 2018/19</title><link href="/scraping-laliga-statistics-201819.html" rel="alternate"></link><published>2019-08-19T00:00:00-04:00</published><updated>2019-08-19T00:00:00-04:00</updated><author><name>Parth Shah</name></author><id>tag:None,2019-08-19:/scraping-laliga-statistics-201819.html</id><summary type="html">&lt;p&gt;&lt;img alt="image" src="images/laliga.png"&gt;&lt;/p&gt;
 &lt;p&gt;If there's anythin I do besides data science, then it's definitely watching soccer--especially LaLiga. You might hear me scream for a goal if you pass by my house on a weekend. Lately I realized that just watching LaLiga wasn't enough for me, I wanted to explore how each and every …&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;img alt="image" src="images/laliga.png"&gt;&lt;/p&gt;
 &lt;p&gt;If there's anythin I do besides data science, then it's definitely watching soccer--especially LaLiga. You might hear me scream for a goal if you pass by my house on a weekend. Lately I realized that just watching LaLiga wasn't enough for me, I wanted to explore how each and every team is performing time-wise as well as against other teams. Questions such as "what team plays most aggressively?" "what team dominates the posession of the ball?" have been running through my mind.&lt;/p&gt;

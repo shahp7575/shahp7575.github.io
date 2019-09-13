@@ -162,7 +162,7 @@ ggplot<span class="p">(</span>data <span class="o">=</span> df<span class="p">)<
 </pre></div>
 
 
-<p><img alt="png" src="output_11_0.png"></p>
+<p><img alt="png" src="images/output_11_0.png"></p>
 <ul>
 <li>As per the numerical analysis it was assumed that <em>status</em> follows a normal distribution. But the histogram above shows a slight bimodal distribution instead. This depicts that the social economic status is almost equally distributed across the entire dataset.</li>
 </ul>
@@ -176,7 +176,7 @@ ggplot<span class="p">(</span>data <span class="o">=</span> df<span class="p">)<
 </pre></div>
 
 
-<p><img alt="png" src="output_14_0.png"></p>
+<p><img alt="png" src="images/output_14_0.png"></p>
 <ul>
 <li>As assumed the distribution is right-skewed which shows that most of the people in the dataset have a low-mid range income per week.</li>
 </ul>
@@ -190,7 +190,7 @@ ggplot<span class="p">(</span>data <span class="o">=</span> df<span class="p">)<
 </pre></div>
 
 
-<p><img alt="png" src="output_17_0.png"></p>
+<p><img alt="png" src="images/output_17_0.png"></p>
 <ul>
 <li>The histogram of <em>verbal</em> is slightly left skewed showing that there are very few people with low verbal scores.</li>
 </ul>
@@ -204,7 +204,7 @@ ggplot<span class="p">(</span>data <span class="o">=</span> df<span class="p">)<
 </pre></div>
 
 
-<p><img alt="png" src="output_20_0.png"></p>
+<p><img alt="png" src="images/output_20_0.png"></p>
 <ul>
 <li>As per the assumption in numerical analysis, the histogram of <em>gamble</em> is heavily skewed to the right. It represents that most of the people gamble less money while there are some who gamble over 80.00 pounds per year.</li>
 </ul>
@@ -214,7 +214,7 @@ plot<span class="p">(</span><span class="kp">sort</span><span class="p">(</span>
 </pre></div>
 
 
-<p><img alt="png" src="output_22_0.png"></p>
+<p><img alt="png" src="images/output_22_0.png"></p>
 <p>The linear model would be more accurate without this outlier, hence it is removed.</p>
 <div class="highlight"><pre><span></span>df<span class="o">$</span>gamble<span class="p">[</span>df<span class="o">$</span>gamble <span class="o">==</span> <span class="kp">max</span><span class="p">(</span>df<span class="o">$</span>gamble<span class="p">)]</span> <span class="o">=</span> <span class="kc">NA</span>
 </pre></div>
@@ -238,7 +238,7 @@ ggplot<span class="p">(</span>data <span class="o">=</span> df<span class="p">,<
 </pre></div>
 
 
-<p><img alt="png" src="output_28_0.png"></p>
+<p><img alt="png" src="images/output_28_0.png"></p>
 <p>We can observe how the median for males is very separated from that of the females, which shows that males tend to spend more on gambling than females. Also the median for males is leaned towards <strong>Q1</strong> representing that most of the males spend between 0 to 15 pounds per year on gambling. While there are very few of them who spend above 25 pounds per year, hence skewed to the right.</p>
 <h4>Status vs Gamble</h4>
 <div class="highlight"><pre><span></span><span class="kp">options</span><span class="p">(</span>repr.plot.width<span class="o">=</span><span class="m">4</span><span class="p">,</span> repr.plot.height<span class="o">=</span><span class="m">3</span><span class="p">)</span>
@@ -248,7 +248,7 @@ ggplot<span class="p">(</span>data <span class="o">=</span> df<span class="p">,<
 </pre></div>
 
 
-<p><img alt="png" src="output_31_0.png"></p>
+<p><img alt="png" src="images/output_31_0.png"></p>
 <p>While an upward trend is observed depicting that people with higher status tend to gamble more, however, there are few people within low status that spend considerably more in gambling. In fact, most of the highest expenditure on gambling are from people within the low status.</p>
 <h4>Income vs Gamble</h4>
 <div class="highlight"><pre><span></span><span class="kp">options</span><span class="p">(</span>repr.plot.width<span class="o">=</span><span class="m">4</span><span class="p">,</span> repr.plot.height<span class="o">=</span><span class="m">3</span><span class="p">)</span>
@@ -258,7 +258,7 @@ ggplot<span class="p">(</span>data <span class="o">=</span> df<span class="p">,<
 </pre></div>
 
 
-<p><img alt="png" src="output_34_0.png"></p>
+<p><img alt="png" src="images/output_34_0.png"></p>
 <p>A nice upward trend is observed showing that people with higher income tend to spend more on gambling. Also we can observe below that even though males and females approximately have the same income, males tend to spend considerably more on gambling.</p>
 <div class="highlight"><pre><span></span><span class="kp">options</span><span class="p">(</span>repr.plot.width<span class="o">=</span><span class="m">5</span><span class="p">,</span> repr.plot.height<span class="o">=</span><span class="m">4</span><span class="p">)</span>
 ggscatterhist<span class="p">(</span>
@@ -271,7 +271,7 @@ ggscatterhist<span class="p">(</span>
 </pre></div>
 
 
-<p><img alt="png" src="output_36_0.png"></p>
+<p><img alt="png" src="images/output_36_0.png"></p>
 <h4>Verbal vs Gamble</h4>
 <div class="highlight"><pre><span></span><span class="kp">options</span><span class="p">(</span>repr.plot.width<span class="o">=</span><span class="m">4</span><span class="p">,</span> repr.plot.height<span class="o">=</span><span class="m">3</span><span class="p">)</span>
 ggplot<span class="p">(</span>data <span class="o">=</span> df<span class="p">,</span> aes<span class="p">(</span>x<span class="o">=</span><span class="kp">factor</span><span class="p">(</span>df<span class="o">$</span>verbal<span class="p">),</span> y<span class="o">=</span>gamble<span class="p">,</span> color<span class="o">=</span><span class="kp">factor</span><span class="p">(</span>df<span class="o">$</span>verbal<span class="p">)))</span> <span class="o">+</span> geom_boxplot<span class="p">(</span>alpha<span class="o">=</span><span class="m">0.7</span><span class="p">)</span> <span class="o">+</span>
@@ -280,7 +280,7 @@ ggplot<span class="p">(</span>data <span class="o">=</span> df<span class="p">,<
 </pre></div>
 
 
-<p><img alt="png" src="output_38_0.png"></p>
+<p><img alt="png" src="images/output_38_0.png"></p>
 <p>It can be observed that people with average verbal scores(5-8) tend to gamble more than the others. But this trend could also be because of the fact that most of the people in the dataset have above average verbal scores.</p>
 <h3>Heatmap</h3>
 <div class="highlight"><pre><span></span>corr <span class="o">&lt;-</span> <span class="kp">round</span><span class="p">(</span>cor<span class="p">(</span>teengamb<span class="p">),</span> <span class="m">2</span><span class="p">)</span>
@@ -300,7 +300,7 @@ ggplot<span class="p">(</span>data<span class="o">=</span>melt_df<span class="p"
 </pre></div>
 
 
-<p><img alt="png" src="output_42_0.png"></p>
+<p><img alt="png" src="images/output_42_0.png"></p>
 <ul>
 <li>As observed <em>income</em> is positively correlated to <em>gamble</em>, while other features doesn't seem to be well correlated to <em>gamble</em>.</li>
 <li>The other interesting feature is the positive correlation between <em>status</em> and <em>verbal</em>, showing that people with high status tend to have higher verbal scores.</li>
@@ -314,7 +314,7 @@ abline<span class="p">(</span>coef<span class="p">(</span>g<span class="p">),</s
 </pre></div>
 
 
-<p><img alt="png" src="output_45_0.png"></p>
+<p><img alt="png" src="images/output_45_0.png"></p>
 <h2>Problem 2: Analyzing dataset prostate</h2>
 <div class="highlight"><pre><span></span>data<span class="p">(</span>prostate<span class="p">)</span>
 </pre></div>
@@ -406,7 +406,7 @@ d <span class="o">%&gt;%</span>
 </pre></div>
 
 
-<p><img alt="png" src="output_55_0.png"></p>
+<p><img alt="png" src="images/output_55_0.png"></p>
 <ul>
 <li><em>lbph</em> - Seems to have many features capped at $-1.386294$. Maybe it is the default value placed just in case it's missing.</li>
 <li><em>lcp</em> - Just like <em>lbph</em>, it has many features capped at $-1.38629$ as well.</li>
@@ -418,7 +418,7 @@ plot<span class="p">(</span><span class="kp">sort</span><span class="p">(</span>
 </pre></div>
 
 
-<p><img alt="png" src="output_57_0.png"></p>
+<p><img alt="png" src="images/output_57_0.png"></p>
 <ul>
 <li>The outlier may be removed if it correlates well with the response feature <em>lpsa</em></li>
 </ul>
@@ -431,7 +431,7 @@ ggplot<span class="p">(</span>data <span class="o">=</span> prostate<span class=
 </pre></div>
 
 
-<p><img alt="png" src="output_61_0.png"></p>
+<p><img alt="png" src="images/output_61_0.png"></p>
 <p><em>lcavol</em> and <em>lpsa</em> are highly positively correlated. It shows that increase in the Log(Cancer Volume) leads to increase in the Log(Prostate Specific Antigen)</p>
 <div class="highlight"><pre><span></span><span class="kp">options</span><span class="p">(</span>repr.plot.width<span class="o">=</span><span class="m">5</span><span class="p">,</span> repr.plot.height<span class="o">=</span><span class="m">4</span><span class="p">)</span>
 ggscatterhist<span class="p">(</span>
@@ -444,7 +444,7 @@ ggscatterhist<span class="p">(</span>
 </pre></div>
 
 
-<p><img alt="png" src="output_63_0.png"></p>
+<p><img alt="png" src="images/output_63_0.png"></p>
 <p>Patients with <em>seminal vesicle invasion</em> have higher <em>Log(Cancer Volume)</em>. Also those patients with <em>svi</em> and higher <em>Log(Cancer Volume)</em> also seem to have higher Log(Prostate Specific Antigen).</p>
 <h4>Log(Capsular Penetration) vs Log(Prostate Specific Antigen)</h4>
 <div class="highlight"><pre><span></span><span class="kp">options</span><span class="p">(</span>repr.plot.width<span class="o">=</span><span class="m">5</span><span class="p">,</span> repr.plot.height<span class="o">=</span><span class="m">4</span><span class="p">)</span>
@@ -454,7 +454,7 @@ ggplot<span class="p">(</span>data <span class="o">=</span> prostate<span class=
 </pre></div>
 
 
-<p><img alt="png" src="output_66_0.png"></p>
+<p><img alt="png" src="images/output_66_0.png"></p>
 <p><em>Log(Capsular Penetration)</em> and <em>Log(Prostate Specific Antigen)</em> seems to be positively correlated as well. However as most of the features in <em>lcp</em> are capped at $-1.38629$, it needs more information.</p>
 <div class="highlight"><pre><span></span><span class="kp">options</span><span class="p">(</span>repr.plot.width<span class="o">=</span><span class="m">5</span><span class="p">,</span> repr.plot.height<span class="o">=</span><span class="m">4</span><span class="p">)</span>
 ggscatterhist<span class="p">(</span>
@@ -467,7 +467,7 @@ ggscatterhist<span class="p">(</span>
 </pre></div>
 
 
-<p><img alt="png" src="output_68_0.png"></p>
+<p><img alt="png" src="images/output_68_0.png"></p>
 <p>Patients with <em>svi</em> do seem to have higher <em>Log(Capsular Penetration)</em>. Just as <em>lcavol</em>, if patients have both <em>svi</em> and higher <em>lcp</em>, then they are likely to have higher <em>lpsa</em>.</p>
 <h4>svi vs lpsa</h4>
 <div class="highlight"><pre><span></span><span class="kp">options</span><span class="p">(</span>repr.plot.width<span class="o">=</span><span class="m">4</span><span class="p">,</span> repr.plot.height<span class="o">=</span><span class="m">3</span><span class="p">)</span>
@@ -477,7 +477,7 @@ ggplot<span class="p">(</span>data <span class="o">=</span> prostate<span class=
 </pre></div>
 
 
-<p><img alt="png" src="output_71_0.png"></p>
+<p><img alt="png" src="images/output_71_0.png"></p>
 <p>The median of patients with and without <em>svi</em> are well separated. Patients with <em>svi</em> are likely to have higher <em>lpsa</em>.</p>
 <h4>Percentage Gleason Scores vs LPSA</h4>
 <div class="highlight"><pre><span></span><span class="kp">options</span><span class="p">(</span>repr.plot.width<span class="o">=</span><span class="m">5</span><span class="p">,</span> repr.plot.height<span class="o">=</span><span class="m">4</span><span class="p">)</span>
@@ -491,7 +491,7 @@ ggscatterhist<span class="p">(</span>
 </pre></div>
 
 
-<p><img alt="png" src="output_74_0.png"></p>
+<p><img alt="png" src="images/output_74_0.png"></p>
 <p>As <em>pgg45</em> is the percentage score of <em>gleason</em>, it increases as <em>gleason</em> increases. Also <em>gleason</em> score of 7,8,9 seems to have a slightly higher <em>lpsa</em> in comparison to that of 6.</p>
 <div class="highlight"><pre><span></span>
 </pre></div>
@@ -516,7 +516,7 @@ ggplot<span class="p">(</span>data<span class="o">=</span>melt_df<span class="p"
 </pre></div>
 
 
-<p><img alt="png" src="output_79_0.png"></p>
+<p><img alt="png" src="images/output_79_0.png"></p>
 <p><em>lcavol, svi, lcp</em> are positively correlated to <em>lpsa</em>.</p>
 <h3>Fitting linear model</h3>
 <h4>lpsa ~ lcavol</h4>
@@ -528,7 +528,7 @@ abline<span class="p">(</span>coef<span class="p">(</span>g<span class="p">),</s
 </pre></div>
 
 
-<p><img alt="png" src="output_83_0.png"></p>
+<p><img alt="png" src="images/output_83_0.png"></p>
 <p>The dotted regression line seems to fit very well.</p>
 <h4>lcp ~ lspa</h4>
 <div class="highlight"><pre><span></span><span class="kp">options</span><span class="p">(</span>repr.plot.width<span class="o">=</span><span class="m">4</span><span class="p">,</span> repr.plot.height<span class="o">=</span><span class="m">4</span><span class="p">)</span>
@@ -539,7 +539,7 @@ abline<span class="p">(</span>coef<span class="p">(</span>g<span class="p">),</s
 </pre></div>
 
 
-<p><img alt="png" src="output_86_0.png"></p>
+<p><img alt="png" src="images/output_86_0.png"></p>
 <p>Even though the dotted line seems to be fitted very well, but inaccurate predictions could be made if the value of <em>lcp</em> is $-1.38629$</p>
     </div><!-- /.entry-content -->
 
