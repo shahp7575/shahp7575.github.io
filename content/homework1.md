@@ -158,7 +158,7 @@ ggplot(data = df) + geom_histogram(aes(x=status, y=..density..), bins=10) +
 ```
 
 
-![png](output_11_0.png)
+![png](images/output_11_0.png)
 
 
 - As per the numerical analysis it was assumed that *status* follows a normal distribution. But the histogram above shows a slight bimodal distribution instead. This depicts that the social economic status is almost equally distributed across the entire dataset.
@@ -176,7 +176,7 @@ ggplot(data = df) + geom_histogram(aes(x=income, y=..density..), bins=15) +
 ```
 
 
-![png](output_14_0.png)
+![png](images/output_14_0.png)
 
 
 - As assumed the distribution is right-skewed which shows that most of the people in the dataset have a low-mid range income per week.
@@ -194,7 +194,7 @@ ggplot(data = df) + geom_histogram(aes(x=verbal, y=..density..), bins=10) +
 ```
 
 
-![png](output_17_0.png)
+![png](images/output_17_0.png)
 
 
 - The histogram of *verbal* is slightly left skewed showing that there are very few people with low verbal scores.
@@ -212,7 +212,7 @@ ggplot(data = df) + geom_histogram(aes(x=gamble, y=..density..), bins=15) +
 ```
 
 
-![png](output_20_0.png)
+![png](images/output_20_0.png)
 
 
 - As per the assumption in numerical analysis, the histogram of *gamble* is heavily skewed to the right. It represents that most of the people gamble less money while there are some who gamble over 80.00 pounds per year.
@@ -226,7 +226,7 @@ plot(sort(df$gamble), ylab="Gamble", main = "Index plot Gamble")
 ```
 
 
-![png](output_22_0.png)
+![png](images/output_22_0.png)
 
 
 The linear model would be more accurate without this outlier, hence it is removed.
@@ -261,7 +261,7 @@ ggplot(data = df, aes(x=sex, y=gamble)) + geom_boxplot(fill=fill, colour=line, a
 ```
 
 
-![png](output_28_0.png)
+![png](images/output_28_0.png)
 
 
 We can observe how the median for males is very separated from that of the females, which shows that males tend to spend more on gambling than females. Also the median for males is leaned towards **Q1** representing that most of the males spend between 0 to 15 pounds per year on gambling. While there are very few of them who spend above 25 pounds per year, hence skewed to the right.
@@ -277,7 +277,7 @@ ggplot(data = df, aes(x=status, y=gamble)) + geom_point() + geom_smooth(method =
 ```
 
 
-![png](output_31_0.png)
+![png](images/output_31_0.png)
 
 
 While an upward trend is observed depicting that people with higher status tend to gamble more, however, there are few people within low status that spend considerably more in gambling. In fact, most of the highest expenditure on gambling are from people within the low status.
@@ -293,7 +293,7 @@ ggplot(data = df, aes(x=income, y=gamble)) + geom_point() + geom_smooth(method =
 ```
 
 
-![png](output_34_0.png)
+![png](images/output_34_0.png)
 
 
 A nice upward trend is observed showing that people with higher income tend to spend more on gambling. Also we can observe below that even though males and females approximately have the same income, males tend to spend considerably more on gambling.
@@ -311,7 +311,7 @@ ggscatterhist(
 ```
 
 
-![png](output_36_0.png)
+![png](images/output_36_0.png)
 
 
 #### Verbal vs Gamble
@@ -325,7 +325,7 @@ ggplot(data = df, aes(x=factor(df$verbal), y=gamble, color=factor(df$verbal))) +
 ```
 
 
-![png](output_38_0.png)
+![png](images/output_38_0.png)
 
 
 It can be observed that people with average verbal scores(5-8) tend to gamble more than the others. But this trend could also be because of the fact that most of the people in the dataset have above average verbal scores.
@@ -352,7 +352,7 @@ ggplot(data=melt_df, aes(x=Var1, y=Var2, fill=value)) +
 ```
 
 
-![png](output_42_0.png)
+![png](images/output_42_0.png)
 
 
 - As observed *income* is positively correlated to *gamble*, while other features doesn't seem to be well correlated to *gamble*.
@@ -370,7 +370,7 @@ abline(coef(g), lty=5)
 ```
 
 
-![png](output_45_0.png)
+![png](images/output_45_0.png)
 
 
 ## Problem 2: Analyzing dataset prostate
@@ -479,7 +479,7 @@ d %>%
 ```
 
 
-![png](output_55_0.png)
+![png](images/output_55_0.png)
 
 
 - *lbph* - Seems to have many features capped at $-1.386294$. Maybe it is the default value placed just in case it's missing.
@@ -494,7 +494,7 @@ plot(sort(prostate$lweight), ylab="lweight", main = "Index plot lweight")
 ```
 
 
-![png](output_57_0.png)
+![png](images/output_57_0.png)
 
 
 - The outlier may be removed if it correlates well with the response feature *lpsa*
@@ -512,7 +512,7 @@ ggplot(data = prostate, aes(x=lcavol, y=lpsa)) + geom_point() + geom_smooth(meth
 ```
 
 
-![png](output_61_0.png)
+![png](images/output_61_0.png)
 
 
 *lcavol* and *lpsa* are highly positively correlated. It shows that increase in the Log(Cancer Volume) leads to increase in the Log(Prostate Specific Antigen)
@@ -530,7 +530,7 @@ ggscatterhist(
 ```
 
 
-![png](output_63_0.png)
+![png](images/output_63_0.png)
 
 
 Patients with *seminal vesicle invasion* have higher *Log(Cancer Volume)*. Also those patients with *svi* and higher *Log(Cancer Volume)* also seem to have higher Log(Prostate Specific Antigen).
@@ -546,7 +546,7 @@ ggplot(data = prostate, aes(x=lcp, y=lpsa)) + geom_point() + geom_smooth(method 
 ```
 
 
-![png](output_66_0.png)
+![png](images/output_66_0.png)
 
 
 *Log(Capsular Penetration)* and *Log(Prostate Specific Antigen)* seems to be positively correlated as well. However as most of the features in *lcp* are capped at $-1.38629$, it needs more information.
@@ -564,7 +564,7 @@ ggscatterhist(
 ```
 
 
-![png](output_68_0.png)
+![png](images/output_68_0.png)
 
 
 Patients with *svi* do seem to have higher *Log(Capsular Penetration)*. Just as *lcavol*, if patients have both *svi* and higher *lcp*, then they are likely to have higher *lpsa*.
@@ -580,7 +580,7 @@ ggplot(data = prostate, aes(x=prostate$svi, y=lpsa, color=prostate$svi)) + geom_
 ```
 
 
-![png](output_71_0.png)
+![png](images/output_71_0.png)
 
 
 The median of patients with and without *svi* are well separated. Patients with *svi* are likely to have higher *lpsa*.
@@ -600,7 +600,7 @@ ggscatterhist(
 ```
 
 
-![png](output_74_0.png)
+![png](images/output_74_0.png)
 
 
 As *pgg45* is the percentage score of *gleason*, it increases as *gleason* increases. Also *gleason* score of 7,8,9 seems to have a slightly higher *lpsa* in comparison to that of 6.
@@ -633,7 +633,7 @@ ggplot(data=melt_df, aes(x=Var1, y=Var2, fill=value)) +
 ```
 
 
-![png](output_79_0.png)
+![png](images/output_79_0.png)
 
 
 *lcavol, svi, lcp* are positively correlated to *lpsa*.
@@ -652,7 +652,7 @@ abline(coef(g), lty=5)
 ```
 
 
-![png](output_83_0.png)
+![png](images/output_83_0.png)
 
 
 The dotted regression line seems to fit very well.
@@ -669,7 +669,7 @@ abline(coef(g), lty=5)
 ```
 
 
-![png](output_86_0.png)
+![png](images/output_86_0.png)
 
 
 Even though the dotted line seems to be fitted very well, but inaccurate predictions could be made if the value of *lcp* is $-1.38629$
